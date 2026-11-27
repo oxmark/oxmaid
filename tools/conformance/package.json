@@ -1,0 +1,9 @@
+{
+  "name": "oxmaid-conformance",
+  "private": true,
+  "description": "Dumps what Mermaid 12.3 itself parses, to build the oxmaid conformance fixtures.",
+  "dependencies": {
+    "mermaid": "12.3.0",
+    "playwright": "^1.48.0"
+  }
+}

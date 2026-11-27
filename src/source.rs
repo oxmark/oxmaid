@@ -4,23 +4,41 @@
 pub(crate) struct Line<'a> {
     /// Line number, starting at 1.
     pub number: usize,
-    /// Text without leading and trailing whitespace.
+    /// Text without leading whitespace. Trailing whitespace is kept: Mermaid
+    /// gives `subgraph one ` (with a trailing space) a generated id.
     pub text: &'a str,
     /// Column (in chars, from 0) where `text` starts.
     pub offset: usize,
 }
 
-/// Returns the meaningful lines: skips YAML front matter (`---` ... `---`),
-/// `%%` comments, `%%{...}%%` directives and blank lines.
-pub(crate) fn lines(src: &str) -> Vec<Line<'_>> {
-    let mut out = Vec::new();
+/// A source split into its parts.
+pub(crate) struct Source<'a> {
+    /// YAML front matter between the leading `---` lines, if any.
+    pub front_matter: Option<String>,
+    /// Bodies of `%%{ ... }%%` directives.
+    pub directives: Vec<&'a str>,
+    /// Meaningful lines.
+    pub lines: Vec<Line<'a>>,
+}
+
+/// Splits the source: YAML front matter, `%%{...}%%` directives, and the
+/// meaningful lines (`%%` comments and blank lines are dropped).
+pub(crate) fn split(src: &str) -> Source<'_> {
+    let mut out = Source {
+        front_matter: None,
+        directives: Vec::new(),
+        lines: Vec::new(),
+    };
     let mut seen_content = false;
-    let mut in_front_matter = false;
+    let mut front: Option<Vec<&str>> = None;
     for (i, raw) in src.lines().enumerate() {
         let text = raw.trim();
-        if in_front_matter {
+        if let Some(fm) = front.as_mut() {
             if text == "---" {
-                in_front_matter = false;
+                out.front_matter = Some(fm.join("\n"));
+                front = None;
+            } else {
+                fm.push(raw);
             }
             continue;
         }
@@ -29,19 +47,28 @@ pub(crate) fn lines(src: &str) -> Vec<Line<'_>> {
         }
         if !seen_content && text == "---" {
             seen_content = true;
-            in_front_matter = true;
+            front = Some(Vec::new());
             continue;
         }
         seen_content = true;
+        if let Some(body) = text.strip_prefix("%%{").and_then(|t| t.strip_suffix("}%%")) {
+            out.directives.push(body);
+            continue;
+        }
         if text.starts_with("%%") {
             continue;
         }
         let lead = raw.len() - raw.trim_start().len();
-        out.push(Line {
+        out.lines.push(Line {
             number: i + 1,
-            text,
+            text: raw.trim_start(),
             offset: raw[..lead].chars().count(),
         });
     }
     out
+}
+
+/// Meaningful lines only.
+pub(crate) fn lines(src: &str) -> Vec<Line<'_>> {
+    split(src).lines
 }

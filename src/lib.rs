@@ -11,8 +11,10 @@
 //! ```
 #![forbid(unsafe_code)]
 
+pub mod config;
 mod error;
 pub mod flowchart;
+mod font_metrics;
 pub mod layout;
 mod options;
 mod source;
@@ -96,7 +98,7 @@ pub fn detect(src: &str) -> Result<DiagramKind> {
         .next()
         .unwrap_or("");
     match keyword {
-        "flowchart" | "graph" | "flowchart-elk" => Ok(DiagramKind::Flowchart),
+        "flowchart" | "graph" | "flowchart-elk" | "swimlane-beta" => Ok(DiagramKind::Flowchart),
         k if NOT_YET_PORTED.contains(&k) => Err(Error::new(
             ErrorKind::UnsupportedDiagram,
             first.number,

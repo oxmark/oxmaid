@@ -38,10 +38,18 @@ pub struct LayoutNode {
 /// A group of nodes drawn inside a box (a flowchart subgraph).
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct LayoutCluster {
-    /// Enclosing cluster. Must have a lower index than the cluster itself.
+    /// Enclosing cluster, in any order. Links that form a cycle are ignored.
     pub parent: Option<usize>,
     /// Space reserved on every side between the members and the cluster box.
     pub padding: f64,
+    /// Extra space before the first rank (a title in a top-to-bottom layout).
+    pub extra_top: f64,
+    /// Extra space after the last rank (a title once the layout is flipped
+    /// for a bottom-to-top diagram).
+    pub extra_bottom: f64,
+    /// Extra space on the left of the members (a title once the layout is
+    /// rotated for a left-to-right diagram).
+    pub extra_left: f64,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -52,6 +60,14 @@ pub struct LayoutEdge {
     pub min_len: usize,
     /// Size of the edge label, if any.
     pub label: Option<(f64, f64)>,
+    /// Only constrains ranks: no route, no dummies, no influence on order.
+    /// Links to subgraphs use these to keep a whole subgraph past the source.
+    pub rank_only: bool,
+    /// When not empty, the link leaves from whichever of these nodes is
+    /// ranked last (instead of `from`) and enters whichever of `to_any` is
+    /// ranked first: a link between subgraphs joins their facing members.
+    pub from_any: Vec<usize>,
+    pub to_any: Vec<usize>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -62,6 +78,10 @@ pub struct LayoutConfig {
     pub rank_sep: f64,
     /// Gap between two edges running side by side.
     pub edge_sep: f64,
+    /// ELK spacing: a full `rank_sep` on each side of a rank holding nodes or
+    /// edge labels, and half of it next to a rank of edge bends only. When
+    /// false (dagre), every rank is `rank_sep / 2` from the next one.
+    pub elk_ranks: bool,
 }
 
 impl Default for LayoutConfig {
@@ -70,6 +90,7 @@ impl Default for LayoutConfig {
             node_sep: 50.0,
             rank_sep: 50.0,
             edge_sep: 10.0,
+            elk_ranks: false,
         }
     }
 }
@@ -81,6 +102,8 @@ pub struct EdgeRoute {
     pub points: Vec<Point>,
     /// Center of the label, if the edge has one.
     pub label: Option<Point>,
+    /// Rank of each point.
+    pub ranks: Vec<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
@@ -90,6 +113,10 @@ pub struct Layout {
     pub edges: Vec<EdgeRoute>,
     pub width: f64,
     pub height: f64,
+    /// Rank of each node.
+    pub node_ranks: Vec<usize>,
+    /// Top and bottom of each rank (its tallest node or label).
+    pub rank_bounds: Vec<(f64, f64)>,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -114,8 +141,18 @@ struct Tree<'a> {
 
 impl Tree<'_> {
     fn parent(&self, c: usize) -> Option<usize> {
-        // Parents must have a lower index, which also rules out cycles.
-        self.clusters[c].parent.filter(|&p| p < c)
+        let n = self.clusters.len();
+        let p = self.clusters[c].parent.filter(|&p| p < n && p != c)?;
+        // Ignore a parent link that leads back to `c` (a cycle).
+        let mut k = p;
+        for _ in 0..n {
+            match self.clusters[k].parent.filter(|&q| q < n) {
+                Some(q) if q == c => return None,
+                Some(q) => k = q,
+                None => return Some(p),
+            }
+        }
+        None
     }
 
     /// `c` and its ancestors, innermost first.
@@ -135,12 +172,20 @@ impl Tree<'_> {
             .find(|&k| self.parent(k) == c && Some(k) != c)
     }
 
-    /// Padding crossed when going from `c` up to (but excluding) `top`.
-    fn padding_up_to(&self, c: Option<usize>, top: Option<usize>) -> f64 {
+    /// Padding crossed when going from `c` up to (but excluding) `top`,
+    /// leaving through the right side, or the left side when `left`.
+    fn padding_up_to(&self, c: Option<usize>, top: Option<usize>, left: bool) -> f64 {
         self.chain(c)
             .into_iter()
             .take_while(|&k| Some(k) != top)
-            .map(|k| self.clusters[k].padding)
+            .map(|k| {
+                self.clusters[k].padding
+                    + if left {
+                        self.clusters[k].extra_left
+                    } else {
+                        0.0
+                    }
+            })
             .sum()
     }
 }
@@ -183,6 +228,31 @@ pub fn layout(
         })
         .collect();
     let rank = assign_ranks(n, &eff);
+    // Links between groups: pick the facing members now that ranks are known.
+    let eff: Vec<EffEdge> = eff
+        .iter()
+        .zip(edges)
+        .zip(&reversed)
+        .map(|((e, le), &rev)| {
+            let (mut s, mut t, l) = (*e)?;
+            if !rev {
+                let pick = |list: &[usize], last: bool| {
+                    let it = list.iter().copied().filter(|&v| v < n);
+                    if last {
+                        it.max_by_key(|&v| (rank[v], std::cmp::Reverse(v)))
+                    } else {
+                        it.min_by_key(|&v| (rank[v], v))
+                    }
+                };
+                s = pick(&le.from_any, true).unwrap_or(s);
+                t = pick(&le.to_any, false).unwrap_or(t);
+                if s == t || rank[t] <= rank[s] {
+                    return *e;
+                }
+            }
+            Some((s, t, l))
+        })
+        .collect();
 
     // Virtual graph with dummy and label nodes.
     let mut vs: Vec<VNode> = nodes
@@ -201,6 +271,9 @@ pub fn layout(
     let mut vedges = Vec::new();
     for (i, e) in eff.iter().enumerate() {
         let Some((s, t, _)) = *e else { continue };
+        if edges[i].rank_only {
+            continue;
+        }
         let (rs, rt) = (rank[s], rank[t]);
         let mid = rs + (rt - rs) / 2;
         let cluster = tree.lca(nodes[s].cluster, nodes[t].cluster);
@@ -241,13 +314,25 @@ pub fn layout(
     }
 
     let layers = order(&vs, &up, &down, n, &tree);
-    let mut x = place_x(&vs, &layers, &up, &down, cfg, &tree);
+    let mut x = if cfg.elk_ranks {
+        brandes_koepf(&vs, &layers, &up, &down, cfg, &tree)
+    } else {
+        place_x(&vs, &layers, &up, &down, cfg, &tree)
+    };
     separate_clusters(&vs, &mut x, None, cfg, &tree);
     let min = (0..nv)
         .map(|v| x[v] - vs[v].w / 2.0)
         .fold(f64::INFINITY, f64::min);
     x.iter_mut().for_each(|v| *v -= min);
     let (rank_y, height) = place_y(&vs, &layers, cfg, &tree);
+    let rank_bounds: Vec<(f64, f64)> = layers
+        .iter()
+        .zip(&rank_y)
+        .map(|(l, &y)| {
+            let h = l.iter().map(|&v| vs[v].h).fold(0.0, f64::max);
+            (y - h / 2.0, y + h / 2.0)
+        })
+        .collect();
     let pos = |v: usize| Point {
         x: x[v],
         y: rank_y[vs[v].rank],
@@ -261,17 +346,23 @@ pub fn layout(
             let Some((s, t, _)) = *e else {
                 return EdgeRoute::default();
             };
-            let mut points: Vec<Point> = std::iter::once(s)
+            if edges[i].rank_only {
+                return EdgeRoute::default();
+            }
+            let path: Vec<usize> = std::iter::once(s)
                 .chain(chains[i].iter().copied())
                 .chain([t])
-                .map(pos)
                 .collect();
+            let mut points: Vec<Point> = path.iter().map(|&v| pos(v)).collect();
+            let mut ranks: Vec<usize> = path.iter().map(|&v| vs[v].rank).collect();
             if reversed[i] {
                 points.reverse();
+                ranks.reverse();
             }
             EdgeRoute {
                 points,
                 label: label_node[i].map(pos),
+                ranks,
             }
         })
         .collect();
@@ -280,6 +371,8 @@ pub fn layout(
         edges: routes,
         width,
         height,
+        node_ranks: vs[..n].iter().map(|v| v.rank).collect(),
+        rank_bounds,
     }
 }
 
@@ -516,6 +609,254 @@ fn crossings(layers: &[Vec<usize>], down: &[Vec<usize>], pos: &[usize]) -> usize
     total
 }
 
+/// Margin kept free at both ends of a node side when spreading ports.
+pub const PORT_MARGIN: f64 = 10.0;
+
+/// Offsets from the node center of the ports of `v` towards `ns` (its
+/// neighbours in one adjacent rank), in the same order as `ns`: links are
+/// spread evenly over the side, in the order of the nodes they lead to.
+fn port_offsets(vs: &[VNode], v: usize, ns: &[usize], slot: &[usize]) -> Vec<f64> {
+    let k = ns.len();
+    let mut out = vec![0.0; k];
+    if k < 2 {
+        return out;
+    }
+    let mut idx: Vec<usize> = (0..k).collect();
+    idx.sort_by_key(|&i| (slot[ns[i]], i));
+    let w = vs[v].w;
+    let usable = (w - 2.0 * PORT_MARGIN).max(0.0);
+    for (j, &i) in idx.iter().enumerate() {
+        out[i] = -w / 2.0 + PORT_MARGIN.min(w / 2.0) + usable * (j as f64 + 1.0) / (k as f64 + 1.0);
+    }
+    out
+}
+
+/// Brandes-Köpf coordinate assignment, as ELK runs it: blocks of nodes are
+/// aligned port to port towards the previous or the next rank, scanning from
+/// the left or the right; each of the four results is compacted, and the
+/// final position is the mean of the two median ones (ELK's `BALANCED`).
+fn brandes_koepf(
+    vs: &[VNode],
+    layers: &[Vec<usize>],
+    up: &[Vec<usize>],
+    down: &[Vec<usize>],
+    cfg: &LayoutConfig,
+    tree: &Tree,
+) -> Vec<f64> {
+    let nv = vs.len();
+    let mut slot = vec![0usize; nv];
+    for layer in layers {
+        for (i, &v) in layer.iter().enumerate() {
+            slot[v] = i;
+        }
+    }
+    let top_ports: Vec<Vec<f64>> = (0..nv)
+        .map(|v| port_offsets(vs, v, &up[v], &slot))
+        .collect();
+    let bottom_ports: Vec<Vec<f64>> = (0..nv)
+        .map(|v| port_offsets(vs, v, &down[v], &slot))
+        .collect();
+    // Port of `v` on the link to `u`, on the top side or the bottom side.
+    let port = |v: usize, u: usize, top: bool| {
+        let (ns, offs) = if top {
+            (&up[v], &top_ports[v])
+        } else {
+            (&down[v], &bottom_ports[v])
+        };
+        ns.iter().position(|&x| x == u).map_or(0.0, |i| offs[i])
+    };
+    let inner = |v: usize| vs[v].kind != Kind::Real;
+    // Type 1 conflicts: a segment between two dummies wins over any other
+    // segment crossing it, which is marked (upper end, lower end).
+    let mut marked: std::collections::HashSet<(usize, usize)> = Default::default();
+    for i in 1..layers.len().saturating_sub(1) {
+        let (upper, lower) = (&layers[i], &layers[i + 1]);
+        let (mut k0, mut l) = (0usize, 0usize);
+        for (l1, &v) in lower.iter().enumerate() {
+            let w = if inner(v) {
+                up[v].iter().copied().find(|&u| inner(u))
+            } else {
+                None
+            };
+            if l1 + 1 == lower.len() || w.is_some() {
+                let k1 = w.map_or(upper.len().saturating_sub(1), |w| slot[w]);
+                while l <= l1 {
+                    let x = lower[l];
+                    for &u in &up[x] {
+                        let k = slot[u];
+                        if (k < k0 || k > k1) && !(inner(u) && inner(x)) {
+                            marked.insert((u, x));
+                        }
+                    }
+                    l += 1;
+                }
+                k0 = k1;
+            }
+        }
+    }
+
+    let mut results: Vec<(bool, Vec<f64>)> = Vec::with_capacity(4);
+    for (to_prev, from_left) in [(true, true), (true, false), (false, true), (false, false)] {
+        // Mirrored coordinates when scanning from the right.
+        let sign = if from_left { 1.0 } else { -1.0 };
+        let mut order: Vec<Vec<usize>> = layers.to_vec();
+        if !to_prev {
+            order.reverse();
+        }
+        if !from_left {
+            order.iter_mut().for_each(|l| l.reverse());
+        }
+        let pos = |v: usize| {
+            if from_left {
+                slot[v]
+            } else {
+                layers[vs[v].rank].len() - 1 - slot[v]
+            }
+        };
+        // Vertical alignment; `shift` is a node's offset from its block root.
+        let mut root: Vec<usize> = (0..nv).collect();
+        let mut align: Vec<usize> = (0..nv).collect();
+        let mut shift = vec![0.0f64; nv];
+        for layer in order.iter().skip(1) {
+            let mut r: Option<usize> = None;
+            for &v in layer {
+                let mut ns: Vec<usize> = if to_prev {
+                    up[v].clone()
+                } else {
+                    down[v].clone()
+                };
+                if ns.is_empty() {
+                    continue;
+                }
+                ns.sort_by_key(|&u| pos(u));
+                ns.dedup();
+                let d = ns.len();
+                for m in [(d - 1) / 2, d / 2] {
+                    if align[v] != v {
+                        break;
+                    }
+                    let u = ns[m];
+                    let conflict = if to_prev {
+                        marked.contains(&(u, v))
+                    } else {
+                        marked.contains(&(v, u))
+                    };
+                    if !conflict && r.map_or(true, |r| r < pos(u)) {
+                        align[u] = v;
+                        root[v] = root[u];
+                        align[v] = root[v];
+                        // Line up the two ends of the link.
+                        let (pu, pv) = (port(u, v, !to_prev), port(v, u, to_prev));
+                        shift[v] = shift[u] + sign * (pu - pv);
+                        r = Some(pos(u));
+                    }
+                }
+            }
+        }
+        // Horizontal compaction on the block graph: as far as possible
+        // towards the scan side, then back where blocks have room to spare.
+        let sep = |a: usize, b: usize| {
+            // `a` comes before `b` in scan order.
+            if from_left {
+                separation(vs, a, b, cfg, tree)
+            } else {
+                separation(vs, b, a, cfg, tree)
+            }
+        };
+        let mut preds: Vec<Vec<(usize, f64)>> = vec![Vec::new(); nv];
+        let mut succs: Vec<Vec<(usize, f64)>> = vec![Vec::new(); nv];
+        for layer in &order {
+            for w in layer.windows(2) {
+                let (a, b) = (root[w[0]], root[w[1]]);
+                let d = sep(w[0], w[1]) + shift[w[0]] - shift[w[1]];
+                preds[b].push((a, d));
+                succs[a].push((b, d));
+            }
+        }
+        let roots: Vec<usize> = (0..nv).filter(|&v| root[v] == v).collect();
+        let topo = topo_order(&roots, &preds, &succs);
+        let mut bx = vec![0.0f64; nv];
+        for &b in &topo {
+            bx[b] = preds[b].iter().map(|&(a, d)| bx[a] + d).fold(0.0, f64::max);
+        }
+        for &b in topo.iter().rev() {
+            let room = succs[b]
+                .iter()
+                .map(|&(c, d)| bx[c] - d)
+                .fold(f64::INFINITY, f64::min);
+            if room.is_finite() && !preds[b].is_empty() {
+                bx[b] = bx[b].max(room);
+            }
+        }
+        let x: Vec<f64> = (0..nv).map(|v| sign * (bx[root[v]] + shift[v])).collect();
+        results.push((from_left, x));
+    }
+
+    // Balance: align every result with the narrowest one (by its left side
+    // for left scans, its right side otherwise), then take the median.
+    let extent = |x: &[f64]| {
+        let lo = (0..nv)
+            .map(|v| x[v] - vs[v].w / 2.0)
+            .fold(f64::INFINITY, f64::min);
+        let hi = (0..nv)
+            .map(|v| x[v] + vs[v].w / 2.0)
+            .fold(f64::NEG_INFINITY, f64::max);
+        (lo, hi)
+    };
+    let bounds: Vec<(f64, f64)> = results.iter().map(|(_, x)| extent(x)).collect();
+    let narrowest = (0..results.len())
+        .min_by(|&a, &b| (bounds[a].1 - bounds[a].0).total_cmp(&(bounds[b].1 - bounds[b].0)))
+        .unwrap_or(0);
+    for (i, (left, x)) in results.iter_mut().enumerate() {
+        let d = if *left {
+            bounds[narrowest].0 - bounds[i].0
+        } else {
+            bounds[narrowest].1 - bounds[i].1
+        };
+        x.iter_mut().for_each(|v| *v += d);
+    }
+    (0..nv)
+        .map(|v| {
+            let mut xs = [
+                results[0].1[v],
+                results[1].1[v],
+                results[2].1[v],
+                results[3].1[v],
+            ];
+            xs.sort_by(f64::total_cmp);
+            (xs[1] + xs[2]) / 2.0
+        })
+        .collect()
+}
+
+/// Topological order of the block graph (it is acyclic: blocks never cross).
+fn topo_order(
+    roots: &[usize],
+    preds: &[Vec<(usize, f64)>],
+    succs: &[Vec<(usize, f64)>],
+) -> Vec<usize> {
+    let mut indeg: std::collections::HashMap<usize, usize> =
+        roots.iter().map(|&r| (r, preds[r].len())).collect();
+    let mut stack: Vec<usize> = roots
+        .iter()
+        .copied()
+        .filter(|r| preds[*r].is_empty())
+        .rev()
+        .collect();
+    let mut out = Vec::with_capacity(roots.len());
+    while let Some(b) = stack.pop() {
+        out.push(b);
+        for &(c, _) in &succs[b] {
+            let d = indeg.get_mut(&c).expect("successors are roots");
+            *d -= 1;
+            if *d == 0 {
+                stack.push(c);
+            }
+        }
+    }
+    out
+}
+
 fn separation(vs: &[VNode], a: usize, b: usize, cfg: &LayoutConfig, tree: &Tree) -> f64 {
     let gap = match (vs[a].kind == Kind::Real, vs[b].kind == Kind::Real) {
         (true, true) => cfg.node_sep,
@@ -527,7 +868,7 @@ fn separation(vs: &[VNode], a: usize, b: usize, cfg: &LayoutConfig, tree: &Tree)
         0.0
     } else {
         let top = tree.lca(ca, cb);
-        tree.padding_up_to(ca, top) + tree.padding_up_to(cb, top)
+        tree.padding_up_to(ca, top, false) + tree.padding_up_to(cb, top, true)
     };
     (vs[a].w + vs[b].w) / 2.0 + gap + borders
 }
@@ -632,6 +973,7 @@ fn separate_clusters(
     struct Item {
         members: Vec<usize>,
         pad: f64,
+        pad_left: f64,
         r0: usize,
         r1: usize,
         x0: f64,
@@ -643,6 +985,7 @@ fn separate_clusters(
             items.push(Item {
                 members: vec![v],
                 pad: 0.0,
+                pad_left: 0.0,
                 r0: 0,
                 r1: 0,
                 x0: 0.0,
@@ -658,6 +1001,7 @@ fn separate_clusters(
             items.push(Item {
                 members,
                 pad: tree.clusters[k].padding,
+                pad_left: tree.clusters[k].padding + tree.clusters[k].extra_left,
                 r0: 0,
                 r1: 0,
                 x0: 0.0,
@@ -673,7 +1017,7 @@ fn separate_clusters(
             .iter()
             .map(|&v| x[v] - vs[v].w / 2.0)
             .fold(f64::INFINITY, f64::min)
-            - it.pad;
+            - it.pad_left;
         it.x1 = it
             .members
             .iter()
@@ -752,18 +1096,25 @@ fn place_y(
             .map(|v| v.rank);
         let (r0, r1) = ranks.fold((usize::MAX, 0), |(a, b), r| (a.min(r), b.max(r)));
         if r0 <= r1 {
-            before[r0] += cl.padding;
-            after[r1] += cl.padding;
+            before[r0] += cl.padding + cl.extra_top;
+            after[r1] += cl.padding + cl.extra_bottom;
         }
     }
     let half = cfg.rank_sep / 2.0;
+    let gap = |r: usize| {
+        if cfg.elk_ranks && heights[r - 1] > 0.0 && heights[r] > 0.0 {
+            cfg.rank_sep
+        } else {
+            half
+        }
+    };
     let mut ys = Vec::with_capacity(layers.len());
     let mut y = 0.0;
     for (r, h) in heights.iter().enumerate() {
         y = if r == 0 {
             before[0] + h / 2.0
         } else {
-            y + heights[r - 1] / 2.0 + after[r - 1] + half + before[r] + h / 2.0
+            y + heights[r - 1] / 2.0 + after[r - 1] + gap(r) + before[r] + h / 2.0
         };
         ys.push(y);
     }
@@ -790,6 +1141,9 @@ mod tests {
             to,
             min_len: 1,
             label: None,
+            rank_only: false,
+            from_any: Vec::new(),
+            to_any: Vec::new(),
         }
     }
 
@@ -842,6 +1196,9 @@ mod tests {
         let clusters = [LayoutCluster {
             parent: None,
             padding: 15.0,
+            extra_top: 0.0,
+            extra_bottom: 0.0,
+            extra_left: 0.0,
         }; 2];
         let l = layout(&nodes, &edges, &clusters, &LayoutConfig::default());
         let span = |a: usize, b: usize| {
