@@ -3,9 +3,9 @@
 A Rust port of [Mermaid](https://mermaid.js.org), the text-to-diagram library.
 oxmaid turns Mermaid source into SVG without a browser, a DOM or JavaScript.
 
-It is part of the Oxmark project (a Rust port of Comark). The Rust core is
-meant to be wrapped by extensions for other languages, PHP first, so the
-public API is deliberately small and flat.
+It is part of the Oxmark project (a Rust port of Comark). The core aims for
+raw performance and an idiomatic Rust API; bindings for other languages
+(such as PHP) will live in separate projects.
 
 > **Status: early.** Only flowcharts are ported. The output is close to
 > Mermaid's default theme, but not pixel identical.
@@ -88,7 +88,8 @@ Layout and text measurement are shared.
    `click`, subgraph `direction`, themes and `%%{init}%%` configuration.
 2. Compare against Mermaid's own test fixtures.
 3. Next diagram types, likely sequence, state and class diagrams.
-4. Bindings: a C ABI crate, then a PHP extension.
+4. Performance work: benchmarks against Mermaid, byte-level parsing,
+   faster crossing counts for large graphs.
 
 ## Contributing
 

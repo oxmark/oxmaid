@@ -9,9 +9,6 @@
 //! let svg = oxmaid::render("flowchart LR\n  A[Start] --> B{Ok?}\n  B -->|yes| C[End]").unwrap();
 //! assert!(svg.starts_with("<svg"));
 //! ```
-//!
-//! The public API is deliberately flat (`&str` in, `String` or [`Error`] out,
-//! owned data) so that it is easy to expose to other languages.
 #![forbid(unsafe_code)]
 
 mod error;

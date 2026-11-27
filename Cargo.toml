@@ -8,6 +8,4 @@ description = "A Rust port of Mermaid (diagrams from text), starting with flowch
 keywords = ["mermaid", "diagram", "flowchart", "svg"]
 categories = ["visualization", "parser-implementations"]
 
-# No dependencies: the core must stay easy to embed in extensions for
-# other languages (PHP first).
 [dependencies]
