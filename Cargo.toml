@@ -1,0 +1,13 @@
+[package]
+name = "oxmaid"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.70"
+license = "Apache-2.0"
+description = "A Rust port of Mermaid (diagrams from text), starting with flowcharts."
+keywords = ["mermaid", "diagram", "flowchart", "svg"]
+categories = ["visualization", "parser-implementations"]
+
+# No dependencies: the core must stay easy to embed in extensions for
+# other languages (PHP first).
+[dependencies]

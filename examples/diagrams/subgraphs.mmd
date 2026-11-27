@@ -1,0 +1,20 @@
+---
+title: Subgraphs and styles
+---
+%% A comment
+flowchart TB
+    c1-->a2
+    subgraph one [First group]
+    a1-->a2
+    end
+    subgraph two
+    b1-->b2
+    end
+    subgraph three
+    c1-->c2
+    end
+    one --> two
+    classDef hot fill:#f96,stroke:#333,stroke-width:2px
+    class a1 hot
+    b2:::hot
+    style c2 fill:#bbf,stroke:#f66,stroke-dasharray:5 5
