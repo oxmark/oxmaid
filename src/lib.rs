@@ -14,6 +14,7 @@
 pub mod config;
 mod error;
 pub mod flowchart;
+mod font_metrics;
 pub mod layout;
 mod options;
 mod source;

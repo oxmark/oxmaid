@@ -2,11 +2,21 @@
 //!
 //! The syntax follows Mermaid 12.3 (`flow.jison` and `flowDb.ts`).
 
+mod neo;
 mod parser;
 mod render;
 
 pub use parser::parse;
-pub(crate) use render::render;
+
+/// Renders with the `neo` look (Mermaid 12's default), or the old look when
+/// the diagram sets `look: classic`.
+pub(crate) fn render(fc: &Flowchart, o: &crate::RenderOptions) -> String {
+    if fc.config.look.as_deref() == Some("classic") {
+        render::render(fc, o)
+    } else {
+        neo::render(fc, o)
+    }
+}
 
 /// Main flow direction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]

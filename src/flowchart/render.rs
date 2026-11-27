@@ -416,6 +416,9 @@ pub(crate) fn render(fc: &Flowchart, o: &RenderOptions) -> String {
         .map(|s| LayoutCluster {
             parent: fc.subgraphs[s].parent,
             padding: CLUSTER_PADDING + title_height(s),
+            extra_top: 0.0,
+            extra_bottom: 0.0,
+            extra_left: 0.0,
         })
         .collect();
     // A link to a subgraph is laid out as a link to one of its nodes (the
@@ -453,6 +456,9 @@ pub(crate) fn render(fc: &Flowchart, o: &RenderOptions) -> String {
                     let (w, h) = label_size(t);
                     swap(w, h)
                 }),
+                rank_only: false,
+                from_any: Vec::new(),
+                to_any: Vec::new(),
             }
         })
         .collect();
@@ -460,6 +466,7 @@ pub(crate) fn render(fc: &Flowchart, o: &RenderOptions) -> String {
         node_sep: o.node_spacing,
         rank_sep: o.rank_spacing,
         edge_sep: 10.0,
+        elk_ranks: false,
     };
     let lay = layout::layout(&lnodes, &ledges, &lclusters, &cfg);
     let (lw, lhgt) = (lay.width, lay.height);

@@ -161,10 +161,39 @@ fn renders_svg() {
         ))
         .unwrap();
         assert!(svg.starts_with("<svg") && svg.ends_with("</svg>"));
+        assert!(svg.contains("<p>Start</p>") && svg.contains("<p>go</p>"));
+        assert_eq!(svg.matches(r#"class="node default""#).count(), 3);
+        assert!(svg.contains(r#"data-look="neo""#));
+        // The stylesheet has `infinite` animations; no number may be inf.
+        assert!(!svg.contains("NaN") && !svg.replace("infinite", "").contains("inf"));
+    }
+}
+
+#[test]
+fn renders_classic_look() {
+    for dir in ["TD", "BT", "LR", "RL"] {
+        let svg = oxmaid::render(&format!(
+            "---\nconfig:\n  look: classic\n---\nflowchart {dir}\nA[Start] -->|go| B{{Ok?}}\nB --> A\nB --> B\nC"
+        ))
+        .unwrap();
+        assert!(svg.starts_with("<svg") && svg.ends_with("</svg>"));
         assert!(svg.contains(">Start</tspan>") && svg.contains(">go</tspan>"));
         assert_eq!(svg.matches(r#"class="node""#).count(), 3);
         assert!(!svg.contains("NaN") && !svg.contains("inf"));
     }
+}
+
+#[test]
+fn neo_layout_keeps_chains_straight() {
+    // Brandes-Köpf placement lines a simple chain up on one column.
+    let svg = oxmaid::render("flowchart TD\nA --> B --> C --> D").unwrap();
+    let xs: Vec<&str> = svg
+        .split(r#"class="node default""#)
+        .skip(1)
+        .filter_map(|s| s.split("translate(").nth(1)?.split(',').next())
+        .collect();
+    assert_eq!(xs.len(), 4);
+    assert!(xs.iter().all(|x| *x == xs[0]), "{xs:?}");
 }
 
 #[test]
@@ -174,7 +203,7 @@ fn escapes_text_and_drops_unsafe_styles() {
             .unwrap();
     assert!(svg.contains("&lt;script&gt;&amp;"));
     assert!(!svg.contains("javascript"));
-    assert!(svg.contains(r##"stroke="#f00""##));
+    assert!(svg.contains("stroke:#f00 !important"));
 }
 
 #[test]
