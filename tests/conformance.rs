@@ -90,6 +90,7 @@ fn dump(f: &Flowchart) -> Vec<String> {
                 &esc(&css(&n.styles)),
                 &esc(n.link.as_deref().unwrap_or("")),
                 &esc(n.link_target.as_deref().unwrap_or("")),
+                &format!("flowchart-{}-{}", esc(&n.id), n.dom_index),
             ]
             .join("\t"),
         );

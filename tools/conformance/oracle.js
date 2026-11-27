@@ -14,7 +14,7 @@ const { chromium } = require('playwright'); const fs = require('fs');
         const d = await mermaid.mermaidAPI.getDiagramFromText(src);
         const db = d.db;
         if (!db.getVertices) return { other: d.type };
-        const verts = [...db.getVertices().values()].map(v => ({ id: v.id, label: v.text ?? null, labelType: v.labelType, shape: v.type ?? null, classes: [...(v.classes||[])], styles: v.styles||[], link: v.link ?? null, target: v.linkTarget ?? null }));
+        const verts = [...db.getVertices().values()].map(v => ({ id: v.id, label: v.text ?? null, labelType: v.labelType, shape: v.type ?? null, classes: [...(v.classes||[])], styles: v.styles||[], link: v.link ?? null, target: v.linkTarget ?? null, domId: v.domId }));
         const edges = db.getEdges().map(e => ({ id: e.id, from: e.start, to: e.end, type: e.type, stroke: e.stroke, length: e.length, text: e.text, labelType: e.labelType, style: e.style||[], interpolate: e.interpolate ?? null, animate: e.animate ?? null }));
         const subs = db.getSubGraphs().map(s => ({ id: s.id, title: s.title, nodes: s.nodes, dir: s.dir ?? null, classes: s.classes||[] }));
         return { dir: db.getDirection(), verts, edges, subs, accTitle: db.getAccTitle(), accDescr: db.getAccDescription(), classes: [...db.getClasses().entries()].map(([k,v]) => [k, v.styles]) };

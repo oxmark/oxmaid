@@ -28,7 +28,7 @@ for c in d:
     out.append('dir\t' + {'TD': 'TB'}.get(c['dir'], c['dir'] or 'TB'))
     for v in c['verts']:
         if v['id'] in subids: continue
-        out.append('\t'.join(['node', esc(v['id']), esc(label(v['label'], v['labelType'])), v['labelType'] or 'text', v['shape'] or 'rect', ','.join(v['classes']), esc(css(v['styles'])), esc(v['link']), esc(v['target'])]))
+        out.append('\t'.join(['node', esc(v['id']), esc(label(v['label'], v['labelType'])), v['labelType'] or 'text', v['shape'] or 'rect', ','.join(v['classes']), esc(css(v['styles'])), esc(v['link']), esc(v['target']), esc(v['domId'])]))
     for e in c['edges']:
         out.append('\t'.join(['edge', esc(e['id']), esc(e['from']), esc(e['to']), e['type'], e['stroke'], str(e['length']), esc(label(e['text'], e['labelType'])), e['labelType'] or 'text', esc(css(e['style'])), esc(e['interpolate']), 'animate' if e['animate'] else '']))
     for s in c['subs']:

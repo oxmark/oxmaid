@@ -600,6 +600,8 @@ struct Parser {
     frames: Vec<Frame>,
     subgraphs: Vec<SubgraphDef>,
     sub_count: usize,
+    vertex_counter: usize,
+    node_had_data: bool,
 }
 
 impl Parser {
@@ -1080,7 +1082,10 @@ impl Parser {
     /// Nodes separated by `&`. Each entry is (id, node index); the index is
     /// `None` when the id named an edge (`e1@{ ... }`).
     fn node_group(&mut self, cur: &mut Cursor) -> Result<Vec<(String, Option<usize>)>> {
+        // Mermaid's second addVertex call, with a node's shape data, runs
+        // when its grammar rule reduces: after the next node of the group.
         let mut group = vec![self.node(cur)?];
+        let mut pending = std::mem::take(&mut self.node_had_data);
         loop {
             let save = cur.pos;
             cur.skip_ws();
@@ -1092,8 +1097,11 @@ impl Parser {
                 }
                 cur.bump();
                 group.push(self.node(cur)?);
+                self.vertex_counter += usize::from(pending);
+                pending = std::mem::take(&mut self.node_had_data);
             } else {
                 cur.pos = save;
+                self.vertex_counter += usize::from(pending);
                 return Ok(group);
             }
         }
@@ -1143,11 +1151,15 @@ impl Parser {
                 return Ok((id, None));
             }
             if data.is_some() && self.subgraphs.iter().any(|s| s.sg.id == id) {
+                // Mermaid's first addVertex call (without the data) still counts.
+                self.vertex_counter += 1;
                 return Ok((id, None));
             }
         }
 
         let idx = self.ensure_node(&id);
+        // Mermaid calls addVertex a second time with the shape data.
+        self.node_had_data = data.is_some();
         let node = &mut self.chart.nodes[idx];
         if let Some((shape, label, ty)) = shape {
             node.shape = shape;
@@ -1300,13 +1312,18 @@ impl Parser {
         })
     }
 
+    /// Mermaid's `addVertex`: creates the node on first use. Every call moves
+    /// the vertex counter that numbers SVG ids (`flowchart-A-0`).
     fn ensure_node(&mut self, id: &str) -> usize {
+        let counter = self.vertex_counter;
+        self.vertex_counter += 1;
         if let Some(&i) = self.index.get(id) {
             return i;
         }
         self.chart.nodes.push(Node {
             id: id.to_string(),
             label: id.to_string(),
+            dom_index: counter,
             ..Node::default()
         });
         let i = self.chart.nodes.len() - 1;

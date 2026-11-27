@@ -168,6 +168,9 @@ pub struct Node {
     pub link: Option<String>,
     pub link_target: Option<String>,
     pub tooltip: Option<String>,
+    /// Mermaid's vertex counter when the node was created, used in SVG ids
+    /// (`flowchart-A-0`).
+    pub dom_index: usize,
 }
 
 /// Line style of a link.
