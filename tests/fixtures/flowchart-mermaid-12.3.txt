@@ -1,0 +1,2151 @@
+>>> graph TD;\nA-->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph >;A-->B;
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph <;A-->B;
+dir	RL
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph ^;A-->B;
+dir	BT
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph v;A-->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD;A --> B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA --> B\n style e red
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	e	e	text	rect		red		
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nB-->C
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+>>> graph TD;\nA<-->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	normal	1		text			
+>>> graph TD;\nA<-- text -->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	normal	1	text	text			
+>>> graph TD;\nA<==>B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	thick	1		text			
+>>> graph TD;\nA<== text ==>B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	thick	1	text	text			
+>>> graph TD;\nA<-.->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	dotted	1		text			
+>>> graph TD;\nA<-. text .->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	dotted	1	text	text			
+>>> flowchart TB\n    subgraph A\n      a --> b\n    end
+dir	TB
+node	a	a	text	rect				
+node	b	b	text	rect				
+edge	L_a_b_0	a	b	arrow_point	normal	1		text			
+sub	A	A	a,b		
+>>> flowchart TB\n    subgraph A\n      direction BT\n      a --> b\n    end
+dir	TB
+node	a	a	text	rect				
+node	b	b	text	rect				
+edge	L_a_b_0	a	b	arrow_point	normal	1		text			
+sub	A	A	a,b	BT	
+>>> flowchart TB\n    subgraph A\n      direction BT\n      a --> b\n      direction RL\n    end
+dir	TB
+node	a	a	text	rect				
+node	b	b	text	rect				
+edge	L_a_b_0	a	b	arrow_point	normal	1		text			
+sub	A	A	a,b	RL	
+>>> flowchart TB\n    subgraph A\n      direction RL\n      b-->B\n      a\n    end\n    a-->c\n    subgraph B\n      direction LR\n      c\n    end
+dir	TB
+node	b	b	text	rect				
+node	a	a	text	rect				
+node	c	c	text	rect				
+edge	L_b_B_0	b	B	arrow_point	normal	1		text			
+edge	L_a_c_0	a	c	arrow_point	normal	1		text			
+sub	A	A	B,a,b	RL	
+sub	B	B	c	LR	
+>>> graph TD;A---B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	normal	1		text			
+>>> graph TD;A--xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1		text			
+>>> graph TD;A--oB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	normal	1		text			
+>>> flowchart LR\nA id1@-->B\nA@{ shape: 'rect' }\n
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	id1	A	B	arrow_point	normal	1		text			
+>>> flowchart TD\nA@{shape:circle} e1@--> B@{shape:circle} e2@--> C
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+>>> flowchart TD\nA@{shape:circle}   
+dir	TB
+node	A	A	text	rect				
+>>> flowchart TD\nA@{shape: circle} e1@--> B@{shape: circle} e2@--> C
+dir	TB
+node	A	A	text	circle				
+node	B	B	text	circle				
+node	C	C	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+>>> flowchart TD\nA@{shape: circle}   
+dir	TB
+node	A	A	text	circle				
+>>> graph TD;A---|This is the 123 s text|B;\nA---|This is the second edge|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	normal	1	This is the 123 s text	text			
+edge	L_A_B_2	A	B	arrow_open	normal	1	This is the second edge	text			
+>>> graph TD\nA-->B\nclick A callback
+dir	TB
+node	A	A	text	rect	clickable			
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A call callback()
+dir	TB
+node	A	A	text	rect	clickable			
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A callback "tooltip"
+dir	TB
+node	A	A	text	rect	clickable			
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A call callback() "tooltip"
+dir	TB
+node	A	A	text	rect	clickable			
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A call callback("test0", test1, test2)
+dir	TB
+node	A	A	text	rect	clickable			
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A "click.html"
+dir	TB
+node	A	A	text	rect	clickable		click.html	
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A href "click.html"
+dir	TB
+node	A	A	text	rect	clickable		click.html	
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A "click.html" "tooltip"
+dir	TB
+node	A	A	text	rect	clickable		click.html	
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A href "click.html" "tooltip"
+dir	TB
+node	A	A	text	rect	clickable		click.html	
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A "click.html" _blank
+dir	TB
+node	A	A	text	rect	clickable		click.html	_blank
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A href "click.html" _blank
+dir	TB
+node	A	A	text	rect	clickable		click.html	_blank
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A "click.html" "tooltip" _blank
+dir	TB
+node	A	A	text	rect	clickable		click.html	_blank
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA-->B\nclick A href "click.html" "tooltip" _blank
+dir	TB
+node	A	A	text	rect	clickable		click.html	_blank
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD;A-->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD;A-.->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1		text			
+>>> graph TD;A==>B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1		text			
+>>> flowchart\nA["`The cat in **the** hat`"]-- "`The *bat* in the chat`" -->B["The dog in the hog"] -- "The rat in the mat" -->C;
+dir	TB
+node	A	The cat in **the** hat	markdown	square				
+node	B	The dog in the hog	string	square				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	The *bat* in the chat	markdown			
+edge	L_B_C_0	B	C	arrow_point	normal	1	The rat in the mat	string			
+>>> flowchart LR\nsubgraph "One"\n  a("`The **cat**\n  in the hat`") -- "1o" --> b{{"`The **dog** in the hog`"}}\nend\nsubgraph "`**Two**`"\n  c("`The **cat**\n  in the hat`") -- "`1o **ipa**`" --> d("The dog in the hog")\nend
+dir	LR
+node	a	The **cat**\nin the hat	markdown	round				
+node	b	The **dog** in the hog	markdown	hexagon				
+node	c	The **cat**\nin the hat	markdown	round				
+node	d	The dog in the hog	string	round				
+edge	L_a_b_0	a	b	arrow_point	normal	1	1o	string			
+edge	L_c_d_0	c	d	arrow_point	normal	1	1o **ipa**	markdown			
+sub	One	One	a,b		
+sub	**Two**	**Two**	c,d		
+>>> flowchart TB\n      D@{ shape: rounded}
+dir	TB
+node	D	D	text	rounded				
+>>> flowchart TB\n      D@{ shape: rounded }
+dir	TB
+node	D	D	text	rounded				
+>>> flowchart TB\n      D@{ shape: rounded } & E
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rect				
+>>> flowchart TB\n      D@{ shape: rounded } --> E
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rect				
+edge	L_D_E_0	D	E	arrow_point	normal	1		text			
+>>> flowchart TB\n      D@{ shape: rounded } & E --> F
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rect				
+node	F	F	text	rect				
+edge	L_D_F_0	D	F	arrow_point	normal	1		text			
+edge	L_E_F_0	E	F	arrow_point	normal	1		text			
+>>> flowchart TB\n      D@{ shape: rounded } & E@{ shape: rounded } --> F
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rounded				
+node	F	F	text	rect				
+edge	L_D_F_0	D	F	arrow_point	normal	1		text			
+edge	L_E_F_0	E	F	arrow_point	normal	1		text			
+>>> flowchart TB\n      D@{ shape: rounded } & E@{ shape: rounded } --> F & G@{ shape: rounded }
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rounded				
+node	F	F	text	rect				
+node	G	G	text	rounded				
+edge	L_D_F_0	D	F	arrow_point	normal	1		text			
+edge	L_D_G_0	D	G	arrow_point	normal	1		text			
+edge	L_E_F_0	E	F	arrow_point	normal	1		text			
+edge	L_E_G_0	E	G	arrow_point	normal	1		text			
+>>> flowchart TB\n      D@{ shape: rounded } & E@{ shape: rounded } --> F@{ shape: rounded } & G@{ shape: rounded }
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rounded				
+node	F	F	text	rounded				
+node	G	G	text	rounded				
+edge	L_D_F_0	D	F	arrow_point	normal	1		text			
+edge	L_D_G_0	D	G	arrow_point	normal	1		text			
+edge	L_E_F_0	E	F	arrow_point	normal	1		text			
+edge	L_E_G_0	E	G	arrow_point	normal	1		text			
+>>> flowchart TB\n         D@{ shape: rounded } & E@{ shape: rounded } --> F{ shape: rounded } & G{ shape: rounded }    
+dir	TB
+node	D	D	text	rounded				
+node	E	E	text	rounded				
+node	F	shape: rounded	text	diamond				
+node	G	shape: rounded	text	diamond				
+edge	L_D_F_0	D	F	arrow_point	normal	1		text			
+edge	L_D_G_0	D	G	arrow_point	normal	1		text			
+edge	L_E_F_0	E	F	arrow_point	normal	1		text			
+edge	L_E_G_0	E	G	arrow_point	normal	1		text			
+>>> flowchart TB\n      D@{shape: rounded}
+dir	TB
+node	D	D	text	rounded				
+>>> flowchart TB\n      D@{       shape: rounded}
+dir	TB
+node	D	D	text	rounded				
+>>> flowchart TB\n      D@{ shape: rounded         }
+dir	TB
+node	D	D	text	rounded				
+>>> flowchart TB\n      D@{ shape: rounded , label: "DD"}
+dir	TB
+node	D	DD	markdown	rounded				
+>>> flowchart TB\n      A --> D@{\n        shape: circle\n        other: "clock"\n     }\n\n      
+dir	TB
+node	A	A	text	rect				
+node	D	D	text	circle				
+edge	L_A_D_0	A	D	arrow_point	normal	1		text			
+>>> flowchart TB\n      A[hello]\n      B@{\n        shape: circle\n        other: "clock"\n     }\n      C[Hello]@{\n        shape: circle\n        other: "clock"\n     }\n      
+dir	TB
+node	A	hello	text	square				
+node	B	B	text	circle				
+node	C	Hello	text	circle				
+>>> flowchart TB\n      A@{\n        label: "This is }"\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is }	markdown	rect				
+>>> flowchart TB\n      A@{ shape: this-shape-does-not-exist }\n      
+error
+>>> flowchart TB\n      A@{ shape: rect_left_inv_arrow }\n      
+error
+>>> flowchart TB\n      A{This is a label}\n
+dir	TB
+node	A	This is a label	text	diamond				
+>>> flowchart TB\n      A@{\n        label: |\n          This is a\n          multiline string\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is a\nmultiline string	markdown	rect				
+>>> flowchart TB\n      A@{\n        label: "This is a\n          multiline string"\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is a\nmultiline string	markdown	rect				
+>>> flowchart TB\n      A@{\n        label: "This is a string with }"\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is a string with }	markdown	rect				
+>>> flowchart TB\n      A@{\n        label: "This is a string with @"\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is a string with @	markdown	rect				
+>>> flowchart TB\n      A@{\n        label: "This is a string with}"\n        other: "clock"\n     }\n      
+dir	TB
+node	A	This is a string with}	markdown	rect				
+>>> flowchart TB\n       n2["label for n2"] &   n4@{ label: "label for n4"}   & n5@{ label: "label for n5"}\n      
+dir	TB
+node	n2	label for n2	string	square				
+node	n4	label for n4	markdown	rect				
+node	n5	label for n5	markdown	rect				
+>>> flowchart TD\n    A["A"] --> B["for B"] &    C@{ label: "for c"} & E@{label : "for E"}\n    D@{label: "for D"}\n      
+dir	TB
+node	A	A	string	square				
+node	B	for B	string	square				
+node	C	for c	markdown	rect				
+node	E	for E	markdown	rect				
+node	D	for D	markdown	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_A_E_0	A	E	arrow_point	normal	1		text			
+>>> flowchart TD\n    A["@A@"] --> B["@for@ B@"] & C@{ label: "@for@ c@"} & E{"`@for@ E@`"} & D(("@for@ D@"))\n      H1{{"@for@ H@"}}\n      H2{{"`@for@ H@`"}}\n      Q1{"@for@ Q@"}\n      Q2{"`@for@ Q@`"}\n      AS1>"@for@ AS@"]\n      AS2>"`@for@ AS@`"]\n      
+dir	TB
+node	A	@A@	string	square				
+node	B	@for@ B@	string	square				
+node	C	@for@ c@	markdown	rect				
+node	E	@for@ E@	markdown	diamond				
+node	D	@for@ D@	string	circle				
+node	H1	@for@ H@	string	hexagon				
+node	H2	@for@ H@	markdown	hexagon				
+node	Q1	@for@ Q@	string	diamond				
+node	Q2	@for@ Q@	markdown	diamond				
+node	AS1	@for@ AS@	string	odd				
+node	AS2	@for@ AS@	markdown	odd				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_A_E_0	A	E	arrow_point	normal	1		text			
+edge	L_A_D_0	A	D	arrow_point	normal	1		text			
+>>> flowchart TD\n     A & B e1@--> C & D\n        A1 e2@--> C1 & D1\n      
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+node	A1	A1	text	rect				
+node	C1	C1	text	rect				
+node	D1	D1	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_A_D_0	A	D	arrow_point	normal	1		text			
+edge	e1	B	C	arrow_point	normal	1		text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+edge	e2	A1	C1	arrow_point	normal	1		text			
+edge	L_A1_D1_0	A1	D1	arrow_point	normal	1		text			
+>>> flowchart TD\n     A & B e1@--> C & D\n        A1 e1@--> C1 & D1\n      
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+node	A1	A1	text	rect				
+node	C1	C1	text	rect				
+node	D1	D1	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_A_D_0	A	D	arrow_point	normal	1		text			
+edge	e1	B	C	arrow_point	normal	1		text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+edge	L_A1_C1_0	A1	C1	arrow_point	normal	1		text			
+edge	L_A1_D1_0	A1	D1	arrow_point	normal	1		text			
+>>> flowchart TD\n     A e1@--> B\n     C e2@--> D\n     E e3@--> F\n    e1@{ animate: true }\n    e2@{ animate: false }\n    e3@{ animate: true }\n    e3@{ animate: false }\n      
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+node	E	E	text	rect				
+node	F	F	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			animate
+edge	e2	C	D	arrow_point	normal	1		text			
+edge	e3	E	F	arrow_point	normal	1		text			
+>>> flowchart LR\n     A e1@--> B\n     B e2@--> C\n     B e3@--> D\n     C e4@--> E\n    e1@{ step: 1 }\n    e2@{ step: 2 }\n    e3@{ step: 2 }\n      
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+node	E	E	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+edge	e3	B	D	arrow_point	normal	1		text			
+edge	e4	C	E	arrow_point	normal	1		text			
+>>> flowchart LR\n     A e1@--> B\n     B e2@--> C\n    e1@{ step: 1 }\n      
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+>>> flowchart LR\n     A e1@--> B\n    e1@{ step: 1 }\n      
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\n     A e1@--> B\n     B e2@--> C\n    e1@{ step: 0 }\n    e2@{ step: 1.5 }\n      
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+>>> flowchart LR\n     A e1@--> B\n    e1@{ animate: true }\n      
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			animate
+>>> flowchart TB\n       n2["label for n2"] &   n4@{ label: "label for n4"}   & n5@{ label: "label for n5"} 
+dir	TB
+node	n2	label for n2	string	square				
+node	n4	label for n4	markdown	rect				
+node	n5	label for n5	markdown	rect				
+>>> graph TD;A;
+dir	TB
+node	A	A	text	rect				
+>>> graph TD;A ;
+dir	TB
+node	A	A	text	rect				
+>>> graph TD;a[A];
+dir	TB
+node	a	A	text	square				
+>>> graph TD;a((A));
+dir	TB
+node	a	A	text	circle				
+>>> graph TD;a(A);
+dir	TB
+node	a	A	text	round				
+>>> graph TD;a>A];
+dir	TB
+node	a	A	text	odd				
+>>> graph TD;a{A};
+dir	TB
+node	a	A	text	diamond				
+>>> graph TD;a{A}   ;
+dir	TB
+node	a	A	text	diamond				
+>>> graph TD;a{A <br> end};
+dir	TB
+node	a	A \n end	text	diamond				
+>>> graph TD;a{{A}};
+dir	TB
+node	a	A	text	hexagon				
+>>> graph TD;a{{A <br> end}};
+dir	TB
+node	a	A \n end	text	hexagon				
+>>> graph TD;a(A <br> end);
+dir	TB
+node	a	A \n end	text	round				
+>>> graph TD;a(((A)));
+dir	TB
+node	a	A	text	doublecircle				
+>>> graph TD;a(((A)))   ;
+dir	TB
+node	a	A	text	doublecircle				
+>>> graph TD;a(((A <br> end)));
+dir	TB
+node	a	A \n end	text	doublecircle				
+>>> graph TD;id1;
+dir	TB
+node	id1	id1	text	rect				
+>>> graph TD;1;
+dir	TB
+node	1	1	text	rect				
+>>> graph TD;subgraph "hello";1;end;
+dir	TB
+node	1	1	text	rect				
+sub	hello	hello	1		
+>>> graph TD;1id;
+dir	TB
+node	1id	1id	text	rect				
+>>> graph TD;i-d;
+dir	TB
+node	i-d	i-d	text	rect				
+>>> graph TD;i_d;
+dir	TB
+node	i_d	i_d	text	rect				
+>>> graph TD;style Q background:#fff;
+dir	TB
+node	Q	Q	text	rect		background:#fff		
+>>> graph TD;style R background:#fff,border:1px solid red;
+dir	TB
+node	R	R	text	rect		background:#fff;border:1pxsolidred		
+>>> graph TD;style S background:#aaa;\nstyle T background:#bbb,border:1px solid red;
+dir	TB
+node	S	S	text	rect		background:#aaa		
+node	T	T	text	rect		background:#bbb;border:1pxsolidred		
+>>> graph TD;S-->T;\nstyle S background:#aaa;\nstyle T background:#bbb,border:1px solid red;
+dir	TB
+node	S	S	text	rect		background:#aaa		
+node	T	T	text	rect		background:#bbb;border:1pxsolidred		
+edge	L_S_T_0	S	T	arrow_point	normal	1		text			
+>>> graph TD;style T background:#bbb,border:1px solid red;
+dir	TB
+node	T	T	text	rect		background:#bbb;border:1pxsolidred		
+>>> graph TD;style T background: #bbb;
+error
+>>> graph TD;A(( ));B((Test));C;style A background:#fff;style D border:1px solid red;
+error
+>>> graph TD;classDef exClass background:#bbb,border:1px solid red;
+dir	TB
+classdef	exClass	background:#bbb;border:1pxsolidred
+>>> graph TD;classDef firstClass,secondClass background:#bbb,border:1px solid red;
+dir	TB
+classdef	firstClass	background:#bbb;border:1pxsolidred
+classdef	secondClass	background:#bbb;border:1pxsolidred
+>>> graph TD;classDef exClass background:#bbb,border:1.5px solid red;
+dir	TB
+classdef	exClass	background:#bbb;border:1.5pxsolidred
+>>> graph TD;classDef exClass background:  #bbb,border:1.5px solid red;
+dir	TB
+classdef	exClass	background:#bbb;border:1.5pxsolidred
+>>> graph TD;style T background  :  #bbb;
+error
+>>> graph TD\n    A-->B\n    linkStyle 1 stroke-width:1px;
+error
+>>> graph TD\n    A-->B\n    linkStyle 0 stroke-width:1px;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text	stroke-width:1px;fill:none		
+>>> graph TD\nA-->B\nclassDef exClass font-style:bold;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+classdef	exClass	font-style:bold
+>>> graph TD\nA-->B\nclassDef exClass fill:#f96,stroke:#333,stroke-width:4px,font-size:50%,font-style:bold;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+classdef	exClass	fill:#f96;stroke:#333;stroke-width:4px;font-size:50%;font-style:bold
+>>> graph TD;\nAA-->BB;\nstyle A fill:#f00;
+dir	TB
+node	AA	AA	text	rect				
+node	BB	BB	text	rect				
+node	A	A	text	rect		fill:#f00		
+edge	L_AA_BB_0	AA	BB	arrow_point	normal	1		text			
+>>> \n    graph TD\n      classDef C1 stroke-dasharray:4\n      classDef C2 stroke-dasharray:6\n      A & B:::C1 & D:::C1 --> E:::C2\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect	C1			
+node	D	D	text	rect	C1			
+node	E	E	text	rect	C2			
+edge	L_A_E_0	A	E	arrow_point	normal	1		text			
+edge	L_B_E_0	B	E	arrow_point	normal	1		text			
+edge	L_D_E_0	D	E	arrow_point	normal	1		text			
+classdef	C1	stroke-dasharray:4
+classdef	C2	stroke-dasharray:6
+>>> graph TD;A--x|textNoSpace|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	textNoSpace	text			
+>>> graph TD;A--x|text including space|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including space	text			
+>>> graph TD;A--x|text with / should work|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text with / should work	text			
+>>> graph TD;A --x|textNoSpace| B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	textNoSpace	text			
+>>> graph TD;A--x|text including CAPS space|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including CAPS space	text			
+>>> graph TD;A--x|text including URL space|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including URL space	text			
+>>> graph TD;A--text including URL space and send-->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	text including URL space and send	text			
+>>> graph TD;A-- text including URL space and send -->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	text including URL space and send	text			
+>>> graph TD;A--x|text including R TD space|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including R TD space	text			
+>>> graph TD;A--x|text including `|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including `	text			
+>>> graph TD;A--xv(my text);
+dir	TB
+node	A	A	text	rect				
+node	v	my text	text	round				
+edge	L_A_v_0	A	v	arrow_cross	normal	1		text			
+>>> graph TD;A--xcsv(my text);
+dir	TB
+node	A	A	text	rect				
+node	csv	my text	text	round				
+edge	L_A_csv_0	A	csv	arrow_cross	normal	1		text			
+>>> graph TD;A--xava(my text);
+dir	TB
+node	A	A	text	rect				
+node	ava	my text	text	round				
+edge	L_A_ava_0	A	ava	arrow_cross	normal	1		text			
+>>> graph TD;A--xva(my text);
+dir	TB
+node	A	A	text	rect				
+node	va	my text	text	round				
+edge	L_A_va_0	A	va	arrow_cross	normal	1		text			
+>>> graph TD;A--x|text including graph space|B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including graph space	text			
+>>> graph TD;V-->a[v]
+dir	TB
+node	V	V	text	rect				
+node	a	v	text	square				
+edge	L_V_a_0	V	a	arrow_point	normal	1		text			
+>>> graph TD;V-- "test string()" -->a[v]
+dir	TB
+node	V	V	text	rect				
+node	a	v	text	square				
+edge	L_V_a_0	V	a	arrow_point	normal	1	test string()	string			
+>>> graph TD;A-- test text with == -->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	test text with ==	text			
+>>> graph TD;A-. test text with == .->B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1	test text with ==	text			
+>>> graph TD;A== test text with - ==>B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1	test text with -	text			
+>>> graph TD;A-- textNoSpace --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	textNoSpace	text			
+>>> graph TD;A--    textNoSpace --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	textNoSpace	text			
+>>> graph TD;A-- text including space --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including space	text			
+>>> graph TD;A -- text with / should work --x B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text with / should work	text			
+>>> graph TD;A -- textNoSpace --x B;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	textNoSpace	text			
+>>> graph TD;A-- text including CAPS space --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including CAPS space	text			
+>>> graph TD;A-- text including URL space --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including URL space	text			
+>>> graph TD;A-- text including R TD space --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including R TD space	text			
+>>> graph TD;A-- text including graph space and v --xB;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including graph space and v	text			
+>>> graph TD;A-- text including graph space and v --xB[blav]
+dir	TB
+node	A	A	text	rect				
+node	B	blav	text	square				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text including graph space and v	text			
+>>> graph TD;A-- text including graph space --B
+error
+>>> graph TD;A-->C(Chimpansen hoppar);
+dir	TB
+node	A	A	text	rect				
+node	C	Chimpansen hoppar	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A_node-->odd->Vertex Text];
+dir	TB
+node	A_node	A_node	text	rect				
+node	odd-	Vertex Text	text	odd				
+edge	L_A_node_odd-_0	A_node	odd-	arrow_point	normal	1		text			
+>>> graph TD;A_node-->B[/This node has a / as text/];
+dir	TB
+node	A_node	A_node	text	rect				
+node	B	This node has a / as text	text	lean_right				
+edge	L_A_node_B_0	A_node	B	arrow_point	normal	1		text			
+>>> graph TD;A_node-->B[\\This node has a \\ as text\\];
+dir	TB
+node	A_node	A_node	text	rect				
+node	B	This node has a \\ as text	text	lean_left				
+edge	L_A_node_B_0	A_node	B	arrow_point	normal	1		text			
+>>> graph TD;A-->C{Chimpansen hoppar åäö-ÅÄÖ};
+dir	TB
+node	A	A	text	rect				
+node	C	Chimpansen hoppar åäö-ÅÄÖ	text	diamond				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A-->C(Chimpansen hoppar åäö  <br> -  ÅÄÖ);
+dir	TB
+node	A	A	text	rect				
+node	C	Chimpansen hoppar åäö  \n -  ÅÄÖ	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD; A[Object&#40;foo,bar&#41;]-->B(Thing);
+dir	TB
+node	A	Object&(foo,bar&)	text	square				
+node	B	Thing	text	round				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD;A-->C(Начало);
+dir	TB
+node	A	A	text	rect				
+node	C	Начало	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A-->C(c:\\windows);
+dir	TB
+node	A	A	text	rect				
+node	C	c:\\windows	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A-->C(some CAPS);
+dir	TB
+node	A	A	text	rect				
+node	C	some CAPS	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A-->C(some URL);
+dir	TB
+node	A	A	text	rect				
+node	C	some URL	text	round				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A--o|text space|B;\n B-->|more text with space|C;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	normal	1	text space	text			
+edge	L_B_C_0	B	C	arrow_point	normal	1	more text with space	text			
+>>> graph TD;A[chimpansen hoppar]-->C;
+dir	TB
+node	A	chimpansen hoppar	text	square				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A[chimpansen hoppar] --> C;
+dir	TB
+node	A	chimpansen hoppar	text	square				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A[chimpansen_hoppar] --> C;
+dir	TB
+node	A	chimpansen_hoppar	text	square				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A["chimpansen hoppar ()[]"] --> C;
+dir	TB
+node	A	chimpansen hoppar ()[]	string	square				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A((chimpansen hoppar))-->C;
+dir	TB
+node	A	chimpansen hoppar	text	circle				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD\nA(-this is an ellipse-)-->B
+dir	TB
+node	A	this is an ellipse	text	ellipse				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph\nX(- My Text (
+error
+>>> graph TD;A(chimpansen hoppar)-->C;
+dir	TB
+node	A	chimpansen hoppar	text	round				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> graph TD;A(?)-->|?|C;
+dir	TB
+node	A	?	text	round				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1	?	text			
+>>> graph TD;A(éèêàçô)-->|éèêàçô|C;
+dir	TB
+node	A	éèêàçô	text	round				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1	éèêàçô	text			
+>>> graph TD;A(,.?!+-*)-->|,.?!+-*|C;
+dir	TB
+node	A	,.?!+-*	text	round				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1	,.?!+-*	text			
+>>> \n    graph TD\n      A-->B-->C;\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+>>> \n    graph TD\n      A & B --> C;\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+>>> \n    graph TD\n      A-->B & C;\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+>>> \n    graph TD\n      A & B--> C & D;\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_A_D_0	A	D	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+>>> \n    graph TD\n      A --> B & B2 & C --> D2;\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	B2	B2	text	rect				
+node	C	C	text	rect				
+node	D2	D2	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_A_B2_0	A	B2	arrow_point	normal	1		text			
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_B_D2_0	B	D2	arrow_point	normal	1		text			
+edge	L_B2_D2_0	B2	D2	arrow_point	normal	1		text			
+edge	L_C_D2_0	C	D2	arrow_point	normal	1		text			
+>>> \n    graph TD\n      A[ h ] -- hello --> B[" test "]:::exClass & C --> D;\n      classDef exClass background:#bbb,border:1px solid red;\n    
+dir	TB
+node	A	h	text	square				
+node	B	test	string	square	exClass			
+node	C	C	text	rect				
+node	D	D	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	hello	text			
+edge	L_A_C_0	A	C	arrow_point	normal	1	hello	text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+edge	L_C_D_0	C	D	arrow_point	normal	1		text			
+classdef	exClass	background:#bbb;border:1pxsolidred
+>>> swimlane-beta LR;A-->B;
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nendpoint --> sender
+dir	TB
+node	endpoint	endpoint	text	rect				
+node	sender	sender	text	rect				
+edge	L_endpoint_sender_0	endpoint	sender	arrow_point	normal	1		text			
+>>> graph TD\nblend --> monograph
+dir	TB
+node	blend	blend	text	rect				
+node	monograph	monograph	text	rect				
+edge	L_blend_monograph_0	blend	monograph	arrow_point	normal	1		text			
+>>> graph TD\ndefault --> monograph
+dir	TB
+node	default	default	text	rect				
+node	monograph	monograph	text	rect				
+edge	L_default_monograph_0	default	monograph	arrow_point	normal	1		text			
+>>> graph TB\nsubgraph One\n\ta1-->a2\nend
+dir	TB
+node	a1	a1	text	rect				
+node	a2	a2	text	rect				
+edge	L_a1_a2_0	a1	a2	arrow_point	normal	1		text			
+sub	One	One	a1,a2		
+>>> graph TB\nsubgraph One\n\ta1-->a2-->a3\nend
+dir	TB
+node	a1	a1	text	rect				
+node	a2	a2	text	rect				
+node	a3	a3	text	rect				
+edge	L_a1_a2_0	a1	a2	arrow_point	normal	1		text			
+edge	L_a2_a3_0	a2	a3	arrow_point	normal	1		text			
+sub	One	One	a1,a2,a3		
+>>> graph TB\nsubgraph "Some Title"\n\ta1-->a2\nend
+dir	TB
+node	a1	a1	text	rect				
+node	a2	a2	text	rect				
+edge	L_a1_a2_0	a1	a2	arrow_point	normal	1		text			
+sub	subGraph0	Some Title	a1,a2		
+>>> graph TB\nsubgraph some-id[Some Title]\n\ta1-->a2\nend
+dir	TB
+node	a1	a1	text	rect				
+node	a2	a2	text	rect				
+edge	L_a1_a2_0	a1	a2	arrow_point	normal	1		text			
+sub	some-id	Some Title	a1,a2		
+>>> graph TB\nsubgraph Some Title\n\ta1-->a2\nend
+dir	TB
+node	a1	a1	text	rect				
+node	a2	a2	text	rect				
+edge	L_a1_a2_0	a1	a2	arrow_point	normal	1		text			
+sub	subGraph0	Some Title	a1,a2		
+>>> graph TD\n    A[Christmas] -->|Get money| B(Go shopping)\n    subgraph 1test\n    A\n    end
+dir	TB
+node	A	Christmas	text	square				
+node	B	Go shopping	text	round				
+edge	L_A_B_0	A	B	arrow_point	normal	1	Get money	text			
+sub	1test	1test	A		
+>>> graph TD;A-->B;subgraph myTitle;c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	myTitle	myTitle	c,d		
+>>> graph TD;A-->B;subgraph "title in quotes";c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	subGraph0	title in quotes	c,d		
+>>> graph TD;A-->B;subgraph old style that is broken;c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	subGraph0	old style that is broken	c,d		
+>>> graph TD;A-->B;subgraph a-b-c;c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	a-b-c	a-b-c	c,d		
+>>> graph TD;A-->B;subgraph uid1[text of doom];c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	uid1	text of doom	c,d		
+>>> graph TD;A-->B;subgraph uid2["text of doom"];c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	uid2	text of doom	c,d		
+>>> graph TD;A-->B;subgraph uid2[textofdoom];c-->d;end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	uid2	textofdoom	c,d		
+>>> graph TD\nA-->B\nsubgraph myTitle\n\n c-->d \nend\n
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	myTitle	myTitle	c,d		
+>>> graph TD\nA-->B\nsubgraph myTitle   \n\n    c-->d \nend\n
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	subGraph0	myTitle	c,d		
+>>> graph TD\nA-->B\nsubgraph myTitle\nc-->d\nend;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1		text			
+sub	myTitle	myTitle	c,d		
+>>> graph TD\nA-->B\nsubgraph myTitle\nc-- text -->d\nd-->e\n end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	c	c	text	rect				
+node	d	d	text	rect				
+node	e	e	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_c_d_0	c	d	arrow_point	normal	1	text	text			
+edge	L_d_e_0	d	e	arrow_point	normal	1		text			
+sub	myTitle	myTitle	c,d,e		
+>>> graph TD\nA-->B\nsubgraph myTitle\na & b --> c & e\n end;
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	a	a	text	rect				
+node	b	b	text	rect				
+node	c	c	text	rect				
+node	e	e	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_a_c_0	a	c	arrow_point	normal	1		text			
+edge	L_a_e_0	a	e	arrow_point	normal	1		text			
+edge	L_b_c_0	b	c	arrow_point	normal	1		text			
+edge	L_b_e_0	b	e	arrow_point	normal	1		text			
+sub	myTitle	myTitle	a,b,c,e		
+>>> flowchart TB\n    subgraph A\n    b-->B\n    a\n    end\n    a-->c\n    subgraph B\n      c\n    end
+dir	TB
+node	b	b	text	rect				
+node	a	a	text	rect				
+node	c	c	text	rect				
+edge	L_b_B_0	b	B	arrow_point	normal	1		text			
+edge	L_a_c_0	a	c	arrow_point	normal	1		text			
+sub	A	A	B,a,b		
+sub	B	B	c		
+>>> flowchart TB\n    b-->B\n    a-->c\n    subgraph B\n      c\n    end\n    subgraph A\n        a\n        b\n        B\n    end
+dir	TB
+node	b	b	text	rect				
+node	a	a	text	rect				
+node	c	c	text	rect				
+edge	L_b_B_0	b	B	arrow_point	normal	1		text			
+edge	L_a_c_0	a	c	arrow_point	normal	1		text			
+sub	B	B	c		
+sub	A	A	B,a,b		
+>>> flowchart TB\n    subgraph B\n      c\n    end\n    a-->c\n    subgraph A\n      b-->B\n      a\n    end
+dir	TB
+node	c	c	text	rect				
+node	a	a	text	rect				
+node	b	b	text	rect				
+edge	L_a_c_0	a	c	arrow_point	normal	1		text			
+edge	L_b_B_0	b	B	arrow_point	normal	1		text			
+sub	B	B	c		
+sub	A	A	B,a,b		
+>>> \n      graph LR\n        subgraph WithTD\n          direction TD\n          A1 --> A2\n        end\n    
+dir	LR
+node	A1	A1	text	rect				
+node	A2	A2	text	rect				
+edge	L_A1_A2_0	A1	A2	arrow_point	normal	1		text			
+sub	WithTD	WithTD	A1,A2	TB	
+>>> \n      graph TD\n        subgraph one [My Group]\n          A --> B\n        end\n        C --> A\n        one@{ view: collapsed }\n    
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_C_A_0	C	A	arrow_point	normal	1		text			
+sub	one	My Group	A,B		
+>>> flowchart TD\nA -- text --> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	text	text			
+>>> flowchart TD\nA == text ==> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1	text	text			
+>>> flowchart TD\nA -. text .-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1	text	text			
+>>> flowchart TD\nA <-- text --> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	normal	1	text	text			
+>>> flowchart TD\nA <== text ==> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	thick	1	text	text			
+>>> flowchart TD\nA <-. text .-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	dotted	1	text	text			
+>>> flowchart TD\nA o-- text --o B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_circle	normal	1	text	text			
+>>> flowchart TD\nA x-- text --x B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_cross	normal	1	text	text			
+>>> flowchart TD\nA -- text --o B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	normal	1	text	text			
+>>> flowchart TD\nA -- text --x B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	text	text			
+>>> flowchart TD\nA == text ==o B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	thick	1	text	text			
+>>> flowchart TD\nA -. text .-x B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	dotted	1	text	text			
+>>> graph TD\nA-->B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA -->|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	lbl	text			
+>>> graph TD\nA---B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	normal	1		text			
+>>> graph TD\nA ---|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	normal	1	lbl	text			
+>>> graph TD\nA==>B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1		text			
+>>> graph TD\nA ==>|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1	lbl	text			
+>>> graph TD\nA===B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	thick	1		text			
+>>> graph TD\nA ===|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	thick	1	lbl	text			
+>>> graph TD\nA-.->B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1		text			
+>>> graph TD\nA -.->|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1	lbl	text			
+>>> graph TD\nA-.-B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	dotted	1		text			
+>>> graph TD\nA -.-|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	dotted	1	lbl	text			
+>>> graph TD\nA<-->B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	normal	1		text			
+>>> graph TD\nA <-->|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	normal	1	lbl	text			
+>>> graph TD\nAo--oB
+dir	TB
+node	Ao	Ao	text	rect				
+node	B	B	text	rect				
+edge	L_Ao_B_0	Ao	B	arrow_circle	normal	1		text			
+>>> graph TD\nA o--o|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_circle	normal	1	lbl	text			
+>>> graph TD\nAx--xB
+dir	TB
+node	Ax	Ax	text	rect				
+node	B	B	text	rect				
+edge	L_Ax_B_0	Ax	B	arrow_cross	normal	1		text			
+>>> graph TD\nA x--x|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_cross	normal	1	lbl	text			
+>>> graph TD\nA--oB
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	normal	1		text			
+>>> graph TD\nA --o|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_circle	normal	1	lbl	text			
+>>> graph TD\nA--xB
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1		text			
+>>> graph TD\nA --x|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_cross	normal	1	lbl	text			
+>>> graph TD\nA~~~B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	invisible	1		text			
+>>> graph TD\nA ~~~|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	invisible	1	lbl	text			
+>>> graph TD\nA<==>B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	thick	1		text			
+>>> graph TD\nA <==>|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	thick	1	lbl	text			
+>>> graph TD\nA<-.->B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	dotted	1		text			
+>>> graph TD\nA <-.->|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_point	dotted	1	lbl	text			
+>>> graph TD\nAx==xB
+dir	TB
+node	Ax	Ax	text	rect				
+node	B	B	text	rect				
+edge	L_Ax_B_0	Ax	B	arrow_cross	thick	1		text			
+>>> graph TD\nA x==x|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_cross	thick	1	lbl	text			
+>>> graph TD\nAo-.-oB
+dir	TB
+node	Ao	Ao	text	rect				
+node	B	B	text	rect				
+edge	L_Ao_B_0	Ao	B	arrow_circle	dotted	1		text			
+>>> graph TD\nA o-.-o|lbl| B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	double_arrow_circle	dotted	1	lbl	text			
+>>> graph TD\nA --> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> graph TD\nA ==> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	1		text			
+>>> graph TD\nA -.-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	1		text			
+>>> graph TD\nA -- t --> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	t	text			
+>>> graph TD\nA ---> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	2		text			
+>>> graph TD\nA ===> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	2		text			
+>>> graph TD\nA -..-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	2		text			
+>>> graph TD\nA -- t ---> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	2	t	text			
+>>> graph TD\nA ----> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	3		text			
+>>> graph TD\nA ====> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	3		text			
+>>> graph TD\nA -...-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	3		text			
+>>> graph TD\nA -- t ----> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	3	t	text			
+>>> graph TD\nA -----> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	4		text			
+>>> graph TD\nA =====> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	4		text			
+>>> graph TD\nA -....-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	4		text			
+>>> graph TD\nA -- t -----> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	4	t	text			
+>>> graph TD\nA ------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	5		text			
+>>> graph TD\nA ======> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	5		text			
+>>> graph TD\nA -.....-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	5		text			
+>>> graph TD\nA -- t ------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	5	t	text			
+>>> graph TD\nA -------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	6		text			
+>>> graph TD\nA =======> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	6		text			
+>>> graph TD\nA -......-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	6		text			
+>>> graph TD\nA -- t -------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	6	t	text			
+>>> graph TD\nA --------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	7		text			
+>>> graph TD\nA ========> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	7		text			
+>>> graph TD\nA -.......-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	7		text			
+>>> graph TD\nA -- t --------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	7	t	text			
+>>> graph TD\nA ---------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	8		text			
+>>> graph TD\nA =========> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	8		text			
+>>> graph TD\nA -........-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	8		text			
+>>> graph TD\nA -- t ---------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	8	t	text			
+>>> graph TD\nA ----------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	9		text			
+>>> graph TD\nA ==========> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	9		text			
+>>> graph TD\nA -.........-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	9		text			
+>>> graph TD\nA -- t ----------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	9	t	text			
+>>> graph TD\nA -----------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10		text			
+>>> graph TD\nA ===========> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	10		text			
+>>> graph TD\nA -..........-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	10		text			
+>>> graph TD\nA -- t -----------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10	t	text			
+>>> graph TD\nA ------------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10		text			
+>>> graph TD\nA ============> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	10		text			
+>>> graph TD\nA -...........-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	10		text			
+>>> graph TD\nA -- t ------------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10	t	text			
+>>> graph TD\nA -------------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10		text			
+>>> graph TD\nA =============> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	thick	10		text			
+>>> graph TD\nA -............-> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	dotted	10		text			
+>>> graph TD\nA -- t -------------> B
+dir	TB
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	10	t	text			
+>>> graph TD\ngraph.node-->B
+error
+>>> graph TD\ngraph-node-->B
+error
+>>> graph TD\ngraph/node-->B
+error
+>>> graph TD\nnode.graph-->B
+dir	TB
+node	node.graph	node.graph	text	rect				
+node	B	B	text	rect				
+edge	L_node.graph_B_0	node.graph	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-graph-->B
+dir	TB
+node	node-graph	node-graph	text	rect				
+node	B	B	text	rect				
+edge	L_node-graph_B_0	node-graph	B	arrow_point	normal	1		text			
+>>> graph TD\nflowchart.node-->B
+error
+>>> graph TD\nflowchart-node-->B
+error
+>>> graph TD\nflowchart/node-->B
+error
+>>> graph TD\nnode.flowchart-->B
+dir	TB
+node	node.flowchart	node.flowchart	text	rect				
+node	B	B	text	rect				
+edge	L_node.flowchart_B_0	node.flowchart	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-flowchart-->B
+dir	TB
+node	node-flowchart	node-flowchart	text	rect				
+node	B	B	text	rect				
+edge	L_node-flowchart_B_0	node-flowchart	B	arrow_point	normal	1		text			
+>>> graph TD\nflowchart-elk.node-->B
+error
+>>> graph TD\nflowchart-elk-node-->B
+error
+>>> graph TD\nflowchart-elk/node-->B
+error
+>>> graph TD\nnode.flowchart-elk-->B
+dir	TB
+node	node.flowchart-elk	node.flowchart-elk	text	rect				
+node	B	B	text	rect				
+edge	L_node.flowchart-elk_B_0	node.flowchart-elk	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-flowchart-elk-->B
+dir	TB
+node	node-flowchart-elk	node-flowchart-elk	text	rect				
+node	B	B	text	rect				
+edge	L_node-flowchart-elk_B_0	node-flowchart-elk	B	arrow_point	normal	1		text			
+>>> graph TD\nsubgraph.node-->B
+error
+>>> graph TD\nsubgraph-node-->B
+error
+>>> graph TD\nsubgraph/node-->B
+error
+>>> graph TD\nnode.subgraph-->B
+dir	TB
+node	node.subgraph	node.subgraph	text	rect				
+node	B	B	text	rect				
+edge	L_node.subgraph_B_0	node.subgraph	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-subgraph-->B
+dir	TB
+node	node-subgraph	node-subgraph	text	rect				
+node	B	B	text	rect				
+edge	L_node-subgraph_B_0	node-subgraph	B	arrow_point	normal	1		text			
+>>> graph TD\nend.node-->B
+error
+>>> graph TD\nend-node-->B
+error
+>>> graph TD\nend/node-->B
+error
+>>> graph TD\nnode.end-->B
+dir	TB
+node	node.end	node.end	text	rect				
+node	B	B	text	rect				
+edge	L_node.end_B_0	node.end	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-end-->B
+dir	TB
+node	node-end	node-end	text	rect				
+node	B	B	text	rect				
+edge	L_node-end_B_0	node-end	B	arrow_point	normal	1		text			
+>>> graph TD\nstyle.node-->B
+error
+>>> graph TD\nstyle-node-->B
+error
+>>> graph TD\nstyle/node-->B
+error
+>>> graph TD\nnode.style-->B
+dir	TB
+node	node.style	node.style	text	rect				
+node	B	B	text	rect				
+edge	L_node.style_B_0	node.style	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-style-->B
+dir	TB
+node	node-style	node-style	text	rect				
+node	B	B	text	rect				
+edge	L_node-style_B_0	node-style	B	arrow_point	normal	1		text			
+>>> graph TD\nlinkStyle.node-->B
+error
+>>> graph TD\nlinkStyle-node-->B
+error
+>>> graph TD\nlinkStyle/node-->B
+error
+>>> graph TD\nnode.linkStyle-->B
+dir	TB
+node	node.linkStyle	node.linkStyle	text	rect				
+node	B	B	text	rect				
+edge	L_node.linkStyle_B_0	node.linkStyle	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-linkStyle-->B
+dir	TB
+node	node-linkStyle	node-linkStyle	text	rect				
+node	B	B	text	rect				
+edge	L_node-linkStyle_B_0	node-linkStyle	B	arrow_point	normal	1		text			
+>>> graph TD\ninterpolate.node-->B
+error
+>>> graph TD\ninterpolate-node-->B
+error
+>>> graph TD\ninterpolate/node-->B
+error
+>>> graph TD\nnode.interpolate-->B
+dir	TB
+node	node.interpolate	node.interpolate	text	rect				
+node	B	B	text	rect				
+edge	L_node.interpolate_B_0	node.interpolate	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-interpolate-->B
+dir	TB
+node	node-interpolate	node-interpolate	text	rect				
+node	B	B	text	rect				
+edge	L_node-interpolate_B_0	node-interpolate	B	arrow_point	normal	1		text			
+>>> graph TD\nclassDef.node-->B
+error
+>>> graph TD\nclassDef-node-->B
+error
+>>> graph TD\nclassDef/node-->B
+error
+>>> graph TD\nnode.classDef-->B
+dir	TB
+node	node.classDef	node.classDef	text	rect				
+node	B	B	text	rect				
+edge	L_node.classDef_B_0	node.classDef	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-classDef-->B
+dir	TB
+node	node-classDef	node-classDef	text	rect				
+node	B	B	text	rect				
+edge	L_node-classDef_B_0	node-classDef	B	arrow_point	normal	1		text			
+>>> graph TD\nclass.node-->B
+error
+>>> graph TD\nclass-node-->B
+error
+>>> graph TD\nclass/node-->B
+error
+>>> graph TD\nnode.class-->B
+dir	TB
+node	node.class	node.class	text	rect				
+node	B	B	text	rect				
+edge	L_node.class_B_0	node.class	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-class-->B
+dir	TB
+node	node-class	node-class	text	rect				
+node	B	B	text	rect				
+edge	L_node-class_B_0	node-class	B	arrow_point	normal	1		text			
+>>> graph TD\nhref.node-->B
+dir	TB
+node	href.node	href.node	text	rect				
+node	B	B	text	rect				
+edge	L_href.node_B_0	href.node	B	arrow_point	normal	1		text			
+>>> graph TD\nhref-node-->B
+dir	TB
+node	href-node	href-node	text	rect				
+node	B	B	text	rect				
+edge	L_href-node_B_0	href-node	B	arrow_point	normal	1		text			
+>>> graph TD\nhref/node-->B
+dir	TB
+node	href/node	href/node	text	rect				
+node	B	B	text	rect				
+edge	L_href/node_B_0	href/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.href-->B
+dir	TB
+node	node.href	node.href	text	rect				
+node	B	B	text	rect				
+edge	L_node.href_B_0	node.href	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-href-->B
+dir	TB
+node	node-href	node-href	text	rect				
+node	B	B	text	rect				
+edge	L_node-href_B_0	node-href	B	arrow_point	normal	1		text			
+>>> graph TD\ncall.node-->B
+dir	TB
+node	call.node	call.node	text	rect				
+node	B	B	text	rect				
+edge	L_call.node_B_0	call.node	B	arrow_point	normal	1		text			
+>>> graph TD\ncall-node-->B
+dir	TB
+node	call-node	call-node	text	rect				
+node	B	B	text	rect				
+edge	L_call-node_B_0	call-node	B	arrow_point	normal	1		text			
+>>> graph TD\ncall/node-->B
+dir	TB
+node	call/node	call/node	text	rect				
+node	B	B	text	rect				
+edge	L_call/node_B_0	call/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.call-->B
+dir	TB
+node	node.call	node.call	text	rect				
+node	B	B	text	rect				
+edge	L_node.call_B_0	node.call	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-call-->B
+dir	TB
+node	node-call	node-call	text	rect				
+node	B	B	text	rect				
+edge	L_node-call_B_0	node-call	B	arrow_point	normal	1		text			
+>>> graph TD\nclick.node-->B
+dir	TB
+node	click.node	click.node	text	rect				
+node	B	B	text	rect				
+edge	L_click.node_B_0	click.node	B	arrow_point	normal	1		text			
+>>> graph TD\nclick-node-->B
+dir	TB
+node	click-node	click-node	text	rect				
+node	B	B	text	rect				
+edge	L_click-node_B_0	click-node	B	arrow_point	normal	1		text			
+>>> graph TD\nclick/node-->B
+dir	TB
+node	click/node	click/node	text	rect				
+node	B	B	text	rect				
+edge	L_click/node_B_0	click/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.click-->B
+dir	TB
+node	node.click	node.click	text	rect				
+node	B	B	text	rect				
+edge	L_node.click_B_0	node.click	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-click-->B
+dir	TB
+node	node-click	node-click	text	rect				
+node	B	B	text	rect				
+edge	L_node-click_B_0	node-click	B	arrow_point	normal	1		text			
+>>> graph TD\n_self.node-->B
+error
+>>> graph TD\n_self-node-->B
+error
+>>> graph TD\n_self/node-->B
+error
+>>> graph TD\nnode._self-->B
+dir	TB
+node	node._self	node._self	text	rect				
+node	B	B	text	rect				
+edge	L_node._self_B_0	node._self	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-_self-->B
+dir	TB
+node	node-_self	node-_self	text	rect				
+node	B	B	text	rect				
+edge	L_node-_self_B_0	node-_self	B	arrow_point	normal	1		text			
+>>> graph TD\n_blank.node-->B
+error
+>>> graph TD\n_blank-node-->B
+error
+>>> graph TD\n_blank/node-->B
+error
+>>> graph TD\nnode._blank-->B
+dir	TB
+node	node._blank	node._blank	text	rect				
+node	B	B	text	rect				
+edge	L_node._blank_B_0	node._blank	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-_blank-->B
+dir	TB
+node	node-_blank	node-_blank	text	rect				
+node	B	B	text	rect				
+edge	L_node-_blank_B_0	node-_blank	B	arrow_point	normal	1		text			
+>>> graph TD\n_parent.node-->B
+error
+>>> graph TD\n_parent-node-->B
+error
+>>> graph TD\n_parent/node-->B
+error
+>>> graph TD\nnode._parent-->B
+dir	TB
+node	node._parent	node._parent	text	rect				
+node	B	B	text	rect				
+edge	L_node._parent_B_0	node._parent	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-_parent-->B
+dir	TB
+node	node-_parent	node-_parent	text	rect				
+node	B	B	text	rect				
+edge	L_node-_parent_B_0	node-_parent	B	arrow_point	normal	1		text			
+>>> graph TD\n_top.node-->B
+error
+>>> graph TD\n_top-node-->B
+error
+>>> graph TD\n_top/node-->B
+error
+>>> graph TD\nnode._top-->B
+dir	TB
+node	node._top	node._top	text	rect				
+node	B	B	text	rect				
+edge	L_node._top_B_0	node._top	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-_top-->B
+dir	TB
+node	node-_top	node-_top	text	rect				
+node	B	B	text	rect				
+edge	L_node-_top_B_0	node-_top	B	arrow_point	normal	1		text			
+>>> graph TD\ndirection.node-->B
+dir	TB
+node	direction.node	direction.node	text	rect				
+node	B	B	text	rect				
+edge	L_direction.node_B_0	direction.node	B	arrow_point	normal	1		text			
+>>> graph TD\ndirection-node-->B
+dir	TB
+node	direction-node	direction-node	text	rect				
+node	B	B	text	rect				
+edge	L_direction-node_B_0	direction-node	B	arrow_point	normal	1		text			
+>>> graph TD\ndirection/node-->B
+dir	TB
+node	direction/node	direction/node	text	rect				
+node	B	B	text	rect				
+edge	L_direction/node_B_0	direction/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.direction-->B
+dir	TB
+node	node.direction	node.direction	text	rect				
+node	B	B	text	rect				
+edge	L_node.direction_B_0	node.direction	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-direction-->B
+dir	TB
+node	node-direction	node-direction	text	rect				
+node	B	B	text	rect				
+edge	L_node-direction_B_0	node-direction	B	arrow_point	normal	1		text			
+>>> graph TD\ndefault.node-->B
+dir	TB
+node	default.node	default.node	text	rect				
+node	B	B	text	rect				
+edge	L_default.node_B_0	default.node	B	arrow_point	normal	1		text			
+>>> graph TD\ndefault-node-->B
+dir	TB
+node	default-node	default-node	text	rect				
+node	B	B	text	rect				
+edge	L_default-node_B_0	default-node	B	arrow_point	normal	1		text			
+>>> graph TD\ndefault/node-->B
+dir	TB
+node	default/node	default/node	text	rect				
+node	B	B	text	rect				
+edge	L_default/node_B_0	default/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.default-->B
+dir	TB
+node	node.default	node.default	text	rect				
+node	B	B	text	rect				
+edge	L_node.default_B_0	node.default	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-default-->B
+dir	TB
+node	node-default	node-default	text	rect				
+node	B	B	text	rect				
+edge	L_node-default_B_0	node-default	B	arrow_point	normal	1		text			
+>>> graph TD\nTB.node-->B
+dir	TB
+node	TB.node	TB.node	text	rect				
+node	B	B	text	rect				
+edge	L_TB.node_B_0	TB.node	B	arrow_point	normal	1		text			
+>>> graph TD\nTB-node-->B
+dir	TB
+node	TB-node	TB-node	text	rect				
+node	B	B	text	rect				
+edge	L_TB-node_B_0	TB-node	B	arrow_point	normal	1		text			
+>>> graph TD\nTB/node-->B
+dir	TB
+node	TB/node	TB/node	text	rect				
+node	B	B	text	rect				
+edge	L_TB/node_B_0	TB/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.TB-->B
+dir	TB
+node	node.TB	node.TB	text	rect				
+node	B	B	text	rect				
+edge	L_node.TB_B_0	node.TB	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-TB-->B
+dir	TB
+node	node-TB	node-TB	text	rect				
+node	B	B	text	rect				
+edge	L_node-TB_B_0	node-TB	B	arrow_point	normal	1		text			
+>>> graph TD\nLR.node-->B
+dir	TB
+node	LR.node	LR.node	text	rect				
+node	B	B	text	rect				
+edge	L_LR.node_B_0	LR.node	B	arrow_point	normal	1		text			
+>>> graph TD\nLR-node-->B
+dir	TB
+node	LR-node	LR-node	text	rect				
+node	B	B	text	rect				
+edge	L_LR-node_B_0	LR-node	B	arrow_point	normal	1		text			
+>>> graph TD\nLR/node-->B
+dir	TB
+node	LR/node	LR/node	text	rect				
+node	B	B	text	rect				
+edge	L_LR/node_B_0	LR/node	B	arrow_point	normal	1		text			
+>>> graph TD\nnode.LR-->B
+dir	TB
+node	node.LR	node.LR	text	rect				
+node	B	B	text	rect				
+edge	L_node.LR_B_0	node.LR	B	arrow_point	normal	1		text			
+>>> graph TD\nnode-LR-->B
+dir	TB
+node	node-LR	node-LR	text	rect				
+node	B	B	text	rect				
+edge	L_node-LR_B_0	node-LR	B	arrow_point	normal	1		text			
+>>> flowchart LR\nA[bla]e1@--> B
+dir	LR
+node	A	bla	text	square				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\nA@{shape:circle}e1@--> B
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\nA@{shape:circle} e1@--> B@{shape:circle} e2@--> C
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			
+edge	e2	B	C	arrow_point	normal	1		text			
+>>> flowchart LR\nA e[1]@--> B
+error
+>>> flowchart LR\nA e1@-->B\ne1@{animate: true}
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text			animate
+>>> flowchart LR\nA e1@-->B\ne1@{curve: basis}
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	e1	A	B	arrow_point	normal	1		text		basis	
+>>> flowchart LR\nA-->B & C\nB-->D
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_A_C_0	A	C	arrow_point	normal	1		text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+>>> flowchart LR\nA@{ shape: docs, label: "x" }
+dir	LR
+node	A	x	markdown	docs				
+>>> flowchart LR\nA@{ shape: notvalid }
+error
+>>> flowchart LR\nA@{ label: "**b**" }
+dir	LR
+node	A	**b**	markdown	rect				
+>>> flowchart LR\nA:::c1 --> B:::c2
+dir	LR
+node	A	A	text	rect	c1			
+node	B	B	text	rect	c2			
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\nA["`**md**`"]
+dir	LR
+node	A	**md**	markdown	square				
+>>> flowchart LR\nA --> B\nlinkStyle 0 stroke:red\nlinkStyle default stroke:blue
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text	stroke:red;fill:none		
+>>> flowchart LR\nA --> B\nlinkStyle 3 stroke:red
+error
+>>> flowchart LR\nA(-ell-)
+dir	LR
+node	A	ell	text	ellipse				
+>>> flowchart LR\nA>odd]
+dir	LR
+node	A	odd	text	odd				
+>>> flowchart LR\nA["a\\nb"]
+dir	LR
+node	A	a\nb	string	square				
+>>> flowchart LR\nA[a\\nb]
+dir	LR
+node	A	a\nb	text	square				
+>>> flowchart LR\nA[a<br/>b<br >c]
+dir	LR
+node	A	a\nb\nc	text	square				
+>>> flowchart LR\nA --> B\nclick A href "http://x" "tip" _blank
+dir	LR
+node	A	A	text	rect	clickable		http://x/	_blank
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\nA --> B\nclick B call cb()
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect	clickable			
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+>>> flowchart LR\nsubgraph "a b"\nx\nend
+dir	LR
+node	x	x	text	rect				
+sub	subGraph0	a b	x		
+>>> flowchart LR\nsubgraph a\nx\nend\nsubgraph a\ny\nend
+dir	LR
+node	x	x	text	rect				
+node	y	y	text	rect				
+sub	a	a	x,y		
+>>> flowchart LR\nsubgraph s1\nA\nend\nsubgraph s2\nA\nend
+dir	LR
+node	A	A	text	rect				
+sub	s1	s1	A		
+sub	s2	s2			
+>>> flowchart LR\nA-->B;B-->C
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+>>> flowchart LR\nA --> B --> C & D
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+node	D	D	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1		text			
+edge	L_B_C_0	B	C	arrow_point	normal	1		text			
+edge	L_B_D_0	B	D	arrow_point	normal	1		text			
+>>> flowchart LR\naccTitle: t\naccDescr: d\nA
+dir	LR
+node	A	A	text	rect				
+acc	t	d
+>>> flowchart LR\naccDescr {\nmulti\nline\n}\nA
+dir	LR
+node	A	A	text	rect				
+acc		multi\nline
+>>> flowchart LR\nA &amp; B
+error
+>>> flowchart LR\nA[#quot;x#quot;]
+dir	LR
+node	A	"x"	text	square				
+>>> flowchart LR\nA --text--> B
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	text	text			
+>>> flowchart LR\nA-- text with - dash -->B
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	text with - dash	text			
+>>> flowchart LR\nA -->|a| B -->|b| C
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+node	C	C	text	rect				
+edge	L_A_B_0	A	B	arrow_point	normal	1	a	text			
+edge	L_B_C_0	B	C	arrow_point	normal	1	b	text			
+>>> flowchart LR\nA---|x|B
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	normal	1	x	text			
+>>> flowchart LR\nA==text==B
+error
+>>> flowchart LR\nA-. text .-B
+dir	LR
+node	A	A	text	rect				
+node	B	B	text	rect				
+edge	L_A_B_0	A	B	arrow_open	dotted	1	text	text			

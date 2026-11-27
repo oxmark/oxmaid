@@ -91,10 +91,15 @@ impl DiagramConfig {
     /// (`flowchart.<key>`) over the top-level one.
     pub fn lookup(&self, diagram: &str, key: &str) -> Option<&Value> {
         let raw = self.raw.as_ref()?;
-        raw.path(&format!("{diagram}.{key}")).or_else(|| raw.get(key))
+        raw.path(&format!("{diagram}.{key}"))
+            .or_else(|| raw.get(key))
     }
 
-    pub(crate) fn from_source(front_matter: Option<&str>, directives: &[&str], diagram: &str) -> Self {
+    pub(crate) fn from_source(
+        front_matter: Option<&str>,
+        directives: &[&str],
+        diagram: &str,
+    ) -> Self {
         let mut cfg = DiagramConfig::default();
         let mut raw = Value::Map(BTreeMap::new());
         if let Some(fm) = front_matter {
@@ -105,7 +110,11 @@ impl DiagramConfig {
             }
         }
         for d in directives {
-            let mut p = JsonParser { s: format!("{{{d}}}").chars().collect(), i: 0 };
+            let mut p = JsonParser {
+                s: format!("{{{d}}}").chars().collect(),
+                i: 0,
+                yaml: false,
+            };
             if let Some(Value::Map(m)) = p.object() {
                 for (k, v) in m {
                     if k == "init" || k == "initialize" {
@@ -115,7 +124,9 @@ impl DiagramConfig {
             }
         }
         let pick = |key: &str| {
-            raw.path(&format!("{diagram}.{key}")).or_else(|| raw.get(key)).and_then(scalar_string)
+            raw.path(&format!("{diagram}.{key}"))
+                .or_else(|| raw.get(key))
+                .and_then(scalar_string)
         };
         cfg.theme = pick("theme");
         cfg.look = pick("look");
@@ -146,7 +157,10 @@ fn scalar(text: &str) -> Value {
         "" | "~" | "null" => Value::Null,
         "true" => Value::Bool(true),
         "false" => Value::Bool(false),
-        _ => t.parse::<f64>().map(Value::Num).unwrap_or_else(|_| Value::Str(t.to_string())),
+        _ => t
+            .parse::<f64>()
+            .map(Value::Num)
+            .unwrap_or_else(|_| Value::Str(t.to_string())),
     }
 }
 
@@ -190,8 +204,13 @@ fn yaml_block(lines: &[(usize, &str)], i: &mut usize, indent: usize) -> Value {
             list.push(scalar(item));
             continue;
         }
-        let Some((key, rest)) = text.split_once(':') else { continue };
-        let key = scalar(key).as_str().map(str::to_string).unwrap_or_else(|| key.trim().to_string());
+        let Some((key, rest)) = text.split_once(':') else {
+            continue;
+        };
+        let key = scalar(key)
+            .as_str()
+            .map(str::to_string)
+            .unwrap_or_else(|| key.trim().to_string());
         let rest = rest.trim();
         let value = if rest.is_empty() {
             match lines.get(*i) {
@@ -199,7 +218,11 @@ fn yaml_block(lines: &[(usize, &str)], i: &mut usize, indent: usize) -> Value {
                 _ => Value::Null,
             }
         } else if rest.starts_with('{') {
-            let mut p = JsonParser { s: rest.chars().collect(), i: 0 };
+            let mut p = JsonParser {
+                s: rest.chars().collect(),
+                i: 0,
+                yaml: true,
+            };
             p.object().unwrap_or(Value::Null)
         } else if rest == "|" || rest == ">" {
             let mut text = Vec::new();
@@ -227,11 +250,18 @@ fn yaml_block(lines: &[(usize, &str)], i: &mut usize, indent: usize) -> Value {
 struct JsonParser {
     s: Vec<char>,
     i: usize,
+    /// YAML flow rules: a bare key only ends at a `:` followed by a space or
+    /// a flow indicator, so `{shape:circle}` is one key with no value.
+    yaml: bool,
 }
 
 impl JsonParser {
     fn ws(&mut self) {
-        while self.s.get(self.i).is_some_and(|c| c.is_whitespace() || *c == ',') {
+        while self
+            .s
+            .get(self.i)
+            .is_some_and(|c| c.is_whitespace() || *c == ',')
+        {
             self.i += 1;
         }
     }
@@ -255,7 +285,11 @@ impl JsonParser {
             '"' | '\'' => self.string().map(Value::Str),
             _ => {
                 let start = self.i;
-                while self.s.get(self.i).is_some_and(|c| !matches!(c, ',' | '}' | ']')) {
+                while self
+                    .s
+                    .get(self.i)
+                    .is_some_and(|c| !matches!(c, ',' | '}' | ']'))
+                {
                     self.i += 1;
                 }
                 let raw: String = self.s[start..self.i].iter().collect();
@@ -308,14 +342,30 @@ impl JsonParser {
                 }
                 _ => {
                     let start = self.i;
-                    while self.s.get(self.i).is_some_and(|c| *c != ':' && *c != '}') {
+                    let yaml = self.yaml;
+                    let is_separator = |s: &[char], i: usize| {
+                        s[i] == ':'
+                            && (!yaml
+                                || s.get(i + 1)
+                                    .map_or(true, |n| n.is_whitespace() || "{}[],".contains(*n)))
+                    };
+                    while self.i < self.s.len()
+                        && !is_separator(&self.s, self.i)
+                        && !matches!(self.s[self.i], '}' | ',')
+                    {
                         self.i += 1;
                     }
-                    let k: String = self.s[start..self.i].iter().collect::<String>().trim().to_string();
+                    let k: String = self.s[start..self.i]
+                        .iter()
+                        .collect::<String>()
+                        .trim()
+                        .to_string();
                     if self.s.get(self.i) == Some(&':') {
                         self.i += 1;
+                        map.insert(k, self.value()?);
+                    } else {
+                        map.insert(k, Value::Null);
                     }
-                    map.insert(k, self.value()?);
                 }
             }
         }
@@ -328,7 +378,11 @@ pub(crate) fn parse_shape_data(body: &str) -> Value {
     if body.contains('\n') {
         parse_yaml(body)
     } else {
-        let mut p = JsonParser { s: format!("{{{body}}}").chars().collect(), i: 0 };
+        let mut p = JsonParser {
+            s: format!("{{{body}}}").chars().collect(),
+            i: 0,
+            yaml: true,
+        };
         p.object().unwrap_or(Value::Map(BTreeMap::new()))
     }
 }
@@ -340,13 +394,23 @@ mod tests {
     #[test]
     fn front_matter_and_directive() {
         let fm = "title: Hello # c\nconfig:\n  theme: default\n  look: classic\n  layout: dagre\n  flowchart:\n    curve: linear";
-        let c = DiagramConfig::from_source(Some(fm), &["init: {'flowchart': {'nodeSpacing': 20}}"], "flowchart");
+        let c = DiagramConfig::from_source(
+            Some(fm),
+            &["init: {'flowchart': {'nodeSpacing': 20}}"],
+            "flowchart",
+        );
         assert_eq!(c.title.as_deref(), Some("Hello"));
         assert_eq!(c.theme.as_deref(), Some("default"));
         assert_eq!(c.look.as_deref(), Some("classic"));
         assert_eq!(c.layout.as_deref(), Some("dagre"));
-        assert_eq!(c.lookup("flowchart", "curve").and_then(Value::as_str), Some("linear"));
-        assert_eq!(c.lookup("flowchart", "nodeSpacing").and_then(Value::as_f64), Some(20.0));
+        assert_eq!(
+            c.lookup("flowchart", "curve").and_then(Value::as_str),
+            Some("linear")
+        );
+        assert_eq!(
+            c.lookup("flowchart", "nodeSpacing").and_then(Value::as_f64),
+            Some(20.0)
+        );
     }
 
     #[test]

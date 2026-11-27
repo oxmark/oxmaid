@@ -9,7 +9,8 @@
 use std::collections::HashMap;
 
 use super::{
-    Arrow, ClassDef, Direction, Edge, EdgeEnd, Flowchart, LabelType, Node, NodeShape, Stroke, StyleProp, Subgraph,
+    Arrow, ClassDef, Direction, Edge, EdgeEnd, Flowchart, LabelType, Node, NodeShape, Stroke,
+    StyleProp, Subgraph,
 };
 use crate::config::{self, DiagramConfig, Value};
 use crate::error::{Error, ErrorKind};
@@ -23,7 +24,11 @@ const MAX_LINK_LENGTH: usize = 10;
 pub fn parse(src: &str) -> Result<Flowchart> {
     let source = source::split(src);
     let mut p = Parser::default();
-    p.chart.config = DiagramConfig::from_source(source.front_matter.as_deref(), &source.directives, "flowchart");
+    p.chart.config = DiagramConfig::from_source(
+        source.front_matter.as_deref(),
+        &source.directives,
+        "flowchart",
+    );
     p.chart.title = p.chart.config.title.clone();
     let chunks = logical_lines(&source.lines);
     let mut header = false;
@@ -55,7 +60,10 @@ pub fn parse(src: &str) -> Result<Flowchart> {
             ErrorKind::Syntax,
             last,
             1,
-            format!("subgraph `{}` is never closed with `end`", open.id.as_deref().unwrap_or(&open.title)),
+            format!(
+                "subgraph `{}` is never closed with `end`",
+                open.id.as_deref().unwrap_or(&open.title)
+            ),
         ));
     }
     Ok(p.finish())
@@ -77,17 +85,160 @@ fn logical_lines(lines: &[Line<'_>]) -> Vec<Chunk> {
             let chunk = out.last_mut().expect("an open chunk exists");
             chunk.text.push('\n');
             chunk.pos.push((line.number, line.offset + 1));
+            // Keep the indentation: YAML in `@{ ... }` depends on it.
+            for col in 0..line.offset {
+                chunk.text.push(' ');
+                chunk.pos.push((line.number, col + 1));
+            }
         } else {
-            out.push(Chunk { text: Vec::new(), pos: Vec::new() });
+            out.push(Chunk {
+                text: Vec::new(),
+                pos: Vec::new(),
+            });
         }
         let chunk = out.last_mut().expect("chunk was just pushed");
-        for (i, c) in line.text.chars().enumerate() {
+        for (c, i) in encode_entities(line.text) {
             chunk.text.push(c);
             chunk.pos.push((line.number, line.offset + i + 1));
         }
         open = is_unclosed(&chunk.text);
     }
     out
+}
+
+/// Marks the start of a named entity (`#quot;` in the source).
+const ENTITY: char = '\u{E000}';
+/// Marks the start of a numeric entity (`#35;`).
+const ENTITY_NUM: char = '\u{E001}';
+/// Marks the end of an entity.
+const ENTITY_END: char = '\u{E002}';
+
+/// Mermaid's `encodeEntities`, run on each line before parsing. A `style` or
+/// `classDef` line with a `:...#` value loses its last `;`, then every
+/// `#word;` becomes an entity. Entities are kept as one-char markers so
+/// columns do not move; labels decode them, and anywhere else they are a
+/// syntax error, as in Mermaid. Returns each char with its column.
+fn encode_entities(line: &str) -> Vec<(char, usize)> {
+    let mut chars: Vec<(char, usize)> = line.chars().zip(0..).collect();
+    for keyword in ["style", "classDef"] {
+        if let Some(last) = style_semicolon(&chars, keyword) {
+            chars.remove(last);
+        }
+    }
+    let mut i = 0;
+    while i < chars.len() {
+        if chars[i].0 == '#' {
+            let len = chars[i + 1..]
+                .iter()
+                .take_while(|(c, _)| c.is_ascii_alphanumeric() || *c == '_')
+                .count();
+            if len > 0 && chars.get(i + 1 + len).is_some_and(|(c, _)| *c == ';') {
+                let numeric = chars[i + 1..i + 1 + len]
+                    .iter()
+                    .all(|(c, _)| c.is_ascii_digit());
+                chars[i].0 = if numeric { ENTITY_NUM } else { ENTITY };
+                chars[i + 1 + len].0 = ENTITY_END;
+                i += len + 2;
+                continue;
+            }
+        }
+        i += 1;
+    }
+    chars
+}
+
+/// Index of the `;` that `/keyword.*:\S*#.*;/` would end on, if it matches.
+fn style_semicolon(chars: &[(char, usize)], keyword: &str) -> Option<usize> {
+    let kw: Vec<char> = keyword.chars().collect();
+    let start = (0..chars.len()).find(|&p| {
+        chars[p..]
+            .iter()
+            .map(|c| c.0)
+            .take(kw.len())
+            .eq(kw.iter().copied())
+    })?;
+    let last = chars.iter().rposition(|c| c.0 == ';')?;
+    // The earliest `#` reachable through `:` and non-space chars.
+    let hash = (start + kw.len()..chars.len())
+        .filter(|&c| chars[c].0 == ':')
+        .find_map(|c| {
+            let h = c
+                + 1
+                + chars[c + 1..]
+                    .iter()
+                    .take_while(|x| !x.0.is_whitespace() && x.0 != '#')
+                    .count();
+            (chars.get(h).map(|x| x.0) == Some('#')).then_some(h)
+        })?;
+    (last > hash).then_some(last)
+}
+
+/// Mermaid's `formatUrl` with the default `strict` security level, which
+/// runs `@braintree/sanitize-url`: script-like schemes become `about:blank`,
+/// absolute URLs are normalized like `new URL()` does (`http://x` gives
+/// `http://x/`), relative ones are kept.
+fn format_url(url: &str) -> Option<String> {
+    let url = url.trim();
+    if url.is_empty() {
+        return None;
+    }
+    let cleaned: String = url
+        .chars()
+        .filter(|c| !c.is_control() && !c.is_whitespace())
+        .collect();
+    let Some((scheme, rest)) = cleaned.split_once(':') else {
+        return Some(url.to_string());
+    };
+    let valid_scheme = scheme
+        .chars()
+        .next()
+        .is_some_and(|c| c.is_ascii_alphabetic())
+        && scheme
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || "+-.".contains(c));
+    if !valid_scheme || url.starts_with(['.', '/']) {
+        return Some(url.to_string());
+    }
+    let scheme = scheme.to_ascii_lowercase();
+    if matches!(scheme.as_str(), "javascript" | "data" | "vbscript") {
+        return Some("about:blank".to_string());
+    }
+    let special = matches!(
+        scheme.as_str(),
+        "http" | "https" | "ftp" | "ws" | "wss" | "file"
+    );
+    match rest.strip_prefix("//") {
+        Some(after) if special => {
+            let host_end = after.find(['/', '?', '#']).unwrap_or(after.len());
+            let (host, tail) = after.split_at(host_end);
+            let slash = if tail.starts_with('/') { "" } else { "/" };
+            Some(format!(
+                "{scheme}://{}{slash}{tail}",
+                host.to_ascii_lowercase()
+            ))
+        }
+        _ => Some(format!("{scheme}:{rest}")),
+    }
+}
+
+/// Chars of Mermaid's `NODE_STRING` token, except the conditional `-` and `=`.
+fn is_node_string_char(c: char) -> bool {
+    c.is_ascii_alphanumeric() || "!\"#$%&'*+.`?\\_/".contains(c)
+}
+
+/// Mermaid lexes a whole statement as a direction when it contains
+/// `direction` followed by whitespace and an upper-case direction, trying
+/// `TB`, `BT`, `RL`, `LR` and `TD` in that order.
+fn direction_statement(s: &str) -> Option<Direction> {
+    ["TB", "BT", "RL", "LR", "TD"].into_iter().find_map(|d| {
+        s.match_indices("direction")
+            .any(|(i, _)| {
+                let after = &s[i + "direction".len()..];
+                let trimmed = after.trim_start();
+                trimmed.len() < after.len() && trimmed.starts_with(d)
+            })
+            .then(|| Direction::from_keyword(d).expect("a known direction"))
+    })
 }
 
 /// True when the text ends inside a string, a `@{` block or an `accDescr {` block.
@@ -150,11 +301,23 @@ struct Cursor<'a> {
     chunk: &'a Chunk,
     pos: usize,
     end: usize,
+    /// End before `trim_end`.
+    raw_end: usize,
 }
 
 impl<'a> Cursor<'a> {
     fn new(chunk: &'a Chunk, start: usize, end: usize) -> Self {
-        Self { chunk, pos: start, end }
+        Self {
+            chunk,
+            pos: start,
+            end,
+            raw_end: end,
+        }
+    }
+
+    /// True when the statement had whitespace after its last token.
+    fn had_trailing_ws(&self) -> bool {
+        self.raw_end > self.end
     }
 
     fn peek(&self) -> Option<char> {
@@ -191,12 +354,18 @@ impl<'a> Cursor<'a> {
     }
 
     fn starts_with(&self, s: &str) -> bool {
-        s.chars().enumerate().all(|(i, c)| self.peek_at(i) == Some(c))
+        s.chars()
+            .enumerate()
+            .all(|(i, c)| self.peek_at(i) == Some(c))
     }
 
     /// `starts_with` followed by a word boundary.
     fn starts_with_word(&self, s: &str) -> bool {
-        self.starts_with(s) && !self.peek_at(s.chars().count()).is_some_and(|c| c.is_alphanumeric() || c == '_')
+        // Jison appends `\b` to keyword rules: an ASCII word char must not follow.
+        self.starts_with(s)
+            && !self
+                .peek_at(s.chars().count())
+                .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
     }
 
     fn eat(&mut self, s: &str) -> bool {
@@ -210,7 +379,8 @@ impl<'a> Cursor<'a> {
 
     fn find(&self, s: &str) -> Option<usize> {
         let pat: Vec<char> = s.chars().collect();
-        (self.pos..=self.end.saturating_sub(pat.len())).find(|&i| self.chunk.text[i..self.end].starts_with(&pat))
+        (self.pos..=self.end.saturating_sub(pat.len()))
+            .find(|&i| self.chunk.text[i..self.end].starts_with(&pat))
     }
 
     fn count_run(&mut self, c: char) -> usize {
@@ -229,6 +399,18 @@ impl<'a> Cursor<'a> {
         self.slice(self.pos, self.end)
     }
 
+    /// The rest of a `style`, `classDef` or `linkStyle` statement. Mermaid's
+    /// grammar rejects an entity (`#abc;`) there.
+    fn style_rest(&self) -> Result<String> {
+        match (self.pos..self.end).find(|&i| matches!(self.chunk.text[i], ENTITY | ENTITY_NUM)) {
+            Some(i) => Err(self.err_at(
+                i,
+                "unexpected entity in a style; drop the `;` after the color",
+            )),
+            None => Ok(self.rest()),
+        }
+    }
+
     fn read_word(&mut self) -> String {
         let start = self.pos;
         while self.peek().is_some_and(|c| !c.is_whitespace()) {
@@ -245,7 +427,8 @@ impl<'a> Cursor<'a> {
         while let Some(c) = self.peek() {
             let next = self.peek_at(1);
             let ok = match c {
-                '-' => next.is_some_and(|n| !matches!(n, '>' | '-' | '.')),
+                // `--` and `-.` start a link; any other `-` is NODE_STRING or MINUS.
+                '-' => !matches!(next, Some('-' | '.')),
                 '=' => next != Some('='),
                 ':' => !self.starts_with(":::"),
                 '@' => false,
@@ -259,13 +442,75 @@ impl<'a> Cursor<'a> {
         self.slice(start, self.pos)
     }
 
+    /// Finds a keyword where Mermaid's lexer would start a token inside the id
+    /// `start..end`. Jison tries its keyword rules before `NODE_STRING`, so
+    /// `end-node` lexes as `end` then `-node`, while `endpoint` is one id.
+    fn keyword_in_id(&self, start: usize, end: usize) -> Option<(usize, &'static str)> {
+        const KEYWORDS: [&str; 15] = [
+            "style",
+            "linkStyle",
+            "interpolate",
+            "classDef",
+            "class",
+            "flowchart-elk",
+            "swimlane-beta",
+            "graph",
+            "flowchart",
+            "subgraph",
+            "end",
+            "_self",
+            "_blank",
+            "_parent",
+            "_top",
+        ];
+        let text = &self.chunk.text;
+        let mut t = start;
+        while t < end {
+            let at = |s: &str| {
+                s.chars()
+                    .enumerate()
+                    .all(|(i, c)| text.get(t + i) == Some(&c))
+            };
+            for kw in KEYWORDS {
+                let next = text.get(t + kw.len());
+                if at(kw) && !next.is_some_and(|c| c.is_ascii_alphanumeric() || *c == '_') {
+                    return Some((t, kw));
+                }
+            }
+            for kw in ["href", "click", "call"] {
+                if at(kw) && text.get(t + kw.len()).is_some_and(|c| c.is_whitespace()) {
+                    return Some((t, kw));
+                }
+            }
+            let c = text[t];
+            t += 1;
+            if c.is_ascii_digit() {
+                // `[0-9]+` is its own token (NUM).
+                while t < end && text[t].is_ascii_digit() {
+                    t += 1;
+                }
+            } else if matches!(c, '#' | '&' | '*' | ENTITY | ENTITY_NUM | ENTITY_END)
+                || !is_node_string_char(c)
+            {
+                // A one-char token.
+            } else {
+                while t < end && (is_node_string_char(text[t]) || matches!(text[t], '-' | '=')) {
+                    t += 1;
+                }
+            }
+        }
+        None
+    }
+
     /// Reads `"..."` or ``"`...`"``, the cursor being on the opening quote.
     fn read_string(&mut self) -> Result<(String, LabelType)> {
         let start = self.pos;
         self.bump();
         if self.peek() == Some('`') {
             let content = self.pos + 1;
-            let end = self.find("`\"").ok_or_else(|| self.err_at(start, "unterminated markdown string, expected `\"`"))?;
+            let end = self
+                .find("`\"")
+                .ok_or_else(|| self.err_at(start, "unterminated markdown string, expected `\"`"))?;
             self.pos = end + 2;
             return Ok((self.slice(content, end), LabelType::Markdown));
         }
@@ -302,8 +547,20 @@ const SHAPES: &[(&str, &[(&str, NodeShape)])] = &[
     ("([", &[("])", NodeShape::Stadium)]),
     ("[[", &[("]]", NodeShape::Subroutine)]),
     ("[(", &[(")]", NodeShape::Cylinder)]),
-    ("[/", &[("/]", NodeShape::LeanRight), ("\\]", NodeShape::TrapezoidBottom)]),
-    ("[\\", &[("\\]", NodeShape::LeanLeft), ("/]", NodeShape::TrapezoidTop)]),
+    (
+        "[/",
+        &[
+            ("/]", NodeShape::LeanRight),
+            ("\\]", NodeShape::TrapezoidBottom),
+        ],
+    ),
+    (
+        "[\\",
+        &[
+            ("\\]", NodeShape::LeanLeft),
+            ("/]", NodeShape::TrapezoidTop),
+        ],
+    ),
     ("{{", &[("}}", NodeShape::Hexagon)]),
     ("(", &[(")", NodeShape::Rounded)]),
     ("[", &[("]", NodeShape::Rect)]),
@@ -349,8 +606,14 @@ impl Parser {
     fn header(&mut self, cur: &mut Cursor) -> Result<()> {
         let start = cur.pos;
         let keyword = cur.read_word();
-        if !matches!(keyword.as_str(), "flowchart" | "graph" | "flowchart-elk") {
-            return Err(cur.err_at(start, format!("expected `flowchart` or `graph`, found `{keyword}`")));
+        if !matches!(
+            keyword.as_str(),
+            "flowchart" | "graph" | "flowchart-elk" | "swimlane-beta"
+        ) {
+            return Err(cur.err_at(
+                start,
+                format!("expected `flowchart` or `graph`, found `{keyword}`"),
+            ));
         }
         if keyword == "flowchart-elk" && self.chart.config.layout.is_none() {
             self.chart.config.layout = Some("elk".into());
@@ -360,7 +623,10 @@ impl Parser {
             let start = cur.pos;
             let dir = cur.read_word();
             self.chart.direction = Direction::from_keyword(&dir).ok_or_else(|| {
-                cur.err_at(start, format!("unknown direction `{dir}`, expected TB, TD, BT, LR or RL"))
+                cur.err_at(
+                    start,
+                    format!("unknown direction `{dir}`, expected TB, TD, BT, LR or RL"),
+                )
             })?;
             cur.skip_ws();
             if !cur.at_end() {
@@ -389,7 +655,11 @@ impl Parser {
             }
             if let Some(body) = rest.strip_prefix('{') {
                 let body = body.split_once('}').map_or(body, |(b, _)| b);
-                let lines: Vec<&str> = body.lines().map(str::trim).filter(|l| !l.is_empty()).collect();
+                let lines: Vec<&str> = body
+                    .lines()
+                    .map(str::trim)
+                    .filter(|l| !l.is_empty())
+                    .collect();
                 self.chart.acc_descr = Some(lines.join("\n"));
                 return Ok(true);
             }
@@ -411,12 +681,7 @@ impl Parser {
             }
             cur.pos = start;
         }
-        if cur.starts_with_word("direction") {
-            cur.pos += "direction".len();
-            cur.skip_ws();
-            let at = cur.pos;
-            let d = cur.read_word();
-            let d = Direction::from_keyword(&d).ok_or_else(|| cur.err_at(at, format!("unknown direction `{d}`")))?;
+        if let Some(d) = direction_statement(&cur.rest()) {
             match self.frames.last_mut() {
                 Some(frame) => frame.direction = Some(d),
                 None => self.chart.direction = d,
@@ -424,13 +689,30 @@ impl Parser {
             return Ok(());
         }
         for (keyword, f) in [
-            ("classDef", Parser::class_def as fn(&mut Parser, &mut Cursor) -> Result<()>),
+            (
+                "classDef",
+                Parser::class_def as fn(&mut Parser, &mut Cursor) -> Result<()>,
+            ),
             ("class", Parser::class_statement),
             ("style", Parser::style_statement),
             ("linkStyle", Parser::link_style),
             ("click", Parser::click),
         ] {
-            if cur.starts_with_word(keyword) {
+            let with_space = keyword == "click";
+            if if with_space {
+                cur.starts_with(keyword)
+            } else {
+                cur.starts_with_word(keyword)
+            } {
+                if !cur.peek_at(keyword.len()).is_some_and(char::is_whitespace) {
+                    if with_space {
+                        continue;
+                    }
+                    return Err(cur.err_at(
+                        cur.pos + keyword.len(),
+                        format!("expected a space after `{keyword}`"),
+                    ));
+                }
                 cur.pos += keyword.len();
                 return f(self, cur);
             }
@@ -444,18 +726,34 @@ impl Parser {
 
     fn subgraph(&mut self, cur: &mut Cursor) -> Result<()> {
         cur.skip_ws();
-        let mut frame = Frame { id: None, title: String::new(), label_type: LabelType::Text, items: Vec::new(), direction: None };
+        let mut frame = Frame {
+            id: None,
+            title: String::new(),
+            label_type: LabelType::Text,
+            items: Vec::new(),
+            direction: None,
+        };
         if !cur.at_end() {
             let (text, ty) = if cur.peek() == Some('"') {
                 let (t, ty) = cur.read_string()?;
                 // A quoted subgraph id/title is plain text unless it is markdown.
-                (t, if ty == LabelType::Markdown { ty } else { LabelType::Text })
+                (
+                    t,
+                    if ty == LabelType::Markdown {
+                        ty
+                    } else {
+                        LabelType::Text
+                    },
+                )
             } else {
                 let start = cur.pos;
                 while cur.peek().is_some_and(|c| c != '[') {
                     cur.pos += 1;
                 }
-                (cur.slice(start, cur.pos).trim().to_string(), LabelType::Text)
+                (
+                    cur.slice(start, cur.pos).trim().to_string(),
+                    LabelType::Text,
+                )
             };
             cur.skip_ws();
             if cur.peek() == Some('[') {
@@ -464,7 +762,9 @@ impl Parser {
                 let (title, title_type) = if cur.peek() == Some('"') {
                     cur.read_string()?
                 } else {
-                    let end = cur.find("]").ok_or_else(|| cur.err_at(open, "unclosed `[` in subgraph title"))?;
+                    let end = cur
+                        .find("]")
+                        .ok_or_else(|| cur.err_at(open, "unclosed `[` in subgraph title"))?;
                     let t = cur.slice(cur.pos, end);
                     cur.pos = end;
                     (t, LabelType::Text)
@@ -473,12 +773,16 @@ impl Parser {
                 if !cur.eat("]") {
                     return Err(cur.err("expected `]` after the subgraph title"));
                 }
+                if cur.had_trailing_ws() {
+                    return Err(cur.err("unexpected space after the subgraph title"));
+                }
                 frame.id = Some(text.trim().to_string());
                 frame.title = title;
                 frame.label_type = title_type;
             } else {
-                // `subgraph one two`: a title with spaces gets a generated id.
-                if !text.chars().any(char::is_whitespace) {
+                // `subgraph one two`: a title with spaces gets a generated id,
+                // and so does one followed by a space before the line ends.
+                if !text.chars().any(char::is_whitespace) && !cur.had_trailing_ws() {
                     frame.id = Some(text.clone());
                 }
                 frame.title = text;
@@ -496,11 +800,19 @@ impl Parser {
     /// Closes a subgraph like `FlowDB.addSubGraph`: members already owned by
     /// an earlier subgraph stay there, and a repeated id merges.
     fn end_subgraph(&mut self, cur: &Cursor, at: usize) -> Result<()> {
-        let frame = self.frames.pop().ok_or_else(|| cur.err_at(at, "`end` without a matching `subgraph`"))?;
+        let frame = self
+            .frames
+            .pop()
+            .ok_or_else(|| cur.err_at(at, "`end` without a matching `subgraph`"))?;
         let mut seen = std::collections::HashSet::new();
-        let mut members: Vec<String> =
-            frame.items.into_iter().filter(|i| !i.trim().is_empty() && seen.insert(i.clone())).collect();
-        let id = frame.id.unwrap_or_else(|| format!("subGraph{}", self.sub_count));
+        let mut members: Vec<String> = frame
+            .items
+            .into_iter()
+            .filter(|i| !i.trim().is_empty() && seen.insert(i.clone()))
+            .collect();
+        let id = frame
+            .id
+            .unwrap_or_else(|| format!("subGraph{}", self.sub_count));
         self.sub_count += 1;
         members.retain(|m| !self.subgraphs.iter().any(|s| s.members.contains(m)) && *m != id);
         match self.subgraphs.iter_mut().find(|s| s.sg.id == id) {
@@ -529,11 +841,14 @@ impl Parser {
             return Err(cur.err("expected a class name after `classDef`"));
         }
         cur.skip_ws();
-        let styles = parse_styles(&cur.rest());
+        let styles = parse_styles(&cur.style_rest()?);
         for name in names.split(',').filter(|n| !n.is_empty()) {
             match self.chart.class_defs.iter_mut().find(|c| c.name == name) {
                 Some(def) => def.styles.extend(styles.iter().cloned()),
-                None => self.chart.class_defs.push(ClassDef { name: name.to_string(), styles: styles.clone() }),
+                None => self.chart.class_defs.push(ClassDef {
+                    name: name.to_string(),
+                    styles: styles.clone(),
+                }),
             }
         }
         Ok(())
@@ -569,7 +884,7 @@ impl Parser {
             return Err(cur.err("expected a node id after `style`"));
         }
         cur.skip_ws();
-        let styles = parse_styles(&cur.rest());
+        let styles = parse_styles(&cur.style_rest()?);
         // Like Mermaid, styling an unknown node creates it.
         let i = self.ensure_node(&id);
         self.chart.nodes[i].styles.extend(styles);
@@ -586,7 +901,11 @@ impl Parser {
         } else {
             target
                 .split(',')
-                .map(|n| n.parse::<usize>().map(Some).map_err(|_| cur.err_at(at, format!("invalid linkStyle index `{n}`"))))
+                .map(|n| {
+                    n.parse::<usize>()
+                        .map(Some)
+                        .map_err(|_| cur.err_at(at, format!("invalid linkStyle index `{n}`")))
+                })
                 .collect::<Result<_>>()?
         };
         for p in positions.iter().flatten() {
@@ -608,7 +927,7 @@ impl Parser {
             curve = Some(cur.read_word());
             cur.skip_ws();
         }
-        let mut styles = parse_styles(&cur.rest());
+        let mut styles = parse_styles(&cur.style_rest()?);
         for p in positions {
             match p {
                 None => {
@@ -669,16 +988,22 @@ impl Parser {
             cur.skip_ws();
         }
         let target = (!cur.at_end()).then(|| cur.read_word());
-        if let Some(&i) = self.index.get(&id) {
-            let node = &mut self.chart.nodes[i];
-            if link.is_some() {
-                node.link = link;
-                node.link_target = target;
-            }
-            if tooltip.is_some() {
-                node.tooltip = tooltip;
+        let link = link.and_then(|l| format_url(&restore_entities(&l)));
+        let tooltip = tooltip.map(|t| restore_entities(&t));
+        for id in id.split(',') {
+            if let Some(&i) = self.index.get(id) {
+                let node = &mut self.chart.nodes[i];
+                if link.is_some() {
+                    node.link.clone_from(&link);
+                    node.link_target.clone_from(&target);
+                }
+                if tooltip.is_some() {
+                    node.tooltip.clone_from(&tooltip);
+                }
             }
         }
+        // Mermaid's setLink and setClickEvent both tag the nodes.
+        self.set_class(&id, "clickable");
         Ok(())
     }
 
@@ -701,16 +1026,24 @@ impl Parser {
         Ok(groups.into_iter().rev().flatten().map(|g| g.0).collect())
     }
 
-    fn add_links(&mut self, left: &[(String, Option<usize>)], right: &[(String, Option<usize>)], link: &Link) {
+    fn add_links(
+        &mut self,
+        left: &[(String, Option<usize>)],
+        right: &[(String, Option<usize>)],
+        link: &Link,
+    ) {
         let last_start = left.last().map(|l| &l.0);
         let first_end = right.first().map(|r| &r.0);
         for (start_id, from) in left {
             for (end_id, to) in right {
-                let (Some(from), Some(to)) = (*from, *to) else { continue };
-                let user_id = link
-                    .id
-                    .clone()
-                    .filter(|id| Some(start_id) == last_start && Some(end_id) == first_end && !self.chart.edges.iter().any(|e| &e.id == id));
+                let (Some(from), Some(to)) = (*from, *to) else {
+                    continue;
+                };
+                let user_id = link.id.clone().filter(|id| {
+                    Some(start_id) == last_start
+                        && Some(end_id) == first_end
+                        && !self.chart.edges.iter().any(|e| &e.id == id)
+                });
                 let id = user_id.unwrap_or_else(|| {
                     let same = self
                         .chart
@@ -718,7 +1051,10 @@ impl Parser {
                         .iter()
                         .filter(|e| e.from == EdgeEnd::Node(from) && e.to == EdgeEnd::Node(to))
                         .count();
-                    format!("L_{start_id}_{end_id}_{}", if same == 0 { 0 } else { same + 1 })
+                    format!(
+                        "L_{start_id}_{end_id}_{}",
+                        if same == 0 { 0 } else { same + 1 }
+                    )
                 });
                 let (label, label_type) = match &link.label {
                     Some((l, t)) => (Some(l.clone()), *t),
@@ -748,7 +1084,13 @@ impl Parser {
         loop {
             let save = cur.pos;
             cur.skip_ws();
-            if cur.eat("&") {
+            if cur.peek() == Some('&') {
+                // Mermaid's grammar is `node spaceList AMP spaceList node`.
+                let spaced = cur.pos > save && cur.peek_at(1).is_some_and(char::is_whitespace);
+                if !spaced {
+                    return Err(cur.err("`&` between nodes needs a space on each side"));
+                }
+                cur.bump();
                 group.push(self.node(cur)?);
             } else {
                 cur.pos = save;
@@ -759,7 +1101,14 @@ impl Parser {
 
     fn node(&mut self, cur: &mut Cursor) -> Result<(String, Option<usize>)> {
         cur.skip_ws();
+        let id_start = cur.pos;
         let id = cur.read_id();
+        if let Some((at, keyword)) = cur.keyword_in_id(id_start, cur.pos) {
+            return Err(cur.err_at(
+                at,
+                format!("`{keyword}` is a keyword and cannot start a node id"),
+            ));
+        }
         if id.is_empty() {
             return Err(match cur.peek() {
                 Some(c) => cur.err(format!("expected a node id, found `{c}`")),
@@ -779,11 +1128,17 @@ impl Parser {
             classes.push(class);
         }
         let data_at = cur.pos;
-        let data = if cur.starts_with("@{") { Some(self.shape_data(cur)?) } else { None };
+        let data = if cur.starts_with("@{") {
+            Some(self.shape_data(cur)?)
+        } else {
+            None
+        };
 
         // `e1@{ animate: true }` sets options of the edge `e1`.
         if shape.is_none() && !self.index.contains_key(&id) {
-            if let (Some(data), Some(edge)) = (&data, self.chart.edges.iter_mut().find(|e| e.id == id)) {
+            if let (Some(data), Some(edge)) =
+                (&data, self.chart.edges.iter_mut().find(|e| e.id == id))
+            {
                 apply_edge_data(edge, data);
                 return Ok((id, None));
             }
@@ -812,18 +1167,29 @@ impl Parser {
     fn shape_data(&mut self, cur: &mut Cursor) -> Result<Value> {
         let open = cur.pos;
         cur.pos += 2;
-        let start = cur.pos;
         let mut quoted = false;
+        let mut body = String::new();
         while let Some(c) = cur.peek() {
             match c {
                 '"' => quoted = !quoted,
                 '}' if !quoted => {
-                    let body = cur.slice(start, cur.pos);
                     cur.bump();
                     return Ok(config::parse_shape_data(&body));
                 }
+                '^' if !quoted => return Err(cur.err("unexpected `^` in shape data")),
+                // Mermaid's lexer turns a line break and the indentation after
+                // it into `<br/>` inside a quoted value.
+                '\n' if quoted => {
+                    body.push_str("<br/>");
+                    cur.bump();
+                    while cur.peek().is_some_and(char::is_whitespace) {
+                        cur.bump();
+                    }
+                    continue;
+                }
                 _ => {}
             }
+            body.push(c);
             cur.bump();
         }
         Err(cur.err_at(open, "unclosed `@{`, expected `}`"))
@@ -848,7 +1214,8 @@ impl Parser {
         let mut id = None;
         let save = cur.pos;
         let word = cur.read_id();
-        if !word.is_empty() && cur.peek() == Some('@') && !matches!(cur.peek_at(1), Some('{' | '"')) {
+        if !word.is_empty() && cur.peek() == Some('@') && !matches!(cur.peek_at(1), Some('{' | '"'))
+        {
             cur.bump();
             id = Some(word);
         } else {
@@ -863,7 +1230,11 @@ impl Parser {
                 cur.bump();
             }
             Some(c @ ('o' | 'x')) if matches!(cur.peek_at(1), Some('-' | '=' | '.')) => {
-                start = if c == 'o' { Arrow::Circle } else { Arrow::Cross };
+                start = if c == 'o' {
+                    Arrow::Circle
+                } else {
+                    Arrow::Cross
+                };
                 cur.bump();
             }
             _ => {}
@@ -889,7 +1260,10 @@ impl Parser {
             (s, e) if s == e => s,
             (Arrow::None, _) => Arrow::None,
             _ if label.is_some() => {
-                return Err(cur.err_at(link_start, "the two ends of this link use different markers"))
+                return Err(cur.err_at(
+                    link_start,
+                    "the two ends of this link use different markers",
+                ))
             }
             _ => Arrow::None,
         };
@@ -906,7 +1280,9 @@ impl Parser {
                 }
                 label = Some((t, ty));
             } else {
-                let end_pos = cur.find("|").ok_or_else(|| cur.err_at(open, "unterminated `|` link label"))?;
+                let end_pos = cur
+                    .find("|")
+                    .ok_or_else(|| cur.err_at(open, "unterminated `|` link label"))?;
                 label = Some((cur.slice(cur.pos, end_pos), LabelType::Text));
                 cur.pos = end_pos + 1;
             }
@@ -914,14 +1290,25 @@ impl Parser {
             cur.pos = save;
         }
         let label = label.map(|(t, ty)| (clean_label(&t, ty), ty));
-        Ok(Link { id, stroke, start, end, length, label })
+        Ok(Link {
+            id,
+            stroke,
+            start,
+            end,
+            length,
+            label,
+        })
     }
 
     fn ensure_node(&mut self, id: &str) -> usize {
         if let Some(&i) = self.index.get(id) {
             return i;
         }
-        self.chart.nodes.push(Node { id: id.to_string(), label: id.to_string(), ..Node::default() });
+        self.chart.nodes.push(Node {
+            id: id.to_string(),
+            label: id.to_string(),
+            ..Node::default()
+        });
         let i = self.chart.nodes.len() - 1;
         self.index.insert(id.to_string(), i);
         i
@@ -930,7 +1317,11 @@ impl Parser {
     fn finish(mut self) -> Flowchart {
         // Subgraphs, in closing order, and their members.
         let defs = std::mem::take(&mut self.subgraphs);
-        let sg_index: HashMap<String, usize> = defs.iter().enumerate().map(|(i, d)| (d.sg.id.clone(), i)).collect();
+        let sg_index: HashMap<String, usize> = defs
+            .iter()
+            .enumerate()
+            .map(|(i, d)| (d.sg.id.clone(), i))
+            .collect();
         let mut subgraphs: Vec<Subgraph> = defs.iter().map(|d| d.sg.clone()).collect();
         for (s, def) in defs.iter().enumerate() {
             for m in &def.members {
@@ -953,7 +1344,12 @@ impl Parser {
     /// A node whose id is a subgraph id is the subgraph itself: retarget its
     /// links, move its classes and styles, and drop the node.
     fn link_subgraphs(&mut self, sg_index: &HashMap<String, usize>) {
-        if !self.chart.nodes.iter().any(|n| sg_index.contains_key(&n.id)) {
+        if !self
+            .chart
+            .nodes
+            .iter()
+            .any(|n| sg_index.contains_key(&n.id))
+        {
             return;
         }
         let mut remap: Vec<EdgeEnd> = Vec::with_capacity(self.chart.nodes.len());
@@ -980,16 +1376,25 @@ impl Parser {
                 }
             }
         }
-        self.index = self.chart.nodes.iter().enumerate().map(|(i, n)| (n.id.clone(), i)).collect();
+        self.index = self
+            .chart
+            .nodes
+            .iter()
+            .enumerate()
+            .map(|(i, n)| (n.id.clone(), i))
+            .collect();
     }
 }
 
 fn apply_node_data(node: &mut Node, data: &Value) -> std::result::Result<(), String> {
     if let Some(shape) = data.get("shape").and_then(Value::as_str) {
         if shape != shape.to_lowercase() || shape.contains('_') {
-            return Err(format!("no such shape: `{shape}`, shape names are lowercase"));
+            return Err(format!(
+                "no such shape: `{shape}`, shape names are lowercase"
+            ));
         }
-        node.shape = NodeShape::from_name(shape).ok_or_else(|| format!("no such shape: `{shape}`"))?;
+        node.shape =
+            NodeShape::from_name(shape).ok_or_else(|| format!("no such shape: `{shape}`"))?;
     }
     if let Some(label) = data.get("label").and_then(Value::as_str) {
         if !label.is_empty() {
@@ -1021,7 +1426,10 @@ fn apply_edge_data(edge: &mut Edge, data: &Value) {
 }
 
 /// Reads a node label up to one of `closers`. `None` means no closer was found.
-fn shape_text(cur: &mut Cursor, closers: &[(&str, NodeShape)]) -> Result<Option<(NodeShape, String, LabelType)>> {
+fn shape_text(
+    cur: &mut Cursor,
+    closers: &[(&str, NodeShape)],
+) -> Result<Option<(NodeShape, String, LabelType)>> {
     if cur.peek() == Some('"') {
         let (text, ty) = cur.read_string()?;
         cur.skip_ws();
@@ -1076,7 +1484,11 @@ fn edge_text(cur: &mut Cursor, end: usize) -> Result<(String, LabelType)> {
 
 /// `-->`, `---`, `-- text -->`, and the thick `==>` variants.
 fn solid_link(cur: &mut Cursor, ch: char) -> Result<LinkParts> {
-    let stroke = if ch == '-' { Stroke::Normal } else { Stroke::Thick };
+    let stroke = if ch == '-' {
+        Stroke::Normal
+    } else {
+        Stroke::Thick
+    };
     let start = cur.pos;
     let n = cur.count_run(ch);
     if n < 2 {
@@ -1090,17 +1502,28 @@ fn solid_link(cur: &mut Cursor, ch: char) -> Result<LinkParts> {
     }
     // Text form: `-- text -->`. The text runs up to the next `--`.
     let pattern: String = [ch, ch].iter().collect();
-    let end = cur
-        .find(&pattern)
-        .ok_or_else(|| cur.err_at(start, format!("unterminated link text, expected `{pattern}>` after it")))?;
+    let end = cur.find(&pattern).ok_or_else(|| {
+        cur.err_at(
+            start,
+            format!("unterminated link text, expected `{pattern}>` after it"),
+        )
+    })?;
     let text = edge_text(cur, end)?;
     let m = cur.count_run(ch);
     let head = link_head(cur);
     if head.is_none() && m < 3 {
-        return Err(cur.err_at(end, format!("expected `{pattern}>` or `{pattern}{ch}` to close the link text")));
+        return Err(cur.err_at(
+            end,
+            format!("expected `{pattern}>` or `{pattern}{ch}` to close the link text"),
+        ));
     }
     let length = if head.is_some() { m - 1 } else { m - 2 };
-    Ok((stroke, length.max(1), Some(text), head.unwrap_or(Arrow::None)))
+    Ok((
+        stroke,
+        length.max(1),
+        Some(text),
+        head.unwrap_or(Arrow::None),
+    ))
 }
 
 /// `-.->`, `-.-`, `-..->`, `.->`, `-. text .->`.
@@ -1115,9 +1538,12 @@ fn dotted_link(cur: &mut Cursor) -> Result<LinkParts> {
     if !dash || dots != 1 {
         return Err(cur.err_at(start, "expected a dotted link such as `-.->`"));
     }
-    let end = cur
-        .find(".-")
-        .ok_or_else(|| cur.err_at(start, "unterminated dotted link text, expected `.->` after it"))?;
+    let end = cur.find(".-").ok_or_else(|| {
+        cur.err_at(
+            start,
+            "unterminated dotted link text, expected `.->` after it",
+        )
+    })?;
     let text = edge_text(cur, end)?;
     let dots = cur.count_run('.');
     cur.bump();
@@ -1145,8 +1571,12 @@ fn parse_styles(s: &str) -> Vec<StyleProp> {
     parts.push(current);
     parts
         .into_iter()
-        .filter_map(|p| p.split_once(':').map(|(k, v)| (k.trim().to_string(), v.trim().to_string())))
-        .filter(|(k, v)| !k.is_empty() && !v.is_empty())
+        .filter_map(|p| match p.split_once(':') {
+            Some((k, v)) => (!k.trim().is_empty() && !v.trim().is_empty())
+                .then(|| (k.trim().to_string(), v.trim().to_string())),
+            // Mermaid keeps a bare word (`style A red`) as is; it has no effect.
+            None => (!p.trim().is_empty()).then(|| (p.trim().to_string(), String::new())),
+        })
         .collect()
 }
 
@@ -1167,7 +1597,13 @@ pub(crate) fn clean_label(s: &str, ty: LabelType) -> String {
             break;
         };
         match lower[i..].find('>') {
-            Some(j) if lower[i + 3..i + j].trim().trim_end_matches('/').trim().is_empty() => {
+            Some(j)
+                if lower[i + 3..i + j]
+                    .trim()
+                    .trim_end_matches('/')
+                    .trim()
+                    .is_empty() =>
+            {
                 out.push_str(&rest[..i]);
                 out.push('\n');
                 rest = &rest[i + j + 1..];
@@ -1184,41 +1620,90 @@ pub(crate) fn clean_label(s: &str, ty: LabelType) -> String {
     let decoded = decode_entities(&out);
     if ty == LabelType::Markdown {
         // Markdown: a newline and the indentation after it is one line break.
-        decoded.split('\n').map(str::trim_start).collect::<Vec<_>>().join("\n")
+        decoded
+            .split('\n')
+            .map(str::trim_start)
+            .collect::<Vec<_>>()
+            .join("\n")
     } else {
         decoded
     }
 }
 
+/// Decodes entity markers left by [`encode_entities`]. Unknown names stay as
+/// `&name;`, which HTML output shows as written.
 fn decode_entities(s: &str) -> String {
     let mut out = String::with_capacity(s.len());
     let mut rest = s;
-    while let Some(i) = rest.find('#') {
+    while let Some(i) = rest.find([ENTITY, ENTITY_NUM]) {
         out.push_str(&rest[..i]);
-        let after = &rest[i + 1..];
-        let entity = after.find(';').filter(|&j| j > 0 && j <= 8).map(|j| &after[..j]);
-        let decoded = entity.and_then(|e| match e {
-            "quot" => Some('"'),
-            "amp" => Some('&'),
-            "lt" => Some('<'),
-            "gt" => Some('>'),
-            "apos" => Some('\''),
-            "nbsp" => Some('\u{a0}'),
-            _ => e.parse::<u32>().ok().and_then(char::from_u32),
-        });
-        match (entity, decoded) {
-            (Some(e), Some(c)) => {
-                out.push(c);
-                rest = &after[e.len() + 1..];
-            }
-            _ => {
-                out.push('#');
-                rest = after;
-            }
+        let numeric = rest[i..].starts_with(ENTITY_NUM);
+        let after = &rest[i + ENTITY.len_utf8()..];
+        let Some(j) = after.find(ENTITY_END) else {
+            out.push('#');
+            rest = after;
+            continue;
+        };
+        let name = &after[..j];
+        let decoded = if numeric {
+            name.parse::<u32>().ok().and_then(char::from_u32)
+        } else {
+            named_entity(name)
+        };
+        match decoded {
+            Some(c) => out.push(c),
+            None if numeric => out.push_str(&format!("&#{name};")),
+            None => out.push_str(&format!("&{name};")),
         }
+        rest = &after[j + ENTITY_END.len_utf8()..];
     }
     out.push_str(rest);
     out
+}
+
+/// Restores entity markers to the HTML entities Mermaid passes on (`&quot;`).
+pub(crate) fn restore_entities(s: &str) -> String {
+    s.replace(ENTITY_NUM, "&#")
+        .replace(ENTITY, "&")
+        .replace(ENTITY_END, ";")
+}
+
+fn named_entity(name: &str) -> Option<char> {
+    Some(match name {
+        "quot" => '"',
+        "amp" => '&',
+        "lt" => '<',
+        "gt" => '>',
+        "apos" => '\'',
+        "nbsp" => '\u{a0}',
+        "copy" => '©',
+        "reg" => '®',
+        "trade" => '™',
+        "hellip" => '…',
+        "mdash" => '—',
+        "ndash" => '–',
+        "laquo" => '«',
+        "raquo" => '»',
+        "lsquo" => '‘',
+        "rsquo" => '’',
+        "ldquo" => '“',
+        "rdquo" => '”',
+        "deg" => '°',
+        "euro" => '€',
+        "larr" => '←',
+        "rarr" => '→',
+        "uarr" => '↑',
+        "darr" => '↓',
+        "harr" => '↔',
+        "times" => '×',
+        "divide" => '÷',
+        "plusmn" => '±',
+        "middot" => '·',
+        "bull" => '•',
+        "sect" => '§',
+        "para" => '¶',
+        _ => return None,
+    })
 }
 
 #[cfg(test)]
@@ -1227,8 +1712,18 @@ mod tests {
 
     #[test]
     fn labels() {
-        assert_eq!(clean_label(" a<br>b<BR/>c <br />d ", LabelType::Text), "a\nb\nc \nd");
-        assert_eq!(clean_label("say #quot;hi#quot; #35;1 #x", LabelType::Text), "say \"hi\" #1 #x");
+        assert_eq!(
+            clean_label(" a<br>b<BR/>c <br />d ", LabelType::Text),
+            "a\nb\nc \nd"
+        );
+        let encoded: String = encode_entities("say #quot;hi#quot; #35;1 #x #zz;")
+            .into_iter()
+            .map(|c| c.0)
+            .collect();
+        assert_eq!(
+            clean_label(&encoded, LabelType::Text),
+            "say \"hi\" #1 #x &zz;"
+        );
         assert_eq!(clean_label("a\\nb", LabelType::Text), "a\nb");
         assert_eq!(clean_label("a\n   b", LabelType::Markdown), "a\nb");
     }
@@ -1236,8 +1731,10 @@ mod tests {
     #[test]
     fn statements_split_outside_brackets() {
         let chars: Vec<char> = "A[a;b]-->|x;y|B; C".chars().collect();
-        let parts: Vec<String> =
-            split_statements(&chars).into_iter().map(|(s, e)| chars[s..e].iter().collect()).collect();
+        let parts: Vec<String> = split_statements(&chars)
+            .into_iter()
+            .map(|(s, e)| chars[s..e].iter().collect())
+            .collect();
         assert_eq!(parts, ["A[a;b]-->|x;y|B", " C"]);
     }
 

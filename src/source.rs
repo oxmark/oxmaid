@@ -4,7 +4,8 @@
 pub(crate) struct Line<'a> {
     /// Line number, starting at 1.
     pub number: usize,
-    /// Text without leading and trailing whitespace.
+    /// Text without leading whitespace. Trailing whitespace is kept: Mermaid
+    /// gives `subgraph one ` (with a trailing space) a generated id.
     pub text: &'a str,
     /// Column (in chars, from 0) where `text` starts.
     pub offset: usize,
@@ -23,7 +24,11 @@ pub(crate) struct Source<'a> {
 /// Splits the source: YAML front matter, `%%{...}%%` directives, and the
 /// meaningful lines (`%%` comments and blank lines are dropped).
 pub(crate) fn split(src: &str) -> Source<'_> {
-    let mut out = Source { front_matter: None, directives: Vec::new(), lines: Vec::new() };
+    let mut out = Source {
+        front_matter: None,
+        directives: Vec::new(),
+        lines: Vec::new(),
+    };
     let mut seen_content = false;
     let mut front: Option<Vec<&str>> = None;
     for (i, raw) in src.lines().enumerate() {
@@ -54,7 +59,11 @@ pub(crate) fn split(src: &str) -> Source<'_> {
             continue;
         }
         let lead = raw.len() - raw.trim_start().len();
-        out.lines.push(Line { number: i + 1, text, offset: raw[..lead].chars().count() });
+        out.lines.push(Line {
+            number: i + 1,
+            text: raw.trim_start(),
+            offset: raw[..lead].chars().count(),
+        });
     }
     out
 }
