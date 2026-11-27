@@ -26,7 +26,7 @@ fn shapes() {
         shapes,
         [
             Rect,
-            Round,
+            Rounded,
             Stadium,
             Subroutine,
             Cylinder,
@@ -34,11 +34,11 @@ fn shapes() {
             DoubleCircle,
             Diamond,
             Hexagon,
-            Asymmetric,
-            Parallelogram,
-            ParallelogramAlt,
-            Trapezoid,
-            TrapezoidAlt,
+            Odd,
+            LeanRight,
+            LeanLeft,
+            TrapezoidBottom,
+            TrapezoidTop,
             Rect,
             Rect
         ]
@@ -101,11 +101,14 @@ fn subgraphs_and_classes() {
     let f = chart(
         "---\ntitle: x\n---\n%% comment\nflowchart TB\nsubgraph one [First]\n a1 --> a2\n subgraph inner\n  a3\n end\nend\nsubgraph two\n b1\nend\nclassDef hot fill:#f96\nclass a1,b1 hot\na2:::hot\nstyle a3 fill:#bbf",
     );
-    assert_eq!(f.subgraphs.len(), 3);
-    assert_eq!(f.subgraphs[0].title, "First");
-    assert_eq!(f.subgraphs[1].parent, Some(0));
-    assert_eq!(f.node("a1").unwrap().subgraph, Some(0));
-    assert_eq!(f.node("a3").unwrap().subgraph, Some(1));
+    // Subgraphs are listed in closing order, as in Mermaid.
+    let ids: Vec<&str> = f.subgraphs.iter().map(|s| s.id.as_str()).collect();
+    assert_eq!(ids, ["inner", "one", "two"]);
+    assert_eq!(f.title.as_deref(), Some("x"));
+    assert_eq!(f.subgraphs[1].title, "First");
+    assert_eq!(f.subgraphs[0].parent, Some(1));
+    assert_eq!(f.node("a1").unwrap().subgraph, Some(1));
+    assert_eq!(f.node("a3").unwrap().subgraph, Some(0));
     assert_eq!(f.node("b1").unwrap().subgraph, Some(2));
     assert_eq!(f.node("a1").unwrap().classes, ["hot"]);
     assert_eq!(f.node("a2").unwrap().classes, ["hot"]);

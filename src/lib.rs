@@ -11,6 +11,7 @@
 //! ```
 #![forbid(unsafe_code)]
 
+pub mod config;
 mod error;
 pub mod flowchart;
 pub mod layout;

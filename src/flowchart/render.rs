@@ -97,7 +97,7 @@ fn node_box(node: &Node, font_size: f64, line_height: f64) -> NodeBox {
     let th = text.height.max(line_height);
     let (w, h) = (tw + 2.0 * NODE_PADDING, th + 2.0 * NODE_PADDING);
     let (w, h) = match node.shape {
-        NodeShape::Rect | NodeShape::Round => (w, h),
+        NodeShape::Rect | NodeShape::Rounded => (w, h),
         NodeShape::Stadium => (w + h / 2.0, h),
         NodeShape::Subroutine => (w + 16.0, h),
         NodeShape::Cylinder => (w, h + cylinder_ry(w)),
@@ -114,11 +114,12 @@ fn node_box(node: &Node, font_size: f64, line_height: f64) -> NodeBox {
             (s, s)
         }
         NodeShape::Hexagon => (w + h / 2.0, h),
-        NodeShape::Asymmetric => (w + h / 4.0, h),
-        NodeShape::Parallelogram
-        | NodeShape::ParallelogramAlt
-        | NodeShape::Trapezoid
-        | NodeShape::TrapezoidAlt => (w + h / 3.0, h),
+        NodeShape::Odd => (w + h / 4.0, h),
+        NodeShape::LeanRight
+        | NodeShape::LeanLeft
+        | NodeShape::TrapezoidBottom
+        | NodeShape::TrapezoidTop => (w + h / 3.0, h),
+        _ => (w, h),
     };
     NodeBox { w, h, text }
 }
@@ -280,7 +281,7 @@ fn shape_svg(shape: NodeShape, c: Point, w: f64, h: f64, paint_attrs: &str) -> S
     let k = h / 3.0;
     match shape {
         NodeShape::Rect => rect(0.0),
-        NodeShape::Round => rect(5.0),
+        NodeShape::Rounded => rect(5.0),
         NodeShape::Stadium => rect(h / 2.0),
         NodeShape::Subroutine => format!(
             r#"{}<path d="M{},{}V{}M{},{}V{}" fill="none"{paint_attrs}/>"#,
@@ -336,7 +337,7 @@ fn shape_svg(shape: NodeShape, c: Point, w: f64, h: f64, paint_attrs: &str) -> S
             ]) + paint_attrs
                 + "/>"
         }
-        NodeShape::Asymmetric => {
+        NodeShape::Odd => {
             polygon(&[
                 (x, y),
                 (x + w, y),
@@ -346,18 +347,19 @@ fn shape_svg(shape: NodeShape, c: Point, w: f64, h: f64, paint_attrs: &str) -> S
             ]) + paint_attrs
                 + "/>"
         }
-        NodeShape::Parallelogram => {
+        NodeShape::LeanRight => {
             polygon(&[(x + k, y), (x + w, y), (x + w - k, y + h), (x, y + h)]) + paint_attrs + "/>"
         }
-        NodeShape::ParallelogramAlt => {
+        NodeShape::LeanLeft => {
             polygon(&[(x, y), (x + w - k, y), (x + w, y + h), (x + k, y + h)]) + paint_attrs + "/>"
         }
-        NodeShape::Trapezoid => {
+        NodeShape::TrapezoidBottom => {
             polygon(&[(x + k, y), (x + w - k, y), (x + w, y + h), (x, y + h)]) + paint_attrs + "/>"
         }
-        NodeShape::TrapezoidAlt => {
+        NodeShape::TrapezoidTop => {
             polygon(&[(x, y), (x + w, y), (x + w - k, y + h), (x + k, y + h)]) + paint_attrs + "/>"
         }
+        _ => rect(0.0),
     }
 }
 
