@@ -160,7 +160,7 @@ impl Dom {
     }
 }
 
-fn escape_attr(s: &str, out: &mut String) {
+pub(crate) fn escape_attr(s: &str, out: &mut String) {
     escape(s, out, true);
 }
 

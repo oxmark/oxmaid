@@ -1,0 +1,653 @@
+>>> ---\ndescription: >-\n  Minimal classDiagram with four classes joined only by plain `--` link\n  relations (one labeled "Inheritance", one "link", two unlabeled). Uses a\n  top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n\n  classA -- classB : Inheritance\n  classA -- classC : link\n  classC -- classD : link\n  classB -- classD\n
+classId-classA-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-classB-1	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-classC-2	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-classD-3	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> ---\ndescription: >-\n  Broad classDiagram relationship smoke test (inheritance, composition,\n  aggregation, dependency, link, realization, an `interface`\n  stereotype, visibility markers, and a class body block) with a top-level\n  `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  class Class01 {\n    &lt;&lt;interface&gt;&gt;\n  }\n  Class03 *-- Class04\n  Class05 o-- Class06\n  Class07 .. Class08\n  Class09 --> C2 : Where am i?\n  Class09 --* C3\n  Class09 --|> Class07\n  Class12 <|.. Class08\n  Class11 ..>Class12\n  Class07 : equals()\n  Class07 : Object[] elementData\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class01 : -int privateChimp\n  Class01 : +int publicGorilla\n  Class01 : #int protectedMarmoset\n  Class08 <--> C2: Cool label\n  class Class10 {\n  &lt;&lt;service&gt;&gt;\n  int id\n  test()\n  }\n
+classId-Class01-0	98.7734	120	annotation=0,-96	label=-26.4688,-96	members=-86.7734,-51	methods=-86.7734,99
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	90.9922	67.5	annotation=0,-43.5	label=-26.4688,-43.5	members=-78.9922,1.5	methods=-78.9922,46.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-9	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C3-10	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class12-11	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class11-12	38.0859	40.5	annotation=0,-16.5	label=-26.0859,-16.5	members=-26.0859,28.5	methods=-26.0859,58.5
+classId-Class10-13	63.7656	78	annotation=0,-54	label=-26.4688,-54	members=-51.7656,-9	methods=-51.7656,57
+>>> ---\ndescription: >-\n  Broad classDiagram relationship smoke test (inheritance, composition,\n  aggregation, dependency, link, realization, an `interface`\n  stereotype, visibility markers, and a class body block) with no\n  htmlLabels override, exercising the default rendering path.\nconfig:\n  logLevel: 1\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  class Class01 {\n    &lt;&lt;interface&gt;&gt;\n  }\n  Class03 *-- Class04\n  Class05 o-- Class06\n  Class07 .. Class08\n  Class09 --> C2 : Where am i?\n  Class09 --* C3\n  Class09 --|> Class07\n  Class12 <|.. Class08\n  Class11 ..>Class12\n  Class07 : equals()\n  Class07 : Object[] elementData\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class01 : -int privateChimp\n  Class01 : +int publicGorilla\n  Class01 : #int protectedMarmoset\n  Class08 <--> C2: Cool label\n  class Class10 {\n  &lt;&lt;service&gt;&gt;\n  int id\n  test()\n  }\n
+classId-Class01-0	98.7734	120	annotation=0,-96	label=-26.4688,-96	members=-86.7734,-51	methods=-86.7734,99
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	90.9922	67.5	annotation=0,-43.5	label=-26.4688,-43.5	members=-78.9922,1.5	methods=-78.9922,46.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-9	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C3-10	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class12-11	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class11-12	38.0859	40.5	annotation=0,-16.5	label=-26.0859,-16.5	members=-26.0859,28.5	methods=-26.0859,58.5
+classId-Class10-13	63.7656	78	annotation=0,-54	label=-26.4688,-54	members=-51.7656,-9	methods=-51.7656,57
+>>> ---\ndescription: >-\n  Classes with generic type parameters (`~T~`) linked by inheritance and\n  composition, plus a `callback Class01 "functionCall" "A Tooltip"`\n  statement to verify clickable-callback bindings render. Uses a\n  top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n  callback Class01 "functionCall" "A Tooltip"\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Classes with generic type parameters (`~T~`) linked by inheritance and\n  composition, plus a `callback Class01 "functionCall" "A Tooltip"`\n  statement to verify clickable-callback bindings render. Has no\n  frontmatter config, exercising the default rendering path.\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n  callback Class01 "functionCall" "A Tooltip"\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Class with a generic type parameter (`~T~`) whose methods declare array\n  parameter types and array/bool return types (`test(int[] ids) bool`,\n  `testArray() bool[]`), to check method return-type rendering. Uses a\n  top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10~T~ {\n  int[] id\n  test(int[] ids) bool\n  testArray() bool[]\n  }\n
+classId-Class10-0	88.6562	78	annotation=0,-54	label=-38.9219,-54	members=-76.6562,-9	methods=-76.6562,36
+>>> ---\ndescription: >-\n  Class with a generic type parameter (`~T~`) whose methods declare array\n  parameter types and array/bool return types (`test(int[] ids) bool`,\n  `testArray() bool[]`), to check method return-type rendering. Has no\n  frontmatter config, exercising the default rendering path.\n---\nclassDiagram\n  class Class10~T~ {\n  int[] id\n  test(int[] ids) bool\n  testArray() bool[]\n  }\n
+classId-Class10-0	88.6562	78	annotation=0,-54	label=-38.9219,-54	members=-76.6562,-9	methods=-76.6562,36
+>>> ---\ndescription: >-\n  Class with a generic type parameter (`~T~`) whose members use generic\n  container types (`List~int~ ids`, `test(List~int~ ids) List~bool~`)\n  alongside plain array types, to check nested generic-type rendering.\n  Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10~T~ {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n
+classId-Class10-0	122.898	88.5	annotation=0,-64.5	label=-38.9219,-64.5	members=-110.898,-19.5	methods=-110.898,46.5
+>>> ---\ndescription: >-\n  Class with a generic type parameter (`~T~`) whose members use generic\n  container types (`List~int~ ids`, `test(List~int~ ids) List~bool~`)\n  alongside plain array types, to check nested generic-type rendering. Has\n  no frontmatter config, exercising the default rendering path.\n---\nclassDiagram\n  class Class10~T~ {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n
+classId-Class10-0	122.898	88.5	annotation=0,-64.5	label=-38.9219,-64.5	members=-110.898,-19.5	methods=-110.898,46.5
+>>> ---\ndescription: >-\n  A class with generic-type members gets a CSS class applied via the\n  standalone `cssClass "Class10" exClass2` statement. Uses a top-level\n  `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10 {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n\n  cssClass "Class10" exClass2\n
+classId-Class10-0	116.672	88.5	annotation=0,-64.5	label=-26.4688,-64.5	members=-104.672,-19.5	methods=-104.672,46.5
+>>> ---\ndescription: >-\n  A class with generic-type members gets a CSS class applied via the\n  inline shorthand `class Class10:::exClass2` syntax, rather than the\n  standalone `cssClass` statement used by the sibling "-2" and base\n  variants. Has no frontmatter config.\n---\nclassDiagram\n  class Class10 {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n\n  class Class10:::exClass2\n
+classId-Class10-0	116.672	88.5	annotation=0,-64.5	label=-26.4688,-64.5	members=-104.672,-19.5	methods=-104.672,46.5
+>>> ---\ndescription: >-\n  A class with generic-type members gets a CSS class applied directly on\n  its `class` declaration line via `class Class10:::exClass2 { ... }`\n  (class body and CSS class combined in one statement). Uses a top-level\n  `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10:::exClass2 {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n
+classId-Class10-0	116.672	88.5	annotation=0,-64.5	label=-26.4688,-64.5	members=-104.672,-19.5	methods=-104.672,46.5
+>>> ---\ndescription: >-\n  A class with generic-type members gets a CSS class applied directly on\n  its `class` declaration line via `class Class10:::exClass2 { ... }`\n  (class body and CSS class combined in one statement). Has no\n  frontmatter config.\n---\nclassDiagram\n  class Class10:::exClass2 {\n  int[] id\n  List~int~ ids\n  test(List~int~ ids) List~bool~\n  testArray() bool[]\n  }\n
+classId-Class10-0	116.672	88.5	annotation=0,-64.5	label=-26.4688,-64.5	members=-104.672,-19.5	methods=-104.672,46.5
+>>> ---\ndescription: >-\n  Minimal classDiagram with a single empty class declaration (`class\n  Class10`), used as a baseline for the diagram-title test group. Has no\n  frontmatter config.\n---\nclassDiagram\n  class Class10\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  Minimal classDiagram-v2 with a single empty class declaration (`class\n  Class10`), used as a baseline for the diagram-title test group. Has no\n  frontmatter config.\n---\nclassDiagram-v2\n  class Class10\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  Two empty classes get the same CSS class applied through both\n  mechanisms at once: a comma-separated `cssClass "Class10, Class20"\n  exClass2` statement covering both classes, plus a redundant inline\n  `class Class20:::exClass2` shorthand on one of them. Has no frontmatter\n  config.\n---\nclassDiagram\n  class Class10\n  class Class20\n\n  cssClass "Class10, Class20" exClass2\n  class Class20:::exClass2\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class20-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  Two empty classes get the same CSS class applied via a single\n  comma-separated `cssClass "Class10, class20" exClass2` statement (note\n  the lowercase "class20", checking class-name matching is\n  case-insensitive). Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10\n  class Class20\n\n  cssClass "Class10, class20" exClass2\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class20-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  Renders a static field (`+String bar$`, trailing dollar sign) on a\n  single class. Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Foo {\n  +String bar$\n  }\n
+classId-Foo-0	52.8516	57	annotation=0,-33	label=-12.8281,-33	members=-40.8516,12	methods=-40.8516,57
+>>> ---\ndescription: >-\n  Verifies the `direction BT` statement in classDiagram: a Student class\n  aggregating IdCard and Bike via `--o` relations with cardinality\n  labels. Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  direction BT\n  class Student {\n  -idCard : IdCard\n  }\n  class IdCard{\n  -id : int\n  -name : string\n  }\n  class Bike{\n  -id : int\n  -name : string\n  }\n  Student "1" --o "1" IdCard : carries\n  Student "1" --o "1" Bike : rides\n
+classId-Student-0	74.8242	57	annotation=0,-33	label=-26.0547,-33	members=-62.8242,12	methods=-62.8242,57
+classId-IdCard-1	65.8828	67.5	annotation=0,-43.5	label=-22.1719,-43.5	members=-53.8828,1.5	methods=-53.8828,67.5
+classId-Bike-2	62.1914	67.5	annotation=0,-43.5	label=-14.7891,-43.5	members=-50.1914,1.5	methods=-50.1914,67.5
+>>> ---\ndescription: >-\n  Verifies the `direction LR` statement in classDiagram: a Student class\n  aggregating IdCard and Bike via `--o` relations with cardinality\n  labels. Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  direction LR\n  class Student {\n  -idCard : IdCard\n  }\n  class IdCard{\n  -id : int\n  -name : string\n  }\n  class Bike{\n  -id : int\n  -name : string\n  }\n  Student "1" --o "1" IdCard : carries\n  Student "1" --o "1" Bike : rides\n
+classId-Student-0	74.8242	57	annotation=0,-33	label=-26.0547,-33	members=-62.8242,12	methods=-62.8242,57
+classId-IdCard-1	65.8828	67.5	annotation=0,-43.5	label=-22.1719,-43.5	members=-53.8828,1.5	methods=-53.8828,67.5
+classId-Bike-2	62.1914	67.5	annotation=0,-43.5	label=-14.7891,-43.5	members=-50.1914,1.5	methods=-50.1914,67.5
+>>> ---\ndescription: >-\n  Exercises both note forms in classDiagram: a free-standing multi-line\n  `note "..."` and a `note for Class10 "..."` attached to a class with a\n  method. Uses a top-level `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  note "I love this diagram!\n  Do you love it?"\n  class Class10 {\n    int id\n  size()\n  }\n  note for Class10 "Cool class\n  I said it's very cool class!"\n
+classId-Class10-0	42.3516	67.5	annotation=0,-43.5	label=-26.4688,-43.5	members=-30.3516,1.5	methods=-30.3516,46.5
+note0	64.75	27
+note1	82.8125	27
+>>> ---\ndescription: >-\n  Exercises both note forms in classDiagram: a free-standing multi-line\n  `note "..."` and a `note for Class10 "..."` attached to a class with a\n  method. Has no htmlLabels override, exercising the default rendering\n  path.\nconfig:\n  logLevel: 1\n---\nclassDiagram\n  note "I love this diagram!\n  Do you love it?"\n  class Class10 {\n  int id\n  size()\n  }\n  note for Class10 "Cool class\n  I said it's very cool class!"\n
+classId-Class10-0	42.3516	67.5	annotation=0,-43.5	label=-26.4688,-43.5	members=-30.3516,1.5	methods=-30.3516,46.5
+note0	64.75	27
+note1	82.8125	27
+>>> ---\ndescription: >-\n  Renders an abstract method (`someMethod()*`, trailing asterisk) on a\n  class inheriting from another via `<|--`, with a top-level\n  `htmlLabels: true` config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  Class01 : someMethod()*\n
+classId-Class01-0	70.3672	60	annotation=0,-36	label=-26.4688,-36	members=-58.3672,9	methods=-58.3672,39
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+>>> ---\ndescription: >-\n  Renders an abstract method (`someMethod()*`, trailing asterisk) on a\n  class inheriting from another via `<|--`. Has no frontmatter config.\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  Class01 : someMethod()*\n
+classId-Class01-0	70.3672	60	annotation=0,-36	label=-26.4688,-36	members=-58.3672,9	methods=-58.3672,39
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+>>> ---\ndescription: >-\n  Same generalization-plus-static-method diagram as the\n  '-without-htmllabels' and plain '-3' siblings, but with `htmlLabels: true`\n  set explicitly in config.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  Class01 : someMethod()$\n
+classId-Class01-0	70.3672	60	annotation=0,-36	label=-26.4688,-36	members=-58.3672,9	methods=-58.3672,39
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+>>> ---\ndescription: >-\n  Same generalization-plus-static-method diagram as the '-2' and\n  '-without-htmllabels' siblings, but with no frontmatter/config at all,\n  exercising the default rendering path.\n---\nclassDiagram\n  Class01 <|-- AveryLongClass : Cool\n  Class01 : someMethod()$\n
+classId-Class01-0	70.3672	60	annotation=0,-36	label=-26.4688,-36	members=-58.3672,9	methods=-58.3672,39
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+>>> ---\ndescription: >-\n  Same generic-class diagram as the '-without-htmllabels' and plain '-3'\n  siblings, but with `htmlLabels: true` set explicitly.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class01~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-Class08-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-2	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-3	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Same generic-class diagram as the '-2' and '-without-htmllabels' siblings,\n  but with no frontmatter, exercising the default config path.\n---\nclassDiagram\n  class Class01~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-Class08-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-2	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-3	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Generic classes combined with inheritance (`<|--`) and composition (`*--`)\n  relationships between generic types, plus a labeled bidirectional\n  association and an annotated service class; rendered with `htmlLabels:\n  true` set explicitly.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Same generic-class-with-relations diagram (generic inheritance,\n  composition, labeled association, annotated service class) as the '-2'\n  sibling, but with no frontmatter, exercising the default config path.\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Same generic-class-with-relations diagram as the '8' series, with an\n  added `link` statement making Class01 clickable and carrying a tooltip;\n  rendered with `htmlLabels: true` set explicitly.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n  link Class01 "google.com" "A Tooltip"\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Same clickable-link generic-class diagram as the '-2' sibling, but with no\n  frontmatter, exercising the default config path.\n---\nclassDiagram\n  Class01~T~ <|-- AveryLongClass : Cool\n  Class03~T~ *-- Class04~T~\n  Class01 : size()\n  Class01 : int chimp\n  Class01 : int gorilla\n  Class08 <--> C2: Cool label\n  class Class10~T~ {\n    &lt;&lt;service&gt;&gt;\n    int id\n    test()\n  }\n  link Class01 "google.com" "A Tooltip"\n
+classId-Class01-0	59.4766	78	annotation=0,-54	label=-38.9219,-54	members=-47.4766,-9	methods=-47.4766,57
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class04-3	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class08-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-5	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-6	69.9922	78	annotation=0,-54	label=-38.9219,-54	members=-57.9922,-9	methods=-57.9922,57
+>>> ---\ndescription: >-\n  Hand-drawn look classDiagram with hierarchicalNamespaces disabled, rendering dot-notation\n  nested namespaces (Company.Engineering.Backend/Frontend) in compact/flat form rather than\n  as nested containers, with cross-namespace relationships.\nconfig:\n  class:\n    hierarchicalNamespaces: false\n---\nclassDiagram\n  namespace Company.Engineering.Backend {\n  class Developer {\n    +writeCode()\n  }\n  }\n  namespace Company.Engineering.Frontend {\n  class Designer {\n    +createMockup()\n  }\n  }\n  namespace Company {\n  class CEO {\n    +makeDecisions()\n  }\n  }\n  CEO --> Developer : oversees\n  CEO --> Designer : oversees\n
+classId-Developer-0	69.1914	60	annotation=0,-36	label=-33.8516,-36	members=-57.1914,9	methods=-57.1914,39
+classId-Designer-1	79.6992	60	annotation=0,-36	label=-29.9609,-36	members=-67.6992,9	methods=-67.6992,39
+classId-CEO-2	75.8047	60	annotation=0,-36	label=-15.1719,-36	members=-63.8047,9	methods=-63.8047,39
+>>> ---\ndescription: >-\n  Simple classDiagram with a single class (Person) whose attribute list exercises all four\n  visibility modifiers (public, private, protected, package/default) across different\n  attribute types.\n---\nclassDiagram\n  class Person {\n  +String name\n  -Int id\n  #double age\n  +Text demographicProfile\n  }\n
+classId-Person-0	103.055	88.5	annotation=0,-64.5	label=-23.7344,-64.5	members=-91.0547,-19.5	methods=-91.0547,88.5
+>>> ---\ndescription: >-\n  classDiagram-v2 with a generic class (GenericClass~T~) declared inside a namespace,\n  verifying generic type parameter syntax renders correctly within a namespace container.\n---\nclassDiagram-v2\nnamespace Company.Project.Module {\n  class GenericClass~T~ {\n    +addItem(item: T)\n    +getItem() T\n  }\n}\n
+classId-GenericClass-0	95.9141	70.5	annotation=0,-46.5	label=-57.2031,-46.5	members=-83.9141,-1.5	methods=-83.9141,28.5
+>>> ---\ndescription: >-\n  classDiagram-v2 with three classes (User, Admin, Report) declared together inside a single\n  namespace block, with relationships between them declared afterward, outside the namespace\n  block.\n---\nclassDiagram-v2\nnamespace Company.Project.Module {\n  class User {\n    +login(username: String, password: String)\n    +logout()\n  }\n  class Admin {\n    +addUser(user: User)\n    +removeUser(user: User)\n    +generateReport()\n  }\n  class Report {\n    +generatePDF(reportData: List)\n    +generateCSV(reportData: List)\n  }\n}\nAdmin --> User : manages\nAdmin --> Report : generates\n
+classId-User-0	152.652	70.5	annotation=0,-46.5	label=-15.5703,-46.5	members=-140.652,-1.5	methods=-140.652,28.5
+classId-Admin-1	102.055	81	annotation=0,-57	label=-21.7812,-57	members=-90.0547,-12	methods=-90.0547,18
+classId-Report-2	121.914	70.5	annotation=0,-46.5	label=-22.5625,-46.5	members=-109.914,-1.5	methods=-109.914,28.5
+>>> ---\ndescription: >-\n  classDiagram-v2 with two separate dot-notation namespace blocks at different nesting\n  depths (Module and Module.SubModule) each containing one class, connected by a\n  relationship that crosses the namespace boundary.\n---\nclassDiagram-v2\nnamespace Company.Project.Module.SubModule {\n  class Report {\n    +generatePDF(data: List)\n    +generateCSV(data: List)\n  }\n}\nnamespace Company.Project.Module {\n  class Admin {\n    +generateReport()\n  }\n}\nAdmin --> Report : generates\n
+classId-Report-0	102.469	70.5	annotation=0,-46.5	label=-22.5625,-46.5	members=-90.4688,-1.5	methods=-90.4688,28.5
+classId-Admin-1	80.2891	60	annotation=0,-36	label=-21.7812,-36	members=-68.2891,9	methods=-68.2891,39
+>>> ---\ndescription: >-\n  classDiagram-v2 with a namespace given a custom display label (namespace\n  Auth["Authentication Service"]) distinct from its identifier, containing two classes\n  related by a labeled dependency.\n---\nclassDiagram-v2\n  namespace Auth["Authentication Service"] {\n  class UserService {\n    +login()\n    +logout()\n  }\n  class TokenManager {\n    +generate()\n  }\n  }\n  UserService --> TokenManager : uses\n
+classId-UserService-0	60.0664	70.5	annotation=0,-46.5	label=-40.4766,-46.5	members=-48.0664,-1.5	methods=-48.0664,28.5
+classId-TokenManager-1	72.832	60	annotation=0,-36	label=-48.8828,-36	members=-60.832,9	methods=-60.832,39
+>>> ---\ndescription: >-\n  classDiagram with hierarchicalNamespaces disabled, rendering dot-notation nested\n  namespaces (Company.Engineering.Backend/Frontend) in compact/flat form rather than as\n  nested containers, with cross-namespace relationships.\nconfig:\n  class:\n    hierarchicalNamespaces: false\n---\nclassDiagram\n  namespace Company.Engineering.Backend {\n  class Developer {\n    +writeCode()\n  }\n  }\n  namespace Company.Engineering.Frontend {\n  class Designer {\n    +createMockup()\n  }\n  }\n  namespace Company {\n  class CEO {\n    +makeDecisions()\n  }\n  }\n  CEO --> Developer : oversees\n  CEO --> Designer : oversees\n
+classId-Developer-0	69.1914	60	annotation=0,-36	label=-33.8516,-36	members=-57.1914,9	methods=-57.1914,39
+classId-Designer-1	79.6992	60	annotation=0,-36	label=-29.9609,-36	members=-67.6992,9	methods=-67.6992,39
+classId-CEO-2	75.8047	60	annotation=0,-36	label=-15.1719,-36	members=-63.8047,9	methods=-63.8047,39
+>>> ---\ndescription: >-\n  classDiagram-v2 using dot-notation namespace names to express a nested namespace\n  hierarchy, with a class in the parent namespace relating to classes in the child\n  namespaces.\n---\nclassDiagram-v2\n  namespace Company.Engineering.Backend {\n  class Developer {\n    +writeCode()\n  }\n  }\n  namespace Company.Engineering.Frontend {\n  class Designer {\n    +createMockup()\n  }\n  }\n  namespace Company.Engineering {\n  class TechLead {\n    +planSprint()\n  }\n  }\n  TechLead --> Developer : leads\n  TechLead --> Designer : leads\n
+classId-Developer-0	69.1914	60	annotation=0,-36	label=-33.8516,-36	members=-57.1914,9	methods=-57.1914,39
+classId-Designer-1	79.6992	60	annotation=0,-36	label=-29.9609,-36	members=-67.6992,9	methods=-67.6992,39
+classId-TechLead-2	68.3516	60	annotation=0,-36	label=-32.1562,-36	members=-56.3516,9	methods=-56.3516,39
+>>> ---\ndescription: >-\n  classDiagram-v2 with namespaces nested via brace syntax (namespace Platform containing\n  namespace Auth and namespace Data) rather than dot notation, plus a class relating into\n  each nested namespace.\n---\nclassDiagram-v2\n  namespace Platform {\n  namespace Auth {\n    class UserService {\n      +login()\n      +logout()\n    }\n  }\n  namespace Data {\n    class Repository {\n      +find()\n      +save()\n    }\n  }\n  class Gateway {\n    +route()\n  }\n  }\n  Gateway --> UserService : delegates\n  Gateway --> Repository : delegates\n
+classId-UserService-0	60.0664	70.5	annotation=0,-46.5	label=-40.4766,-46.5	members=-48.0664,-1.5	methods=-48.0664,28.5
+classId-Repository-1	53.8203	70.5	annotation=0,-46.5	label=-36.5625,-46.5	members=-41.8203,-1.5	methods=-41.8203,28.5
+classId-Gateway-2	51.1094	60	annotation=0,-36	label=-28.7969,-36	members=-39.1094,9	methods=-39.1094,39
+>>> ---\ndescription: >-\n  classDiagram with two classes (C1, C2) declared and related inside a namespace block, plus\n  two additional classes (C3, C4) declared separately outside any namespace.\n---\nclassDiagram\n  namespace Namespace1 {\n  class C1\n  class C2\n  }\n  C1 --> C2\n  class C3\n  class C4\n
+classId-C1-0	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C3-2	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C4-3	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> ---\ndescription: >-\n  classDiagram testing free-standing and class-attached notes both outside and inside a\n  namespace block, verifying note placement works correctly in both scopes.\n---\nclassDiagram\n  note "This is a outer note"\n  note for C1 "This is a outer note for C1"\n  namespace Namespace1 {\n  note "This is a inner note"\n  note for C1 "This is a inner note for C1"\n  class C1\n  }\n
+classId-C1-0	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+note0	65.5312	16.5
+note1	86.5391	16.5
+note2	65.1484	16.5
+note3	86.1484	16.5
+>>> ---\ndescription: >-\n  classDiagram covering an empty class body declared with explicit empty braces on a generic\n  class (FooBase~T~ {}), alongside a normally-populated class, connected by an inheritance\n  relationship.\n---\nclassDiagram\n  class FooBase~T~ {}\n  class Bar {\n  +Zip\n  +Zap()\n  }\n  FooBase <|-- Ba\n
+classId-FooBase-0	54.0156	40.5	annotation=0,-16.5	label=-42.0156,-16.5	members=-42.0156,28.5	methods=-42.0156,58.5
+classId-Bar-1	38.6523	67.5	annotation=0,-43.5	label=-11.6797,-43.5	members=-26.6523,1.5	methods=-26.6523,46.5
+classId-Ba-2	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> ---\ndescription: >-\n  classDiagram with backtick-quoted namespace and class identifiers containing special\n  characters (`A::B`, `IPC::Sender`), verifying backtick-escaped names parse correctly in\n  both namespace and relationship contexts.\n---\nclassDiagram\n  namespace `A::B` {\n  class `IPC::Sender`\n  }\n  RenderProcessHost --|> `IPC::Sender`\n
+classId-IPC::Sender-0	52.0625	40.5	annotation=0,-16.5	label=-40.0625,-16.5	members=-40.0625,28.5	methods=-40.0625,58.5
+classId-RenderProcessHost-1	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+>>> ---\ndescription: >-\n  classDiagram with class text labels (square-bracket string syntax) containing embedded\n  newlines, on one class with brace-declared members and another class with colon-syntax\n  method declarations, verifying multi-line label text renders correctly in both member\n  styles.\n---\nclassDiagram\n  class A["This has\n  a newline!"] {\n  +String boop\n  -Int beep\n  #double bop\n  }\n\n  class B["This title also has\n  a newline"]\n  B : +with(more)\n  B : -methods()\n
+classId-A-0	68.8203	88.5	annotation=0,-64.5	label=-33.8438,-64.5	members=-56.8203,1.5	methods=-56.8203,88.5
+classId-B-1	78.5195	81	annotation=0,-57	label=-58.7422,-57	members=-66.5195,9	methods=-66.5195,39
+>>> ---\ndescription: >-\n  classDiagram with a backtick-quoted class name containing multiple embedded newlines,\n  declared inside a namespace block with member attributes and methods, verifying multi-line\n  titles render correctly inside namespaces.\n---\nclassDiagram\n  namespace testingNamespace {\n  class `This\n  Title\n  Has\n  Many\n  Newlines` {\n    +String Also\n    -String Many\n    #int Members\n    +And()\n    -Many()\n    #Methods()\n  }\n  }\n
+classId-This\n  Title\n  Has\n  Many\n  Newlines-0	69.582	151.5	annotation=0,-127.5	label=-30.3516,-127.5	members=-57.582,1.5	methods=-57.582,88.5
+>>> ---\ndescription: >-\n  classDiagram with a class given a custom text label, an interface annotation\n  (interface), and a member, connected by a relationship to an implicitly-declared\n  class.\n---\nclassDiagram\n  class C1["Class 1 with text label"] {\n  &lt;&lt;interface&gt;&gt;\n  +member1\n  }\n  C1 -->  C2\n
+classId-C1-0	91.5781	67.5	annotation=0,-43.5	label=-72.75,-43.5	members=-79.5781,1.5	methods=-79.5781,67.5
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> ---\ndescription: >-\n  Minimal classDiagram with a single class given a custom text label, connected by a\n  relationship to an implicitly-declared class.\n---\nclassDiagram\n  class C1["Class 1 with text label"]\n  C1 -->  C2\n
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> ---\ndescription: >-\n  classDiagram with a namespace given a custom display label (namespace Auth["Authentication\n  Service"]) distinct from its identifier, containing two classes related by a labeled\n  dependency.\n---\nclassDiagram\n  namespace Auth["Authentication Service"] {\n  class UserService {\n    +login()\n    +logout()\n  }\n  class TokenManager {\n    +generate()\n  }\n  }\n  UserService --> TokenManager : uses\n
+classId-UserService-0	60.0664	70.5	annotation=0,-46.5	label=-40.4766,-46.5	members=-48.0664,-1.5	methods=-48.0664,28.5
+classId-TokenManager-1	72.832	60	annotation=0,-36	label=-48.8828,-36	members=-60.832,9	methods=-60.832,39
+>>> ---\ndescription: >-\n  Regression test (issue 7560) for a classDiagram where a class has a self-referential\n  relationship carrying multiplicity labels on both ends ("1" --> "0..1"), verifying self-\n  loops with multiplicities render without breaking.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class SelfReferential{\n  +int id\n  +int self_referential_id\n  +SelfReferential referenced\n  }\n  SelfReferential "1" --> "0..1" SelfReferential : referenced\n
+classId-SelfReferential-0	121.926	78	annotation=0,-54	label=-49.0234,-54	members=-109.926,-9	methods=-109.926,78
+>>> ---\ndescription: >-\n  classDiagram declaring two classDef style classes (pink, bold) that are never applied to\n  any class, verifying unused classDef declarations parse without error.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10\n  classDef pink fill:#f9f\n  classDef bold stroke:#333,stroke-width:6px,color:#fff\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  classDiagram applying two classDef styles to the same class - pink via the `:::` shorthand\n  and bold via a separate `cssClass` statement - with htmlLabels enabled, verifying both\n  styling paths combine correctly.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10:::pink\n  cssClass "Class10" bold\n  classDef pink fill:#f9f\n  classDef bold stroke:#333,stroke-width:6px,color:#fff\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  classDiagram exercising markdown-style emphasis markup (single/double asterisks and\n  underscores for italic/bold) inside class attribute and method text, with htmlLabels\n  enabled.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10 {\n  +attribute *italic**\n  ~attribute **bold***\n  _italicmethod_()\n  __boldmethod__()\n  _+_swim_()a_\n  __+quack() test__\n  }\n
+classId-Class10-0	72.8906	109.5	annotation=0,-85.5	label=-26.4688,-85.5	members=-60.8906,-40.5	methods=-60.8906,25.5
+>>> ---\ndescription: >-\n  classDiagram with a single class (Duck) that declares only methods and no attributes,\n  verifying the members box renders correctly when the attribute section is empty.\n---\nclassDiagram\n  class Duck {\n  +swim()\n  +quack()\n  }\n
+classId-Duck-0	47.9883	70.5	annotation=0,-46.5	label=-17.1172,-46.5	members=-35.9883,-1.5	methods=-35.9883,28.5
+>>> ---\ndescription: >-\n  classDiagram with a single class that has no members declared, htmlLabels enabled via a\n  top-level config key, verifying an empty members box renders correctly (compare to the\n  '-no-members' sibling, which disables htmlLabels via the flowchart config key and uses\n  classDiagram-v2).\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  classDiagram with a single class that has no members, with hideEmptyMembersBox enabled in\n  the class config so the empty members box is omitted entirely rather than rendered empty.\nconfig:\n  logLevel: 1\n  class:\n    htmlLabels: true\n    hideEmptyMembersBox: true\n---\nclassDiagram\n  class Class10\n
+classId-Class10-0	38.4688	22.5	annotation=0,0	label=-26.4688,0	members=-26.4688,45	methods=-26.4688,75
+>>> ---\ndescription: >-\n  classDiagram with a single class (Duck) that declares only attributes and no methods,\n  verifying the members box renders correctly when the methods section is empty.\n---\nclassDiagram\n  class Duck {\n  +String beakColor\n  +int age\n  +float weight\n  }\n
+classId-Duck-0	76.7852	78	annotation=0,-54	label=-17.1172,-54	members=-64.7852,-9	methods=-64.7852,78
+>>> ---\ndescription: >-\n  classDiagram with a single class styled via a `style` statement (fill, stroke, stroke-\n  width, no color) and htmlLabels enabled via a top-level config key.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  class Class10\n  style Class10 fill:#f9f,stroke:#333,stroke-width:4px\n
+classId-Class10-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> ---\ndescription: >-\n  classDiagram with a backtick-quoted class name spanning many embedded newlines, containing\n  attributes and methods across all visibility modifiers, verifying multi-line class titles\n  render correctly.\n---\nclassDiagram\n  class `This\n  Title\n  Has\n  Many\n  Newlines` {\n  +String Also\n  -String Many\n  #int Members\n  +And()\n  -Many()\n  #Methods()\n  }\n
+classId-This\n  Title\n  Has\n  Many\n  Newlines-0	69.582	151.5	annotation=0,-127.5	label=-30.3516,-127.5	members=-57.582,1.5	methods=-57.582,88.5
+>>> ---\ndescription: >-\n  classDiagram with an inheritance relationship where the child class name is a backtick-\n  quoted identifier containing an embedded newline (split across 'Du' / 'ck'), with both\n  parent and child classes carrying members.\n---\nclassDiagram\n  Animal <|-- `Du\n  ck`\n  Animal : +int age\n  Animal : +String gender\n  Animal: +isMammal()\n  Animal: +mate()\n  class `Du\n  ck` {\n  +String beakColor\n  +String featherColor\n  +swim()\n  +quack()\n  }\n
+classId-Animal-0	69.7891	88.5	annotation=0,-64.5	label=-23.3438,-64.5	members=-57.7891,-19.5	methods=-57.7891,46.5
+classId-Du\n  ck-1	79.5117	99	annotation=0,-75	label=-9.33594,-75	members=-67.5117,-9	methods=-67.5117,57
+>>> ---\ndescription: >-\n  classDiagram exercising class text labels containing commas, brackets, numbers,\n  punctuation, and non-ASCII characters (Città) to verify label text escaping and rendering.\n---\nclassDiagram\n  class C1["OneWord"]\n  class C2["With, Comma"]\n  class C3["With (Brackets)"]\n  class C4["With [Brackets]"]\n  class C5["With {Brackets}"]\n  class C7["With 1 number"]\n  class C8["With . period..."]\n  class C9["With - dash"]\n  class C10["With _ underscore"]\n  class C11["With ' single quote"]\n  class C12["With ~!@#$%^&*()_+=-/?"]\n  class C13["With Città foreign language"]\n
+classId-C1-0	43.375	40.5	annotation=0,-16.5	label=-31.375,-16.5	members=-31.375,28.5	methods=-31.375,58.5
+classId-C2-1	56.6641	40.5	annotation=0,-16.5	label=-44.6641,-16.5	members=-44.6641,28.5	methods=-44.6641,58.5
+classId-C3-2	63.2812	40.5	annotation=0,-16.5	label=-51.2812,-16.5	members=-51.2812,28.5	methods=-51.2812,58.5
+classId-C4-3	63.2812	40.5	annotation=0,-16.5	label=-51.2812,-16.5	members=-51.2812,28.5	methods=-51.2812,58.5
+classId-C5-4	64.0703	40.5	annotation=0,-16.5	label=-52.0703,-16.5	members=-52.0703,28.5	methods=-52.0703,58.5
+classId-C7-5	60.5547	40.5	annotation=0,-16.5	label=-48.5547,-16.5	members=-48.5547,28.5	methods=-48.5547,58.5
+classId-C8-6	60.1562	40.5	annotation=0,-16.5	label=-48.1562,-16.5	members=-48.1562,28.5	methods=-48.1562,58.5
+classId-C9-7	49.6562	40.5	annotation=0,-16.5	label=-37.6562,-16.5	members=-37.6562,28.5	methods=-37.6562,58.5
+classId-C10-8	73.0078	40.5	annotation=0,-16.5	label=-61.0078,-16.5	members=-61.0078,28.5	methods=-61.0078,58.5
+classId-C11-9	73.8828	40.5	annotation=0,-16.5	label=-61.8828,-16.5	members=-61.8828,28.5	methods=-61.8828,58.5
+classId-C12-10	93.4531	40.5	annotation=0,-16.5	label=-81.4531,-16.5	members=-81.4531,28.5	methods=-81.4531,58.5
+classId-C13-11	102.938	40.5	annotation=0,-16.5	label=-90.9375,-16.5	members=-90.9375,28.5	methods=-90.9375,58.5
+>>> ---\ndescription: >-\n  classDiagram where a class (Duck) is first referenced via a relationship, then given a\n  text label through a later `class` declaration, verifying the label applies retroactively.\n---\nclassDiagram\n  Animal <|-- Duck\n  class Duck["Duck with text label"]\n
+classId-Animal-0	35.3438	40.5	annotation=0,-16.5	label=-23.3438,-16.5	members=-23.3438,28.5	methods=-23.3438,58.5
+classId-Duck-1	77.3516	40.5	annotation=0,-16.5	label=-65.3516,-16.5	members=-65.3516,28.5	methods=-65.3516,58.5
+>>> ---\ndescription: >-\n  classDiagram with three classes sharing the identical text label ('Class with text label')\n  linked by both solid and dotted relationships, verifying duplicate labels don't collide.\n---\nclassDiagram\n  class C1["Class with text label"]\n  class C2["Class with text label"]\n  class C3["Class with text label"]\n  C1 --> C2\n  C3 ..> C2\n
+classId-C1-0	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C2-1	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C3-2	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+>>> ---\ndescription: >-\n  classDiagram using dot-notation namespace names to express a nested namespace hierarchy,\n  with a class in the parent namespace relating to classes in the child namespaces.\n---\nclassDiagram\n  namespace Company.Engineering.Backend {\n  class Developer {\n    +writeCode()\n  }\n  }\n  namespace Company.Engineering.Frontend {\n  class Designer {\n    +createMockup()\n  }\n  }\n  namespace Company.Engineering {\n  class TechLead {\n    +planSprint()\n  }\n  }\n  TechLead --> Developer : leads\n  TechLead --> Designer : leads\n
+classId-Developer-0	69.1914	60	annotation=0,-36	label=-33.8516,-36	members=-57.1914,9	methods=-57.1914,39
+classId-Designer-1	79.6992	60	annotation=0,-36	label=-29.9609,-36	members=-67.6992,9	methods=-67.6992,39
+classId-TechLead-2	68.3516	60	annotation=0,-36	label=-32.1562,-36	members=-56.3516,9	methods=-56.3516,39
+>>> ---\ndescription: >-\n  classDiagram with namespaces nested via brace syntax (namespace Platform containing\n  namespace Auth and namespace Data) rather than dot notation, plus a class relating into\n  each nested namespace.\n---\nclassDiagram\n  namespace Platform {\n  namespace Auth {\n    class UserService {\n      +login()\n      +logout()\n    }\n  }\n  namespace Data {\n    class Repository {\n      +find()\n      +save()\n    }\n  }\n  class Gateway {\n    +route()\n  }\n  }\n  Gateway --> UserService : delegates\n  Gateway --> Repository : delegates\n
+classId-UserService-0	60.0664	70.5	annotation=0,-46.5	label=-40.4766,-46.5	members=-48.0664,-1.5	methods=-48.0664,28.5
+classId-Repository-1	53.8203	70.5	annotation=0,-46.5	label=-36.5625,-46.5	members=-41.8203,-1.5	methods=-41.8203,28.5
+classId-Gateway-2	51.1094	60	annotation=0,-36	label=-28.7969,-36	members=-39.1094,9	methods=-39.1094,39
+>>> ---\ndescription: >-\n  classDiagram with two classes each given a custom text label (one containing special\n  characters @?) connected by a solid relationship.\n---\nclassDiagram\n  class C1["Class 1 with text label"]\n  class C2["Class 2 with chars @?"]\n  C1 -->  C2\n
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	86.1328	40.5	annotation=0,-16.5	label=-74.1328,-16.5	members=-74.1328,28.5	methods=-74.1328,58.5
+>>> ---\ndescription: >-\n  Verifies the `direction TB` statement in classDiagram: a Student class\n  aggregating IdCard and Bike via `--o` relations with cardinality labels.\n  This variant sets a top-level `htmlLabels: true` config key, unlike the\n  sibling "16b...tb.mmd" which scopes htmlLabels under `flowchart`.\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  direction TB\n  class Student {\n  -idCard : IdCard\n  }\n  class IdCard{\n  -id : int\n  -name : string\n  }\n  class Bike{\n  -id : int\n  -name : string\n  }\n  Student "1" --o "1" IdCard : carries\n  Student "1" --o "1" Bike : rides\n
+classId-Student-0	74.8242	57	annotation=0,-33	label=-26.0547,-33	members=-62.8242,12	methods=-62.8242,57
+classId-IdCard-1	65.8828	67.5	annotation=0,-43.5	label=-22.1719,-43.5	members=-53.8828,1.5	methods=-53.8828,67.5
+classId-Bike-2	62.1914	67.5	annotation=0,-43.5	label=-14.7891,-43.5	members=-50.1914,1.5	methods=-50.1914,67.5
+>>> ---\ndescription: >-\n  Verifies the `direction RL` statement in classDiagram: a Student class\n  aggregating IdCard and Bike via `--o` relations with cardinality labels.\n  Sets a top-level `htmlLabels: true` config key (the "-2" suffix marks it\n  as an alternate-config variant of the base direction-RL test).\nconfig:\n  logLevel: 1\n  htmlLabels: true\n---\nclassDiagram\n  direction RL\n  class Student {\n  -idCard : IdCard\n  }\n  class IdCard{\n  -id : int\n  -name : string\n  }\n  class Bike{\n  -id : int\n  -name : string\n  }\n  Student "1" --o "1" IdCard : carries\n  Student "1" --o "1" Bike : rides\n
+classId-Student-0	74.8242	57	annotation=0,-33	label=-26.0547,-33	members=-62.8242,12	methods=-62.8242,57
+classId-IdCard-1	65.8828	67.5	annotation=0,-43.5	label=-22.1719,-43.5	members=-53.8828,1.5	methods=-53.8828,67.5
+classId-Bike-2	62.1914	67.5	annotation=0,-43.5	label=-14.7891,-43.5	members=-50.1914,1.5	methods=-50.1914,67.5
+>>> ---\ndescription: >-\n  classDiagram (v1 syntax) relationship smoke test where every relation\n  carries explicit cardinality labels on both ends (e.g. `"1" <|--|> "*"`,\n  `"1" o-- "many"`), across inheritance, composition, aggregation, link,\n  dependency, association, and bidirectional-association arrow types, plus\n  an inline interface stereotype and a class body block.\n---\nclassDiagram\n  Class01 "1" <|--|> "*" AveryLongClass : Cool\n   class Class01 {\n    &lt;&lt;interface&gt;&gt;\n  }\n  Class03 "1" *-- "*" Class04\n  Class05 "1" o-- "many" Class06\n  Class07 "1" .. "*" Class08\n  Class09 "1" --> "*" C2 : Where am i?\n  Class09 "*" --* "*" C3\n  Class09 "1" --|> "1" Class07\n  Class07  : equals()\n  Class07  : Object[] elementData\n  Class01  : size()\n  Class01  : int chimp\n  Class01  : int gorilla\n  Class08 "1" <--> "*" C2: Cool label\n  class Class10 {\n  &lt;&lt;service&gt;&gt;\n  int id\n  test()\n  }\n
+classId-Class01-0	68.4375	88.5	annotation=0,-64.5	label=-26.4688,-64.5	members=-56.4375,-19.5	methods=-56.4375,67.5
+classId-AveryLongClass-1	66.9844	40.5	annotation=0,-16.5	label=-54.9844,-16.5	members=-54.9844,28.5	methods=-54.9844,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	90.9922	67.5	annotation=0,-43.5	label=-26.4688,-43.5	members=-78.9922,1.5	methods=-78.9922,46.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-C2-9	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-C3-10	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+classId-Class10-11	63.7656	78	annotation=0,-54	label=-26.4688,-54	members=-51.7656,-9	methods=-51.7656,57
+>>> classDiagram\nclass Class01:::exClass
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class1:::exClass {\nint : test\nstring : foo\ntest()\nfoo()\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\nClass01 <|-- Class02\ncssClass "Class01" exClass
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01\n cssClass "Class01" exClass
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01\n class Class02\n cssClass "Class01,Class02" exClass
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01\n class Class02\n style Class01 fill:#f9f,stroke:#333,stroke-width:4px
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01\n cssClass "Class01" pink\n classDef pink fill:#f9f
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01:::pink\n classDef pink fill:#f9f
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01:::pink\n classDef pink fill:#f9f,stroke:#333,stroke-width:6px
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class01:::pink\n cssClass "Class01" bold\n classDef pink fill:#f9f\n classDef bold stroke:#333,stroke-width:6px
+classId-Class01-0	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\n        namespace Company.Project {\n          class User {\n            +login(username: String, password: String)\n            +logout()\n          }\n        }\n        namespace Company.Project.Module {\n          class Admin {\n            +addUser(user: User)\n            +removeUser(user: User)\n          }\n        }
+classId-User-0	152.652	70.5	annotation=0,-46.5	label=-15.5703,-46.5	members=-140.652,-1.5	methods=-140.652,28.5
+classId-Admin-1	102.055	70.5	annotation=0,-46.5	label=-21.7812,-46.5	members=-90.0547,-1.5	methods=-90.0547,28.5
+>>> classDiagram\n    namespace Company.Project.Module {\n        class GenericClass~T~ {\n            +addItem(item: T)\n            +getItem() T\n        }\n    }
+classId-GenericClass-0	95.9141	70.5	annotation=0,-46.5	label=-57.2031,-46.5	members=-83.9141,-1.5	methods=-83.9141,28.5
+>>>       classDiagram\n        namespace Company.Project.Module.SubModule {\n          class Report {\n            +generatePDF(data: List)\n            +generateCSV(data: List)\n          }\n        }\n        namespace Company.Project.Module {\n          class Admin {\n            +generateReport()\n          }\n        }\n        Admin --> Report : generates
+classId-Report-0	102.469	70.5	annotation=0,-46.5	label=-22.5625,-46.5	members=-90.4688,-1.5	methods=-90.4688,28.5
+classId-Admin-1	80.2891	60	annotation=0,-36	label=-21.7812,-36	members=-68.2891,9	methods=-68.2891,39
+>>> classDiagram\n        namespace Outer {\n          namespace Inner {\n            class Foo {\n              +bar()\n            }\n          }\n          class Baz {\n            +qux()\n          }\n        }
+classId-Foo-0	37.2812	60	annotation=0,-36	label=-12.8281,-36	members=-25.2812,9	methods=-25.2812,39
+classId-Baz-1	38.2656	60	annotation=0,-36	label=-12.4531,-36	members=-26.2656,9	methods=-26.2656,39
+>>> classDiagram\n          namespace Company.Engineering.Backend {\n            class Developer {\n              +writeCode()\n            }\n          }\n          namespace Company {\n            class CEO {\n              +makeDecisions()\n            }\n          }
+classId-Developer-0	69.1914	60	annotation=0,-36	label=-33.8516,-36	members=-57.1914,9	methods=-57.1914,39
+classId-CEO-1	75.8047	60	annotation=0,-36	label=-15.1719,-36	members=-63.8047,9	methods=-63.8047,39
+>>> classDiagram\n          namespace Company.Engineering.Backend {\n            class Developer\n          }\n          namespace Company {\n            class CEO\n          }
+classId-Developer-0	45.8516	40.5	annotation=0,-16.5	label=-33.8516,-16.5	members=-33.8516,28.5	methods=-33.8516,58.5
+classId-CEO-1	27.1719	40.5	annotation=0,-16.5	label=-15.1719,-16.5	members=-15.1719,28.5	methods=-15.1719,58.5
+>>> classDiagram\n        namespace A.B {\n          class Foo\n        }
+classId-Foo-0	24.8281	40.5	annotation=0,-16.5	label=-12.8281,-16.5	members=-12.8281,28.5	methods=-12.8281,58.5
+>>> classDiagram\n        namespace Auth["Authentication Service"] {\n          class UserService {\n            +login()\n          }\n        }
+classId-UserService-0	55.7852	60	annotation=0,-36	label=-40.4766,-36	members=-43.7852,9	methods=-43.7852,39
+>>> classDiagram\n            accTitle: My Title\n            accDescr: My Description
+>>> classDiagram\n            accTitle: My Title\n            accDescr {\n              This is my multi\n              line description\n            }
+>>> \nclassDiagram\nclass Car
+classId-Car-0	23.6797	40.5	annotation=0,-16.5	label=-11.6797,-16.5	members=-11.6797,28.5	methods=-11.6797,58.5
+>>> classDiagram\n        namespace Company.Project.Module {\n          class User\n          class Admin\n        }\n          Admin --> User : manages
+classId-User-0	27.5703	40.5	annotation=0,-16.5	label=-15.5703,-16.5	members=-15.5703,28.5	methods=-15.5703,58.5
+classId-Admin-1	33.7812	40.5	annotation=0,-16.5	label=-21.7812,-16.5	members=-21.7812,28.5	methods=-21.7812,58.5
+>>> classDiagram\nclass `Car`
+classId-Car-0	23.6797	40.5	annotation=0,-16.5	label=-11.6797,-16.5	members=-11.6797,28.5	methods=-11.6797,58.5
+>>> classDiagram\nclass Ca-r
+classId-Ca-r-0	26.0078	40.5	annotation=0,-16.5	label=-14.0078,-16.5	members=-14.0078,28.5	methods=-14.0078,58.5
+>>> classDiagram\nclass `A_Car`
+classId-A_Car-0	32.625	40.5	annotation=0,-16.5	label=-20.625,-16.5	members=-20.625,28.5	methods=-20.625,58.5
+>>> classDiagram\nclass Foo1 {\n  You can use\n  several lines\n..\nas you want\nand group\n==\nthings together.\n__\nYou can have as many groups\nas you want\n--\nEnd of class\n}\n\nclass User {\n.. Simple Getter ..\n+ getName()\n+ getAddress()\n.. Some setter ..\n+ setName()\n__ private data __\nint age\n-- encrypted --\nString password\n}
+classId-Foo1-0	114.285	172.5	annotation=0,-148.5	label=-16.7266,-148.5	members=-102.285,-103.5	methods=-102.285,172.5
+classId-User-1	75.832	141	annotation=0,-117	label=-15.5703,-117	members=-63.832,-72	methods=-63.832,78
+>>> classDiagram\nclass C1["Class 1 with text label"]
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]\nclass C2["Class 2 with chars @?"]\n
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	86.1328	40.5	annotation=0,-16.5	label=-74.1328,-16.5	members=-74.1328,28.5	methods=-74.1328,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]\nC1: member1
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+>>> classDiagram\nclass C1["Class 1 with text label"]\n<<interface>> C1\nC1 : int member1
+classId-C1-0	87.2812	67.5	annotation=-34.6406,-43.5	label=-72.75,-22.5	members=-75.2812,22.5	methods=-75.2812,67.5
+>>> classDiagram\nclass C1["Class 1 with text label"]:::styleClass
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]\nC1 : int member1\ncssClass "C1" styleClass
+classId-C1-0	87.2812	57	annotation=0,-33	label=-72.75,-33	members=-75.2812,12	methods=-75.2812,57
+>>> classDiagram\nclass C1["Class 1 with text label"]\nC1 : int member1\nclass C2["Long long long long long long long long long long label"]\ncssClass "C1,C2" styleClass
+classId-C1-0	87.2812	57	annotation=0,-33	label=-72.75,-33	members=-75.2812,12	methods=-75.2812,57
+classId-C2-1	197.461	40.5	annotation=0,-16.5	label=-185.461,-16.5	members=-185.461,28.5	methods=-185.461,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]:::styleClass1\nclass C2["Class 2 !@#$%^&*() label"]:::styleClass2
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	96.0547	40.5	annotation=0,-16.5	label=-84.0547,-16.5	members=-84.0547,28.5	methods=-84.0547,58.5
+>>> classDiagram\nclass C1~T~\ncssClass "C1~T~" styleClass
+classId-C1-0	33.4062	40.5	annotation=0,-16.5	label=-21.4062,-16.5	members=-21.4062,28.5	methods=-21.4062,58.5
+>>> classDiagram\nclass C1~T~:::styleClass
+classId-C1-0	33.4062	40.5	annotation=0,-16.5	label=-21.4062,-16.5	members=-21.4062,28.5	methods=-21.4062,58.5
+>>> classDiagram\nclass C1~T~\nclick C1~T~ call someFunction()
+classId-C1-0	33.4062	40.5	annotation=0,-16.5	label=-21.4062,-16.5	members=-21.4062,28.5	methods=-21.4062,58.5
+>>> classDiagram\nclass C1~T~\nclick C1~T~ call cb() "a tip"
+classId-C1-0	33.4062	40.5	annotation=0,-16.5	label=-21.4062,-16.5	members=-21.4062,28.5	methods=-21.4062,58.5
+>>> classDiagram\nclass C1~T~\nlink C1~T~ "https://example.com"
+classId-C1-0	33.4062	40.5	annotation=0,-16.5	label=-21.4062,-16.5	members=-21.4062,28.5	methods=-21.4062,58.5
+>>> classDiagram\nclass C1["Class with text label"]\nclass C2["Class with text label"]\nclass C3["Class with text label"]
+classId-C1-0	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C2-1	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C3-2	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+>>> classDiagram\nClass11 <|.. Class12\nnote for Class11 "test"\n
+classId-Class11-0	38.0859	40.5	annotation=0,-16.5	label=-26.0859,-16.5	members=-26.0859,28.5	methods=-26.0859,58.5
+classId-Class12-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+note0	17.2891	16.5
+>>> classDiagram\nnote "test"\n
+note0	17.2891	16.5
+>>> classDiagram\n          direction TB\n          class Student {\n            -idCard : IdCard\n          }\n          class IdCard{\n            -id : int\n            -name : string\n          }\n          class Bike{\n            -id : int\n            -name : string\n          }\n          Student "1" --o "1" IdCard : carries\n          Student "1" --o "1" Bike : rides
+classId-Student-0	74.8242	57	annotation=0,-33	label=-26.0547,-33	members=-62.8242,12	methods=-62.8242,57
+classId-IdCard-1	65.8828	67.5	annotation=0,-43.5	label=-22.1719,-43.5	members=-53.8828,1.5	methods=-53.8828,67.5
+classId-Bike-2	62.1914	67.5	annotation=0,-43.5	label=-14.7891,-43.5	members=-50.1914,1.5	methods=-50.1914,67.5
+>>> classDiagram\n          direction RL\n          class A
+classId-A-0	17.0625	40.5	annotation=0,-16.5	label=-5.0625,-16.5	members=-5.0625,28.5	methods=-5.0625,58.5
+>>> classDiagram\n          class B
+classId-B-0	17.0625	40.5	annotation=0,-16.5	label=-5.0625,-16.5	members=-5.0625,28.5	methods=-5.0625,58.5
+>>> classDiagram\nclass Car{\n+int wheels\n}
+classId-Car-0	53.0586	57	annotation=0,-33	label=-11.6797,-33	members=-41.0586,12	methods=-41.0586,57
+>>> classDiagram\nclass Car{\n+size()\n}
+classId-Car-0	39.043	60	annotation=0,-36	label=-11.6797,-36	members=-27.043,9	methods=-27.043,39
+>>> classDiagram\nclass Car{\n+int wheels\n}\nCar : +ArrayList size()\n
+classId-Car-0	68.6055	67.5	annotation=0,-43.5	label=-11.6797,-43.5	members=-56.6055,1.5	methods=-56.6055,46.5
+>>> classDiagram\nclass Dummy_Class {\nString data\nvoid methods()\n}
+classId-Dummy_Class-0	82.4219	67.5	annotation=0,-43.5	label=-48.25,-43.5	members=-70.4219,1.5	methods=-70.4219,46.5
+>>> classDiagram\nclass Flight {\nint flightNumber\ndatetime departureTime\ngetDepartureTime() datetime\n}
+classId-Flight-0	115.027	78	annotation=0,-54	label=-19.0547,-54	members=-103.027,-9	methods=-103.027,57
+>>> classDiagram\nclass Class1 {\nint testMember\ntest()\nstring fooMember\nfoo()\n}
+classId-Class1-0	77.7578	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-65.7578,-19.5	methods=-65.7578,46.5
+>>> classDiagram\nclass C1["Class 1 with text label"] {\n+member1\n}
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+>>> classDiagram\nclass C1["Class 1 with text label"] {\n<<interface>>\n+member1\n}
+classId-C1-0	84.75	67.5	annotation=-34.6406,-43.5	label=-72.75,-22.5	members=-72.75,22.5	methods=-72.75,67.5
+>>> classDiagram\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n\n}\n%% Comment\n
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}\n%% Comment
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\n\n\n%% Comment\n\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\n%% Comment Class1 <|-- Class02\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\nclass Class1 {\n%% Comment Class1 <|-- Class02\nint : test\nstring : foo\ntest()\nfoo()\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\nclass Class1 \nclick Class1 href "google.com" 
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> classDiagram\nclass Class1 \nclick Class1 href "google.com" "A Tooltip" 
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 href "google.com" "A tooltip" _self
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1 \nclick Class1 call functionCall() 
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> classDiagram\nclass Class1 \nclick Class1 call functionCall() "A Tooltip" 
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 call functionCall(test, test1, test2)
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 call functionCall("test0", test1, test2) "A Tooltip"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\n<<interface>> Class1
+classId-Class1-0	46.6406	51	annotation=-34.6406,-27	label=-22.5781,-6	members=-34.6406,39	methods=-34.6406,69
+>>> classDiagram\nclass Class1\nClass1 : int test\nClass1 : test()\n<<interface>> Class1
+classId-Class1-0	49.9453	78	annotation=-34.6406,-54	label=-22.5781,-33	members=-37.9453,12	methods=-37.9453,57
+>>> classDiagram\nclass Class1 {\n<<interface>>\n}
+classId-Class1-0	46.6406	51	annotation=-34.6406,-27	label=-22.5781,-6	members=-34.6406,39	methods=-34.6406,69
+>>> classDiagram\nclass Class1 {\n<<interface>>\nint : test\ntest()\n}
+classId-Class1-0	53.8359	78	annotation=-34.6406,-54	label=-22.5781,-33	members=-41.8359,12	methods=-41.8359,57
+>>> classDiagram\nclass Shape\n<<interface>> Shape\nShape : noOfVertices\nShape : draw()
+classId-Shape-0	69.3984	78	annotation=-34.6406,-54	label=-21.0078,-33	members=-57.3984,12	methods=-57.3984,57
+>>> classDiagram\nclass Shape{\n    <<interface>>\n    noOfVertices\n    draw()\n}\nclass Color{\n    <<enumeration>>\n    RED\n    BLUE\n    GREEN\n    WHITE\n    BLACK\n}
+classId-Shape-0	69.3984	78	annotation=-34.6406,-54	label=-21.0078,-33	members=-57.3984,12	methods=-57.3984,57
+classId-Color-1	60.25	109.5	annotation=-46.7031,-85.5	label=-18.2812,-64.5	members=-48.25,-19.5	methods=-48.25,109.5
+>>> classDiagram\nclass Shape <<interface>>
+classId-Shape-0	46.6406	51	annotation=-34.6406,-27	label=-21.0078,-6	members=-34.6406,39	methods=-34.6406,69
+>>> classDiagram\nclass Shape <<interface>> {\n    noOfVertices\n    draw()\n}
+classId-Shape-0	69.3984	78	annotation=-34.6406,-54	label=-21.0078,-33	members=-57.3984,12	methods=-57.3984,57
+>>> classDiagram\nclass Shape <<interface>> {\n}
+classId-Shape-0	46.6406	51	annotation=-34.6406,-27	label=-21.0078,-6	members=-34.6406,39	methods=-34.6406,69
+>>> classDiagram\nclass Car\nCar : wheels
+classId-Car-0	39.6367	57	annotation=0,-33	label=-11.6797,-33	members=-27.6367,12	methods=-27.6367,57
+>>> classDiagram\nCar : wheels
+classId-Car-0	39.6367	57	annotation=0,-33	label=-11.6797,-33	members=-27.6367,12	methods=-27.6367,57
+>>> classDiagram\nCar : int wheels
+classId-Car-0	48.9727	57	annotation=0,-33	label=-11.6797,-33	members=-36.9727,12	methods=-36.9727,57
+>>> classDiagram\nclass Car\nCar : int wheels
+classId-Car-0	48.9727	57	annotation=0,-33	label=-11.6797,-33	members=-36.9727,12	methods=-36.9727,57
+>>> classDiagram\nclass actual\nactual : -int privateMember\nactual : +int publicMember\nactual : #int protectedMember\nactual : ~int privatePackage
+classId-actual-0	90.2109	88.5	annotation=0,-64.5	label=-20.2344,-64.5	members=-78.2109,-19.5	methods=-78.2109,88.5
+>>> classDiagram\nclass Car\nCar : -List~Wheel~ wheels
+classId-Car-0	82.8164	57	annotation=0,-33	label=-11.6797,-33	members=-70.8164,12	methods=-70.8164,57
+>>> classDiagram\nclass Car\nCar : GetSize()
+classId-Car-0	47.4023	60	annotation=0,-36	label=-11.6797,-36	members=-35.4023,9	methods=-35.4023,39
+>>> classDiagram\nclass Object\nObject : getObject() Object
+classId-Object-0	83.5898	60	annotation=0,-36	label=-21.7891,-36	members=-71.5898,9	methods=-71.5898,39
+>>> classDiagram\nclass Object\nObject : getObjects() Object[]
+classId-Object-0	90.9805	60	annotation=0,-36	label=-21.7891,-36	members=-78.9805,9	methods=-78.9805,39
+>>> classDiagram\nclass actual\nactual : -privateMethod()\nactual : +publicMethod()\nactual : #protectedMethod()\n
+classId-actual-0	83.2109	81	annotation=0,-57	label=-20.2344,-57	members=-71.2109,-12	methods=-71.2109,18
+>>> classDiagram\nclass Class1\nClass1 : someMethod()*
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()$
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Car\nCar : +setWheels(List~Wheel~ wheels)
+classId-Car-0	121.918	60	annotation=0,-36	label=-11.6797,-36	members=-109.918,9	methods=-109.918,39
+>>> classDiagram\nclass Car\nCar : +getWheels() List~Wheel~
+classId-Car-0	104.41	60	annotation=0,-36	label=-11.6797,-36	members=-92.4102,9	methods=-92.4102,39
+>>> classDiagram\nclass Car {\nList~Wheel~ wheels\nsetWheels(List~Wheel~ wheels)\n+getWheels() List~Wheel~\n}
+classId-Car-0	117.832	78	annotation=0,-54	label=-11.6797,-54	members=-105.832,-9	methods=-105.832,36
+>>> classDiagram\nclass EmptyClass {}
+classId-EmptyClass-0	52.0781	40.5	annotation=0,-16.5	label=-40.0781,-16.5	members=-40.0781,28.5	methods=-40.0781,58.5
+>>> classDiagram\nclass Car~T~
+classId-Car-0	36.125	40.5	annotation=0,-16.5	label=-24.125,-16.5	members=-24.125,28.5	methods=-24.125,58.5
+>>> classDiagram\nclass Car~T~\nDriver -- Car : drives >\nCar *-- Wheel : have 4 >\nCar -- Person : < owns
+classId-Car-0	36.125	40.5	annotation=0,-16.5	label=-24.125,-16.5	members=-24.125,28.5	methods=-24.125,58.5
+classId-Driver-1	32.2344	40.5	annotation=0,-16.5	label=-20.2344,-16.5	members=-20.2344,28.5	methods=-20.2344,58.5
+classId-Wheel-2	32.6172	40.5	annotation=0,-16.5	label=-20.6172,-16.5	members=-20.6172,28.5	methods=-20.6172,58.5
+classId-Person-3	35.7344	40.5	annotation=0,-16.5	label=-23.7344,-16.5	members=-23.7344,28.5	methods=-23.7344,58.5
+>>> classDiagram\nclass `Car`~T~\nDriver -- `Car` : drives >\n`Car` *-- Wheel : have 4 >\n`Car` -- Person : < owns
+classId-Car-0	36.125	40.5	annotation=0,-16.5	label=-24.125,-16.5	members=-24.125,28.5	methods=-24.125,58.5
+classId-Driver-1	32.2344	40.5	annotation=0,-16.5	label=-20.2344,-16.5	members=-20.2344,28.5	methods=-20.2344,58.5
+classId-Wheel-2	32.6172	40.5	annotation=0,-16.5	label=-20.6172,-16.5	members=-20.6172,28.5	methods=-20.6172,58.5
+classId-Person-3	35.7344	40.5	annotation=0,-16.5	label=-23.7344,-16.5	members=-23.7344,28.5	methods=-23.7344,58.5
+>>> classDiagram\nclass Dummy_Class~T~ {\nString data\nvoid methods()\n}\n\nclass Flight {\nInteger flightNumber\nDate departureTime\n}
+classId-Dummy_Class-0	88.6484	67.5	annotation=0,-43.5	label=-60.7031,-43.5	members=-76.6484,1.5	methods=-76.6484,46.5
+classId-Flight-1	84.9492	67.5	annotation=0,-43.5	label=-19.0547,-43.5	members=-72.9492,1.5	methods=-72.9492,67.5
+>>> classDiagram\nclass `Dummy_Class`~T~ {\nString data\n  void methods()\n}\n\nclass Flight {\n   flightNumber : Integer\n   departureTime : Date\n}
+classId-Dummy_Class-0	88.6484	67.5	annotation=0,-43.5	label=-60.7031,-43.5	members=-76.6484,1.5	methods=-76.6484,46.5
+classId-Flight-1	88.8398	67.5	annotation=0,-43.5	label=-19.0547,-43.5	members=-76.8398,1.5	methods=-76.8398,67.5
+>>> classDiagram\nnamespace Namespace1 { class Class1 }\nnamespace Namespace2 { class Class1\n}\nnamespace Namespace3 {\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}\n}\nnamespace Namespace4 {\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}\nclass Class2 {\nint : test\nstring : foo\ntest()\nfoo()\n}\n}\n
+classId-Class1-0	55.9766	130.5	annotation=0,-106.5	label=-22.5781,-106.5	members=-43.9766,-61.5	methods=-43.9766,46.5
+classId-Class2-1	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\n\nnamespace space {\n    class Square~Shape~{\n        int id\n        List~int~ position\n        setPoints(List~int~ points)\n        getPoints() List~int~\n    }\n}
+classId-Square-0	119.004	88.5	annotation=0,-64.5	label=-52.9141,-64.5	members=-107.004,-19.5	methods=-107.004,46.5
+>>> classDiagram\nClass1 <|-- Class02\nClass03 *-- Class04\nClass05 o-- Class06\nClass07 .. Class08\nClass09 -- Class1
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\n`Class1` <|-- Class02\nClass03 *-- Class04\nClass05 o-- Class06\nClass07 .. Class08\nClass09 -- Class1
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1~T~ <|-- Class02
+classId-Class1-0	47.0312	40.5	annotation=0,-16.5	label=-35.0312,-16.5	members=-35.0312,28.5	methods=-35.0312,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Car\nDriver -- Car : drives >\nCar *-- Wheel : have 4 >\nCar -- Person : < owns
+classId-Car-0	23.6797	40.5	annotation=0,-16.5	label=-11.6797,-16.5	members=-11.6797,28.5	methods=-11.6797,58.5
+classId-Driver-1	32.2344	40.5	annotation=0,-16.5	label=-20.2344,-16.5	members=-20.2344,28.5	methods=-20.2344,58.5
+classId-Wheel-2	32.6172	40.5	annotation=0,-16.5	label=-20.6172,-16.5	members=-20.6172,28.5	methods=-20.6172,58.5
+classId-Person-3	35.7344	40.5	annotation=0,-16.5	label=-23.7344,-16.5	members=-23.7344,28.5	methods=-23.7344,58.5
+>>> classDiagram\nClass1 <|-- Class02
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass11 <|.. Class12\nClass13 --> Class14\nClass15 ..> Class16\nClass17 ..|> Class18\nClass19 <--* Class20
+classId-Class11-0	38.0859	40.5	annotation=0,-16.5	label=-26.0859,-16.5	members=-26.0859,28.5	methods=-26.0859,58.5
+classId-Class12-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class13-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class14-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class15-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class16-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class17-6	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class18-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class19-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class20-9	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 "1" *-- "many" Class02 : contains\nClass03 o-- Class04 : aggregation\nClass05 --> "1" Class06
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass11 <|.. Class12\nClass13 <.. Class14\nClass15 ..|> Class16\nClass17 ..> Class18\nClass19 .. Class20
+classId-Class11-0	38.0859	40.5	annotation=0,-16.5	label=-26.0859,-16.5	members=-26.0859,28.5	methods=-26.0859,58.5
+classId-Class12-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class13-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class14-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class15-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class16-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class17-6	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class18-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class19-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class20-9	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 o.. Class02
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 *--* Class02
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 -- Class02
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 --|> Class02
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass1 <|-- Class02\nClass03 *-- Class04\nClass05 o-- Class06\nClass07 .. Class08\nClass09 -- Class10
+classId-Class1-0	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class03-2	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class04-3	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class05-4	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class06-5	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class07-6	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class08-7	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class09-8	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+classId-Class10-9	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nClass01~T~ <|-- Class02
+classId-Class01-0	50.9219	40.5	annotation=0,-16.5	label=-38.9219,-16.5	members=-38.9219,28.5	methods=-38.9219,58.5
+classId-Class02-1	38.4688	40.5	annotation=0,-16.5	label=-26.4688,-16.5	members=-26.4688,28.5	methods=-26.4688,58.5
+>>> classDiagram\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nlink Class1 "google.com"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 href "google.com"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nlink Class1 "google.com" "A tooltip"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 href "google.com" "A tooltip"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 href "google.com" _self
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nlink Class1 "google.com" "A tooltip" _self
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\ncallback Class1 "functionCall"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 call functionCall()
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 call functionCall("test0", test1, test2)
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nclass Class1\nClass1 : someMethod()\nclick Class1 call functionCall() "A tooltip"
+classId-Class1-0	68.4219	60	annotation=0,-36	label=-22.5781,-36	members=-56.4219,9	methods=-56.4219,39
+>>> classDiagram\nnamespace Namespace1 {\nclass Class1 {\nint : test\nstring : foo\ntest()\nfoo()\n}\nclass Class2\n}
+classId-Class1-0	55.9766	88.5	annotation=0,-64.5	label=-22.5781,-64.5	members=-43.9766,-19.5	methods=-43.9766,46.5
+classId-Class2-1	34.5781	40.5	annotation=0,-16.5	label=-22.5781,-16.5	members=-22.5781,28.5	methods=-22.5781,58.5
+>>> classDiagram\n      A1 --> B1\n      namespace A {\n        class A1 {\n          +foo : string\n        }\n        class A2 {\n          +bar : int\n        }\n      }\n      namespace B {\n        class B1 {\n          +foo : bool\n        }\n        class B2 {\n          +bar : float\n        }\n      }\n      A2 --> B2
+classId-A1-0	53.25	57	annotation=0,-33	label=-8.95312,-33	members=-41.25,12	methods=-41.25,57
+classId-B1-1	49.3672	57	annotation=0,-33	label=-8.95312,-33	members=-37.3672,12	methods=-37.3672,57
+classId-A2-2	43.9141	57	annotation=0,-33	label=-8.95312,-33	members=-31.9141,12	methods=-31.9141,57
+classId-B2-3	49.75	57	annotation=0,-33	label=-8.95312,-33	members=-37.75,12	methods=-37.75,57
+>>> classDiagram\n  class C1["Class 1 with text label"]\n  C1 -->  C2\n      
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> classDiagram\n  class C1["Class 1 with text label"]\n  class C2["Class 2 with chars @?"]\n  C1 -->  C2\n      
+classId-C1-0	84.75	40.5	annotation=0,-16.5	label=-72.75,-16.5	members=-72.75,28.5	methods=-72.75,58.5
+classId-C2-1	86.1328	40.5	annotation=0,-16.5	label=-74.1328,-16.5	members=-74.1328,28.5	methods=-74.1328,58.5
+>>> classDiagram\n  class C1["Class 1 with text label"] {\n    +member1\n  }\n  C1 -->  C2\n      
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> classDiagram\n  class C1["Class 1 with text label"] {\n    <<interface>>\n    +member1\n  }\n  C1 -->  C2\n      
+classId-C1-0	84.75	67.5	annotation=-34.6406,-43.5	label=-72.75,-22.5	members=-72.75,22.5	methods=-72.75,67.5
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]:::styleClass {\n  +member1\n}\nC1 -->  C2\n  
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"] {\n  +member1\n}\nC1 --> C2\ncssClass "C1" styleClass\n  
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+classId-C2-1	20.9531	40.5	annotation=0,-16.5	label=-8.95312,-16.5	members=-8.95312,28.5	methods=-8.95312,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"] {\n  +member1\n}\nclass C2["Long long long long long long long long long long label"]\nC1 --> C2\ncssClass "C1,C2" styleClass\n  
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+classId-C2-1	197.461	40.5	annotation=0,-16.5	label=-185.461,-16.5	members=-185.461,28.5	methods=-185.461,58.5
+>>> classDiagram\nclass C1["Class 1 with text label"]:::styleClass1 {\n  +member1\n}\nclass C2["Class 2 !@#$%^&*() label"]:::styleClass2\nC1 --> C2\n  
+classId-C1-0	84.75	57	annotation=0,-33	label=-72.75,-33	members=-72.75,12	methods=-72.75,57
+classId-C2-1	96.0547	40.5	annotation=0,-16.5	label=-84.0547,-16.5	members=-84.0547,28.5	methods=-84.0547,58.5
+>>> classDiagram\nclass C1["Class with text label"]\nclass C2["Class with text label"]\nclass C3["Class with text label"]\nC1 --> C2\nC3 ..> C2\n  
+classId-C1-0	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C2-1	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+classId-C3-2	78.9141	40.5	annotation=0,-16.5	label=-66.9141,-16.5	members=-66.9141,28.5	methods=-66.9141,58.5
+>>> classDiagram\nnamespace `A::B` {\n\tclass `IPC::Sender`\n}
+classId-IPC::Sender-0	52.0625	40.5	annotation=0,-16.5	label=-40.0625,-16.5	members=-40.0625,28.5	methods=-40.0625,58.5

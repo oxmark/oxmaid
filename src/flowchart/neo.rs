@@ -16,7 +16,7 @@ use crate::elk::{
 };
 use crate::layout::Point;
 use crate::options::RenderOptions;
-use crate::svg::{esc, safe_css_value};
+use crate::svg::{css_color, esc, safe_css_value};
 use crate::text::{arial_width, layout_units, FontStyle};
 use std::fmt::Write;
 
@@ -55,7 +55,7 @@ const CLUSTER_COLORS: usize = 12;
 // Labels
 
 #[derive(Debug, Clone, PartialEq)]
-enum Seg {
+pub(crate) enum Seg {
     Text(String, FontStyle),
     /// Markup copied as is (already safe).
     Tag(String),
@@ -183,7 +183,7 @@ fn parse_plain(text: &str) -> Vec<Seg> {
 
 /// `**bold**`, `__bold__`, `*italic*` and `_italic_`, as Mermaid's markdown
 /// labels support them.
-fn parse_markdown(text: &str) -> Vec<Seg> {
+pub(crate) fn parse_markdown(text: &str) -> Vec<Seg> {
     let mut segs = Vec::new();
     let (mut bold, mut italic) = (false, false);
     let mut buf = String::new();
@@ -197,9 +197,36 @@ fn parse_markdown(text: &str) -> Vec<Seg> {
             FontStyle::Regular
         }
     };
+    // CommonMark flanking rules, simplified: a run opens when followed by
+    // a non-space, closes when preceded by one, and `_` never acts inside
+    // a word.
+    // The delimiter run around `i`: (index before it, index after it).
+    let run = |i: usize| {
+        let c = chars[i];
+        let mut a = i;
+        while a > 0 && chars[a - 1] == c {
+            a -= 1;
+        }
+        let mut b = i;
+        while b < chars.len() && chars[b] == c {
+            b += 1;
+        }
+        (a.checked_sub(1).map(|p| chars[p]), chars.get(b).copied())
+    };
+    let can_open = |i: usize, _n: usize| {
+        let (prev, next) = run(i);
+        next.is_some_and(|c| !c.is_whitespace())
+            && (chars[i] != '_' || !prev.is_some_and(char::is_alphanumeric))
+    };
+    let can_close = |i: usize, _n: usize| {
+        let (prev, next) = run(i);
+        prev.is_some_and(|c| !c.is_whitespace())
+            && (chars[i] != '_' || !next.is_some_and(char::is_alphanumeric))
+    };
     let closes = |from: usize, marker: &[char]| {
         let n = marker.len();
-        (from..chars.len().saturating_sub(n - 1)).any(|j| chars[j..j + n] == *marker)
+        (from..chars.len().saturating_sub(n - 1))
+            .any(|j| chars[j..j + n] == *marker && can_close(j, n))
     };
     let mut i = 0;
     while i < chars.len() {
@@ -212,7 +239,11 @@ fn parse_markdown(text: &str) -> Vec<Seg> {
         }
         if (c == '*' || c == '_')
             && chars.get(i + 1) == Some(&c)
-            && (bold || closes(i + 2, &[c, c]))
+            && (if bold {
+                can_close(i, 2)
+            } else {
+                can_open(i, 2) && closes(i + 2, &[c, c])
+            })
         {
             push_text(&mut segs, &std::mem::take(&mut buf), style(bold, italic));
             segs.push(Seg::Tag(if bold { "</strong>" } else { "<strong>" }.into()));
@@ -220,7 +251,13 @@ fn parse_markdown(text: &str) -> Vec<Seg> {
             i += 2;
             continue;
         }
-        if (c == '*' || c == '_') && (italic || closes(i + 1, &[c])) {
+        if (c == '*' || c == '_')
+            && (if italic {
+                can_close(i, 1)
+            } else {
+                can_open(i, 1) && closes(i + 1, &[c])
+            })
+        {
             push_text(&mut segs, &std::mem::take(&mut buf), style(bold, italic));
             segs.push(Seg::Tag(if italic { "</em>" } else { "<em>" }.into()));
             italic = !italic;
@@ -423,28 +460,6 @@ fn class_props<'a>(
     names
         .filter_map(move |name| fc.class_defs.iter().find(|c| c.name == name))
         .flat_map(|c| c.styles.iter())
-}
-
-/// `#f96` → `rgb(255, 153, 102)`, as the browser reports a computed color.
-fn css_color(v: &str) -> String {
-    let hex = v
-        .trim()
-        .strip_prefix('#')
-        .filter(|h| h.chars().all(|c| c.is_ascii_hexdigit()));
-    let digits: Option<Vec<u8>> = hex.and_then(|h| match h.len() {
-        3 => h
-            .chars()
-            .map(|c| u8::from_str_radix(&format!("{c}{c}"), 16).ok())
-            .collect(),
-        6 => (0..3)
-            .map(|i| u8::from_str_radix(&h[2 * i..2 * i + 2], 16).ok())
-            .collect(),
-        _ => None,
-    });
-    match digits {
-        Some(d) => format!("rgb({}, {}, {})", d[0], d[1], d[2]),
-        None => v.trim().to_string(),
-    }
 }
 
 fn class_css(fc: &Flowchart, id: &str) -> String {

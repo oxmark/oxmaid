@@ -4,7 +4,7 @@ version = "0.0.0"
 edition = "2021"
 rust-version = "1.70"
 license = "Apache-2.0"
-description = "A Rust port of Mermaid (diagrams from text): flowcharts and sequence diagrams."
+description = "A Rust port of Mermaid (diagrams from text): flowcharts, sequence and class diagrams."
 keywords = ["mermaid", "diagram", "flowchart", "sequence", "svg"]
 categories = ["visualization", "parser-implementations"]
 

@@ -2,7 +2,7 @@
 //!
 //! The syntax follows Mermaid 12.3 (`flow.jison` and `flowDb.ts`).
 
-mod neo;
+pub(crate) mod neo;
 mod parser;
 mod render;
 

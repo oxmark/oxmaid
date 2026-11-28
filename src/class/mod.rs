@@ -5,14 +5,11 @@
 //! `classDef` style classes, in declaration order.
 
 mod parser;
+mod render;
 mod tables;
 
 pub use parser::parse;
-
-/// Renders a class diagram to SVG.
-pub(crate) fn render(_d: &ClassDiagram, _o: &crate::RenderOptions) -> String {
-    String::from("<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>")
-}
+pub(crate) use render::render;
 
 use crate::config::DiagramConfig;
 

@@ -1,0 +1,27 @@
+---
+title: Animals
+---
+classDiagram
+  note "From Duck till Zebra"
+  Animal <|-- Duck : extends
+  Animal <|-- Zebra
+  Animal "1" *-- "4" Leg
+  class Animal {
+    <<abstract>>
+    +int age
+    +String gender
+    +isMammal() bool
+    +mate()*
+  }
+  namespace Pond {
+    class Duck {
+      +String beakColor
+      +swim()
+      +quack()
+    }
+  }
+  class Zebra {
+    -bool is_wild
+    +run()
+  }
+  note for Duck "can fly and swim"
