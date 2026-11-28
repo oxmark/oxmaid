@@ -2,10 +2,11 @@
 //!
 //! The syntax follows Mermaid 12.3 (`flow.jison` and `flowDb.ts`).
 
-mod neo;
+pub(crate) mod neo;
 mod parser;
 mod render;
 
+pub(crate) use parser::format_url;
 pub use parser::parse;
 
 /// Renders with the `neo` look (Mermaid 12's default), or the old look when

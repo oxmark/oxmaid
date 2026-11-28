@@ -177,7 +177,7 @@ fn style_semicolon(chars: &[(char, usize)], keyword: &str) -> Option<usize> {
 /// runs `@braintree/sanitize-url`: script-like schemes become `about:blank`,
 /// absolute URLs are normalized like `new URL()` does (`http://x` gives
 /// `http://x/`), relative ones are kept.
-fn format_url(url: &str) -> Option<String> {
+pub(crate) fn format_url(url: &str) -> Option<String> {
     let url = url.trim();
     if url.is_empty() {
         return None;

@@ -3,8 +3,8 @@
 //! A Rust port of [Mermaid](https://mermaid.js.org): text to SVG diagrams,
 //! without a browser or JavaScript.
 //!
-//! Ported so far: flowcharts (`flowchart` / `graph`) and sequence diagrams
-//! (`sequenceDiagram`).
+//! Ported so far: flowcharts (`flowchart` / `graph`), sequence diagrams
+//! (`sequenceDiagram`) and class diagrams (`classDiagram`).
 //!
 //! ```
 //! let svg = oxmaid::render("flowchart LR\n  A[Start] --> B{Ok?}\n  B -->|yes| C[End]").unwrap();
@@ -12,14 +12,18 @@
 //! ```
 #![forbid(unsafe_code)]
 
+pub mod class;
 pub mod config;
 mod dom;
+mod elk;
 mod error;
 pub mod flowchart;
 mod font_metrics;
 mod font_metrics_svg;
+mod jison;
 pub mod layout;
 mod options;
+mod purify;
 pub mod sequence;
 mod source;
 mod svg;
@@ -36,6 +40,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum DiagramKind {
     Flowchart,
     Sequence,
+    Class,
 }
 
 /// A parsed diagram.
@@ -44,6 +49,7 @@ pub enum DiagramKind {
 pub enum Diagram {
     Flowchart(flowchart::Flowchart),
     Sequence(sequence::SequenceDiagram),
+    Class(class::ClassDiagram),
 }
 
 impl Diagram {
@@ -51,6 +57,7 @@ impl Diagram {
         match self {
             Diagram::Flowchart(_) => DiagramKind::Flowchart,
             Diagram::Sequence(_) => DiagramKind::Sequence,
+            Diagram::Class(_) => DiagramKind::Class,
         }
     }
 
@@ -59,14 +66,13 @@ impl Diagram {
         match self {
             Diagram::Flowchart(f) => flowchart::render(f, options),
             Diagram::Sequence(d) => sequence::render(d, options),
+            Diagram::Class(d) => class::render(d, options),
         }
     }
 }
 
 /// Known Mermaid types that are not ported yet.
 const NOT_YET_PORTED: &[&str] = &[
-    "classDiagram",
-    "classDiagram-v2",
     "stateDiagram",
     "stateDiagram-v2",
     "erDiagram",
@@ -107,6 +113,7 @@ pub fn detect(src: &str) -> Result<DiagramKind> {
     match keyword {
         "flowchart" | "graph" | "flowchart-elk" | "swimlane-beta" => Ok(DiagramKind::Flowchart),
         "sequenceDiagram" => Ok(DiagramKind::Sequence),
+        k if k.starts_with("classDiagram") => Ok(DiagramKind::Class),
         k if NOT_YET_PORTED.contains(&k) => Err(Error::new(
             ErrorKind::UnsupportedDiagram,
             first.number,
@@ -127,6 +134,7 @@ pub fn parse(src: &str) -> Result<Diagram> {
     match detect(src)? {
         DiagramKind::Flowchart => flowchart::parse(src).map(Diagram::Flowchart),
         DiagramKind::Sequence => sequence::parse(src).map(Diagram::Sequence),
+        DiagramKind::Class => class::parse(src).map(Diagram::Class),
     }
 }
 

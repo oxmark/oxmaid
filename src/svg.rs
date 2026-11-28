@@ -40,6 +40,28 @@ pub(crate) fn safe_css_value(v: &str) -> Option<&str> {
     ok.then_some(v)
 }
 
+/// `#f96` → `rgb(255, 153, 102)`, as the browser reports a computed color.
+pub(crate) fn css_color(v: &str) -> String {
+    let hex = v
+        .trim()
+        .strip_prefix('#')
+        .filter(|h| h.chars().all(|c| c.is_ascii_hexdigit()));
+    let digits: Option<Vec<u8>> = hex.and_then(|h| match h.len() {
+        3 => h
+            .chars()
+            .map(|c| u8::from_str_radix(&format!("{c}{c}"), 16).ok())
+            .collect(),
+        6 => (0..3)
+            .map(|i| u8::from_str_radix(&h[2 * i..2 * i + 2], 16).ok())
+            .collect(),
+        _ => None,
+    });
+    match digits {
+        Some(d) => format!("rgb({}, {}, {})", d[0], d[1], d[2]),
+        None => v.trim().to_string(),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::safe_css_value;
