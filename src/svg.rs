@@ -26,13 +26,41 @@ pub(crate) fn num(v: f64) -> String {
     }
 }
 
-/// Keeps a CSS value only if it contains safe characters
-/// (no quotes, angle brackets, `;` or `url(`).
+/// Keeps a CSS value only if it contains safe characters (no quotes, angle
+/// brackets, `;` or backslashes) and no `url(` or `expression(`, which can
+/// load content or run script.
 pub(crate) fn safe_css_value(v: &str) -> Option<&str> {
     let v = v.trim();
+    let lower = v.to_ascii_lowercase();
     let ok = !v.is_empty()
         && v.chars()
             .all(|c| c.is_ascii_alphanumeric() || " #.,%()-".contains(c))
-        && !v.to_ascii_lowercase().contains("url");
+        && !lower.contains("url")
+        && !lower.contains("expression");
     ok.then_some(v)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::safe_css_value;
+
+    #[test]
+    fn keeps_only_safe_css_values() {
+        assert_eq!(safe_css_value(" #f9f "), Some("#f9f"));
+        assert_eq!(safe_css_value("rgb(1, 2, 3)"), Some("rgb(1, 2, 3)"));
+        assert_eq!(safe_css_value("5px 2px"), Some("5px 2px"));
+        for v in [
+            "",
+            "red;x:y",
+            "url(x)",
+            "URL(x)",
+            "expression(alert(1))",
+            "eXpReSsIoN(alert(1))",
+            "\\65 xpression(x)",
+            "red\"",
+            "</style>",
+        ] {
+            assert_eq!(safe_css_value(v), None, "{v}");
+        }
+    }
 }
