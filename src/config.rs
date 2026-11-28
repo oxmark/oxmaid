@@ -109,6 +109,7 @@ impl DiagramConfig {
                 raw.merge(c.clone());
             }
         }
+        let mut init = Value::Map(BTreeMap::new());
         for d in directives {
             let mut p = JsonParser {
                 s: format!("{{{d}}}").chars().collect(),
@@ -118,11 +119,18 @@ impl DiagramConfig {
             if let Some(Value::Map(m)) = p.object() {
                 for (k, v) in m {
                     if k == "init" || k == "initialize" {
-                        raw.merge(v);
+                        init.merge(v);
                     }
                 }
             }
         }
+        // `detectInit`: a `config` key applies to the diagram's own section.
+        if let Value::Map(m) = &mut init {
+            if let Some(c) = m.remove("config") {
+                m.insert(diagram.to_string(), c);
+            }
+        }
+        raw.merge(init);
         let pick = |key: &str| {
             raw.path(&format!("{diagram}.{key}"))
                 .or_else(|| raw.get(key))
@@ -385,6 +393,225 @@ pub(crate) fn parse_shape_data(body: &str) -> Value {
         };
         p.object().unwrap_or(Value::Map(BTreeMap::new()))
     }
+}
+
+/// `JSON.parse` of an object, keys in JavaScript property order (integer
+/// keys ascending first, then the others in insertion order). Returns `None`
+/// where `JSON.parse` throws or the value is not an object.
+pub(crate) fn parse_json_object(src: &str) -> Option<Vec<(String, Value)>> {
+    let s: Vec<char> = src.chars().collect();
+    let mut i = 0;
+    let v = strict_json(&s, &mut i, true)?;
+    json_ws(&s, &mut i);
+    if i != s.len() {
+        return None;
+    }
+    match v {
+        JsonValue::Object(o) => Some(o),
+        _ => None,
+    }
+}
+
+enum JsonValue {
+    Plain(Value),
+    Object(Vec<(String, Value)>),
+}
+
+impl JsonValue {
+    fn into_value(self) -> Value {
+        match self {
+            JsonValue::Plain(v) => v,
+            JsonValue::Object(o) => Value::Map(o.into_iter().collect()),
+        }
+    }
+}
+
+fn json_ws(s: &[char], i: &mut usize) {
+    while s
+        .get(*i)
+        .is_some_and(|c| matches!(c, ' ' | '\t' | '\n' | '\r'))
+    {
+        *i += 1;
+    }
+}
+
+fn json_string(s: &[char], i: &mut usize) -> Option<String> {
+    if s.get(*i) != Some(&'"') {
+        return None;
+    }
+    *i += 1;
+    let mut out = String::new();
+    loop {
+        let c = *s.get(*i)?;
+        *i += 1;
+        match c {
+            '"' => return Some(out),
+            '\\' => {
+                let e = *s.get(*i)?;
+                *i += 1;
+                out.push(match e {
+                    '"' => '"',
+                    '\\' => '\\',
+                    '/' => '/',
+                    'b' => '\u{8}',
+                    'f' => '\u{c}',
+                    'n' => '\n',
+                    'r' => '\r',
+                    't' => '\t',
+                    'u' => {
+                        let hex: String = s.get(*i..*i + 4)?.iter().collect();
+                        *i += 4;
+                        let mut cp = u32::from_str_radix(&hex, 16).ok()?;
+                        if (0xD800..0xDC00).contains(&cp)
+                            && s.get(*i) == Some(&'\\')
+                            && s.get(*i + 1) == Some(&'u')
+                        {
+                            let lo: String = s.get(*i + 2..*i + 6)?.iter().collect();
+                            if let Ok(lo) = u32::from_str_radix(&lo, 16) {
+                                if (0xDC00..0xE000).contains(&lo) {
+                                    *i += 6;
+                                    cp = 0x10000 + ((cp - 0xD800) << 10) + (lo - 0xDC00);
+                                }
+                            }
+                        }
+                        char::from_u32(cp).unwrap_or('\u{FFFD}')
+                    }
+                    _ => return None,
+                });
+            }
+            c if (c as u32) < 0x20 => return None,
+            c => out.push(c),
+        }
+    }
+}
+
+fn is_array_index(k: &str) -> bool {
+    !k.is_empty()
+        && k.bytes().all(|b| b.is_ascii_digit())
+        && (k == "0" || !k.starts_with('0'))
+        && k.parse::<u32>().is_ok_and(|n| n < u32::MAX)
+}
+
+fn strict_json(s: &[char], i: &mut usize, top: bool) -> Option<JsonValue> {
+    json_ws(s, i);
+    let c = *s.get(*i)?;
+    Some(match c {
+        '{' => {
+            *i += 1;
+            let mut entries: Vec<(String, Value)> = Vec::new();
+            json_ws(s, i);
+            if s.get(*i) == Some(&'}') {
+                *i += 1;
+            } else {
+                loop {
+                    json_ws(s, i);
+                    let k = json_string(s, i)?;
+                    json_ws(s, i);
+                    if s.get(*i) != Some(&':') {
+                        return None;
+                    }
+                    *i += 1;
+                    let v = strict_json(s, i, false)?.into_value();
+                    match entries.iter_mut().find(|(ek, _)| *ek == k) {
+                        Some(slot) => slot.1 = v,
+                        None => entries.push((k, v)),
+                    }
+                    json_ws(s, i);
+                    match s.get(*i)? {
+                        ',' => *i += 1,
+                        '}' => {
+                            *i += 1;
+                            break;
+                        }
+                        _ => return None,
+                    }
+                }
+            }
+            let (mut idx, rest): (Vec<_>, Vec<_>) =
+                entries.into_iter().partition(|(k, _)| is_array_index(k));
+            idx.sort_by_key(|(k, _)| k.parse::<u32>().unwrap_or(0));
+            idx.extend(rest);
+            if top {
+                return Some(JsonValue::Object(idx));
+            }
+            JsonValue::Plain(Value::Map(idx.into_iter().collect()))
+        }
+        '[' => {
+            *i += 1;
+            let mut items = Vec::new();
+            json_ws(s, i);
+            if s.get(*i) == Some(&']') {
+                *i += 1;
+            } else {
+                loop {
+                    items.push(strict_json(s, i, false)?.into_value());
+                    json_ws(s, i);
+                    match s.get(*i)? {
+                        ',' => *i += 1,
+                        ']' => {
+                            *i += 1;
+                            break;
+                        }
+                        _ => return None,
+                    }
+                }
+            }
+            JsonValue::Plain(Value::List(items))
+        }
+        '"' => JsonValue::Plain(Value::Str(json_string(s, i)?)),
+        't' | 'f' | 'n' => {
+            for (word, v) in [
+                ("true", Value::Bool(true)),
+                ("false", Value::Bool(false)),
+                ("null", Value::Null),
+            ] {
+                let w: Vec<char> = word.chars().collect();
+                if s.get(*i..*i + w.len()) == Some(&w[..]) {
+                    *i += w.len();
+                    return Some(JsonValue::Plain(v));
+                }
+            }
+            return None;
+        }
+        _ => {
+            let start = *i;
+            if s.get(*i) == Some(&'-') {
+                *i += 1;
+            }
+            match s.get(*i)? {
+                '0' => *i += 1,
+                '1'..='9' => {
+                    while s.get(*i).is_some_and(char::is_ascii_digit) {
+                        *i += 1;
+                    }
+                }
+                _ => return None,
+            }
+            if s.get(*i) == Some(&'.') {
+                *i += 1;
+                if !s.get(*i).is_some_and(char::is_ascii_digit) {
+                    return None;
+                }
+                while s.get(*i).is_some_and(char::is_ascii_digit) {
+                    *i += 1;
+                }
+            }
+            if matches!(s.get(*i), Some('e' | 'E')) {
+                *i += 1;
+                if matches!(s.get(*i), Some('+' | '-')) {
+                    *i += 1;
+                }
+                if !s.get(*i).is_some_and(char::is_ascii_digit) {
+                    return None;
+                }
+                while s.get(*i).is_some_and(char::is_ascii_digit) {
+                    *i += 1;
+                }
+            }
+            let n: String = s[start..*i].iter().collect();
+            JsonValue::Plain(Value::Num(n.parse().ok()?))
+        }
+    })
 }
 
 #[cfg(test)]
