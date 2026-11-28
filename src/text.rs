@@ -97,3 +97,159 @@ pub fn arial_width(line: &str, font_size: f64, style: FontStyle) -> f64 {
 pub fn layout_units(v: f64) -> f64 {
     (v * 64.0 - 1e-6).ceil() / 64.0
 }
+
+/// Font family of an SVG `<text>` measured with `getBBox()`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SvgFont {
+    /// Arial (Liberation Sans): the `sans-serif` default and Mermaid's
+    /// `"Recursive Variable",arial,sans-serif` theme font.
+    Arial,
+    /// Times New Roman (Liberation Serif): a page's default font, which
+    /// Mermaid ends up measuring sequence labels with.
+    Times,
+}
+
+/// Advance width of an SVG text line, as `getBBox().width` reports it.
+pub fn svg_text_width(line: &str, font_size: f64, font: SvgFont) -> f64 {
+    match font {
+        SvgFont::Arial => arial_width(line, font_size, FontStyle::Regular),
+        SvgFont::Times => {
+            use crate::font_metrics_svg as m;
+            let mut units = 0.0;
+            let mut prev: Option<char> = None;
+            for c in line.chars() {
+                let code = c as u32;
+                units += match code
+                    .checked_sub(32)
+                    .and_then(|i| m::TIMES_ADVANCE.get(i as usize))
+                {
+                    Some(&a) => f64::from(a),
+                    None if (0x200B..=0x200D).contains(&code) || code == 0xFEFF => 0.0,
+                    None if code >= 0x2E80 => 2048.0,
+                    None => 1024.0,
+                };
+                if let Some(p) = prev {
+                    if let (Ok(a), Ok(b)) = (u8::try_from(p as u32), u8::try_from(code)) {
+                        if let Ok(i) = m::TIMES_KERN.binary_search_by(|k| (k.0, k.1).cmp(&(a, b)))
+                        {
+                            units += f64::from(m::TIMES_KERN[i].2);
+                        }
+                    }
+                }
+                prev = Some(c);
+            }
+            units / 2048.0 * font_size
+        }
+    }
+}
+
+/// Height of an SVG text line's bounding box (`getBBox().height`): the font's
+/// ascent and descent rounded to pixels, widened by any glyph that reaches
+/// past them. A lone space measures 0.
+pub fn svg_text_height(line: &str, font_size: f64, font: SvgFont) -> f64 {
+    use crate::font_metrics_svg as m;
+    if !line.is_empty() && line.chars().all(|c| c == ' ') {
+        return 0.0;
+    }
+    let (asc, desc, ext) = match font {
+        SvgFont::Arial => (m::ARIAL_ASCENT, m::ARIAL_DESCENT, &m::ARIAL_EXTENT),
+        SvgFont::Times => (m::TIMES_ASCENT, m::TIMES_DESCENT, &m::TIMES_EXTENT),
+    };
+    let s = font_size / 2048.0;
+    let mut top = -(asc * s).round();
+    let mut bottom = (desc * s).round();
+    for c in line.chars() {
+        if let Some(&(y_min, y_max)) = (c as u32)
+            .checked_sub(32)
+            .and_then(|i| ext.get(i as usize))
+        {
+            if y_min != 0 || y_max != 0 {
+                top = top.min((-f64::from(y_max) * s).floor());
+                bottom = bottom.max((-f64::from(y_min) * s).ceil());
+            }
+        }
+    }
+    bottom - top
+}
+
+/// Mermaid's line break: `<br>`, `<br/>`, `</br>`, `<br />`, any case.
+pub(crate) fn split_breaks(text: &str) -> Vec<&str> {
+    let mut out = Vec::new();
+    let bytes = text.as_bytes();
+    let mut start = 0;
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if let Some(len) = break_len(&bytes[i..]) {
+                out.push(&text[start..i]);
+                i += len;
+                start = i;
+                continue;
+            }
+        }
+        i += 1;
+    }
+    out.push(&text[start..]);
+    out
+}
+
+/// Length of a `<\/?br\s*\/?>` match at the start of `b`.
+fn break_len(b: &[u8]) -> Option<usize> {
+    let mut i = 1;
+    if b.get(i) == Some(&b'/') {
+        i += 1;
+    }
+    if !b.get(i..i + 2)?.eq_ignore_ascii_case(b"br") {
+        return None;
+    }
+    i += 2;
+    while b.get(i).is_some_and(|c| c.is_ascii_whitespace() || *c == 0x0b) {
+        i += 1;
+    }
+    if b.get(i) == Some(&b'/') {
+        i += 1;
+    }
+    (b.get(i) == Some(&b'>')).then_some(i + 1)
+}
+
+/// Whether the text holds a Mermaid line break.
+pub(crate) fn has_breaks(text: &str) -> bool {
+    split_breaks(text).len() > 1
+}
+
+/// Result of Mermaid's `calculateTextDimensions`.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub struct TextDims {
+    pub width: f64,
+    pub height: f64,
+    pub line_height: f64,
+}
+
+/// Mermaid's `calculateTextDimensions` for SVG text: each line measured in
+/// `sans-serif` and in the configured family, widths and heights rounded,
+/// the configured family winning unless `sans-serif` is larger on all three.
+/// `font` is the family the configured one resolves to.
+pub fn text_dimensions(text: &str, font_size: f64, font: SvgFont) -> TextDims {
+    if text.is_empty() {
+        return TextDims::default();
+    }
+    let lines = split_breaks(text);
+    let measure = |f: SvgFont| {
+        let mut d = TextDims::default();
+        for line in &lines {
+            let line = if line.is_empty() { "\u{200b}" } else { line };
+            d.width = d.width.max(svg_text_width(line, font_size, f)).round();
+            let h = svg_text_height(line, font_size, f).round();
+            d.height += h;
+            d.line_height = d.line_height.max(h).round();
+        }
+        d
+    };
+    let sans = measure(SvgFont::Arial);
+    let own = measure(font);
+    if sans.height > own.height && sans.width > own.width && sans.line_height > own.line_height {
+        sans
+    } else {
+        own
+    }
+}

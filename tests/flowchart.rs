@@ -142,7 +142,7 @@ fn errors_have_positions() {
     assert_eq!(e.column(), 11);
     assert_eq!(oxmaid::parse("").unwrap_err().kind(), ErrorKind::Empty);
     assert_eq!(
-        oxmaid::parse("sequenceDiagram\nA->>B: hi")
+        oxmaid::parse("classDiagram\nA <|-- B")
             .unwrap_err()
             .kind(),
         ErrorKind::UnsupportedDiagram

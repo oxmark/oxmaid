@@ -3,7 +3,8 @@
 //! A Rust port of [Mermaid](https://mermaid.js.org): text to SVG diagrams,
 //! without a browser or JavaScript.
 //!
-//! Only flowcharts (`flowchart` / `graph`) are ported so far.
+//! Ported so far: flowcharts (`flowchart` / `graph`) and sequence diagrams
+//! (`sequenceDiagram`).
 //!
 //! ```
 //! let svg = oxmaid::render("flowchart LR\n  A[Start] --> B{Ok?}\n  B -->|yes| C[End]").unwrap();
@@ -14,9 +15,12 @@
 pub mod config;
 mod error;
 pub mod flowchart;
+mod dom;
 mod font_metrics;
+mod font_metrics_svg;
 pub mod layout;
 mod options;
+pub mod sequence;
 mod source;
 mod svg;
 pub mod text;
@@ -31,6 +35,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[non_exhaustive]
 pub enum DiagramKind {
     Flowchart,
+    Sequence,
 }
 
 /// A parsed diagram.
@@ -38,12 +43,14 @@ pub enum DiagramKind {
 #[non_exhaustive]
 pub enum Diagram {
     Flowchart(flowchart::Flowchart),
+    Sequence(sequence::SequenceDiagram),
 }
 
 impl Diagram {
     pub fn kind(&self) -> DiagramKind {
         match self {
             Diagram::Flowchart(_) => DiagramKind::Flowchart,
+            Diagram::Sequence(_) => DiagramKind::Sequence,
         }
     }
 
@@ -51,13 +58,13 @@ impl Diagram {
     pub fn to_svg(&self, options: &RenderOptions) -> String {
         match self {
             Diagram::Flowchart(f) => flowchart::render(f, options),
+            Diagram::Sequence(d) => sequence::render(d, options),
         }
     }
 }
 
 /// Known Mermaid types that are not ported yet.
 const NOT_YET_PORTED: &[&str] = &[
-    "sequenceDiagram",
     "classDiagram",
     "classDiagram-v2",
     "stateDiagram",
@@ -99,6 +106,7 @@ pub fn detect(src: &str) -> Result<DiagramKind> {
         .unwrap_or("");
     match keyword {
         "flowchart" | "graph" | "flowchart-elk" | "swimlane-beta" => Ok(DiagramKind::Flowchart),
+        "sequenceDiagram" => Ok(DiagramKind::Sequence),
         k if NOT_YET_PORTED.contains(&k) => Err(Error::new(
             ErrorKind::UnsupportedDiagram,
             first.number,
@@ -118,6 +126,7 @@ pub fn detect(src: &str) -> Result<DiagramKind> {
 pub fn parse(src: &str) -> Result<Diagram> {
     match detect(src)? {
         DiagramKind::Flowchart => flowchart::parse(src).map(Diagram::Flowchart),
+        DiagramKind::Sequence => sequence::parse(src).map(Diagram::Sequence),
     }
 }
 
