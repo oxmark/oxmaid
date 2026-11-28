@@ -5,11 +5,13 @@ const { chromium } = require('playwright'); const fs = require('fs'); const path
   const [inp, out] = process.argv.slice(2);
   const cases = JSON.parse(fs.readFileSync(inp, 'utf8'));
   const b = await chromium.launch(); const p = await b.newPage();
-  await p.setContent('<html><body><div id=c></div></body></html>');
-  await p.addScriptTag({ path: path.join(__dirname, '../node_modules/mermaid/dist/mermaid.min.js') });
-  await p.evaluate(() => mermaid.initialize({ startOnLoad: false }));
   const res = [];
   for (const c of cases) {
+    // A fresh page per case: Mermaid keeps module state (the participant
+    // counter behind `actor<N>` ids, the site configuration) between renders.
+    await p.setContent('<html><body><div id=c></div></body></html>');
+    await p.addScriptTag({ path: path.join(__dirname, '../node_modules/mermaid/dist/mermaid.min.js') });
+    await p.evaluate(() => mermaid.initialize({ startOnLoad: false }));
     const r = await p.evaluate(async (src) => {
       const out = {};
       // Render first: it resets the configuration and applies this diagram's
