@@ -427,7 +427,10 @@ impl JsonValue {
 }
 
 fn json_ws(s: &[char], i: &mut usize) {
-    while s.get(*i).is_some_and(|c| matches!(c, ' ' | '\t' | '\n' | '\r')) {
+    while s
+        .get(*i)
+        .is_some_and(|c| matches!(c, ' ' | '\t' | '\n' | '\r'))
+    {
         *i += 1;
     }
 }

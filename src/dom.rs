@@ -56,6 +56,15 @@ impl Dom {
         id
     }
 
+    /// Appends markup that is serialized as is: for large constant
+    /// fragments, which then skip escaping.
+    pub fn append_raw(&mut self, parent: NodeId, markup: String) -> NodeId {
+        let id = self.create(parent, "");
+        self.nodes[id].text = Some(markup);
+        self.nodes[parent].children.push(id);
+        id
+    }
+
     /// Inserts a new element as the first child of `parent`.
     pub fn prepend(&mut self, parent: NodeId, tag: &'static str) -> NodeId {
         let id = self.create(parent, tag);
@@ -90,15 +99,6 @@ impl Dom {
         self.attr(id, name, js_num(value))
     }
 
-    /// Reads an attribute.
-    pub fn get_attr(&self, id: NodeId, name: &str) -> Option<&str> {
-        self.nodes[id]
-            .attrs
-            .iter()
-            .find(|(k, _)| *k == name)
-            .map(|(_, v)| v.as_str())
-    }
-
     /// Sets an inline style property. Colors are normalized to `rgb(...)`,
     /// as the browser's CSS object model does.
     pub fn style(&mut self, id: NodeId, name: &'static str, value: &str) -> &mut Self {
@@ -121,6 +121,10 @@ impl Dom {
     /// Serializes `id` and its subtree like `outerHTML`.
     pub fn serialize(&self, id: NodeId, out: &mut String) {
         let node = &self.nodes[id];
+        if node.tag.is_empty() {
+            out.push_str(node.text.as_deref().unwrap_or_default());
+            return;
+        }
         out.push('<');
         out.push_str(node.tag);
         for (k, v) in &node.attrs {
@@ -157,28 +161,37 @@ impl Dom {
 }
 
 fn escape_attr(s: &str, out: &mut String) {
-    for c in s.chars() {
-        match c {
-            '&' => out.push_str("&amp;"),
-            '"' => out.push_str("&quot;"),
-            '<' => out.push_str("&lt;"),
-            '>' => out.push_str("&gt;"),
-            '\u{a0}' => out.push_str("&nbsp;"),
-            _ => out.push(c),
-        }
-    }
+    escape(s, out, true);
 }
 
 pub(crate) fn escape_text(s: &str, out: &mut String) {
-    for c in s.chars() {
-        match c {
-            '&' => out.push_str("&amp;"),
-            '<' => out.push_str("&lt;"),
-            '>' => out.push_str("&gt;"),
-            '\u{a0}' => out.push_str("&nbsp;"),
-            _ => out.push(c),
-        }
+    escape(s, out, false);
+}
+
+/// Copies `s` in runs between the characters XMLSerializer escapes.
+fn escape(s: &str, out: &mut String, quote: bool) {
+    let bytes = s.as_bytes();
+    let mut start = 0;
+    let mut i = 0;
+    while i < bytes.len() {
+        let rep = match bytes[i] {
+            b'&' => "&amp;",
+            b'<' => "&lt;",
+            b'>' => "&gt;",
+            b'"' if quote => "&quot;",
+            // U+00A0 is C2 A0 in UTF-8.
+            0xC2 if bytes.get(i + 1) == Some(&0xA0) => "&nbsp;",
+            _ => {
+                i += 1;
+                continue;
+            }
+        };
+        out.push_str(&s[start..i]);
+        out.push_str(rep);
+        i += if bytes[i] == 0xC2 { 2 } else { 1 };
+        start = i;
     }
+    out.push_str(&s[start..]);
 }
 
 /// Formats a number like JavaScript's `String(n)`.
@@ -218,7 +231,12 @@ pub(crate) fn normalize_color(v: &str) -> Option<String> {
             .collect::<Option<_>>()?;
         let (r, g, b, a) = match digits.len() {
             3 => (digits[0] * 17, digits[1] * 17, digits[2] * 17, None),
-            4 => (digits[0] * 17, digits[1] * 17, digits[2] * 17, Some(digits[3] * 17)),
+            4 => (
+                digits[0] * 17,
+                digits[1] * 17,
+                digits[2] * 17,
+                Some(digits[3] * 17),
+            ),
             6 => (
                 digits[0] * 16 + digits[1],
                 digits[2] * 16 + digits[3],

@@ -7,11 +7,16 @@ It is part of the Oxmark project (a Rust port of Comark). The core aims for
 raw performance and an idiomatic Rust API; bindings for other languages
 (such as PHP) will live in separate projects.
 
-> **Status: early.** Only flowcharts are ported. oxmaid targets
-> **Mermaid 12.3**: the parser matches Mermaid's own results on 440 reference
-> cases, and the output follows Mermaid 12's default look (`neo` look,
-> `redux-color` theme, ELK layout). The layout approximates ELK, so complex
-> diagrams are close to Mermaid's but not identical.
+> **Status: early.** Flowcharts and sequence diagrams are ported. oxmaid
+> targets **Mermaid 12.3** and its default look (`neo` look, `redux-color`
+> theme).
+>
+> - Flowcharts: the parser matches Mermaid's own results on 440 reference
+>   cases. The layout approximates ELK, so complex diagrams are close to
+>   Mermaid's but not identical.
+> - Sequence diagrams: the parser matches Mermaid's `sequenceDb` on 270
+>   reference cases, and 197 of the 201 diagrams that Mermaid draws with the
+>   default theme come out byte for byte identical to Mermaid's SVG.
 
 ## Usage
 
@@ -25,7 +30,7 @@ flowchart LR
 ```
 
 - `oxmaid::render(src)` / `oxmaid::render_with(src, &RenderOptions)` return an SVG string.
-- `oxmaid::parse(src)` returns the typed diagram (`Diagram::Flowchart`) for tools that need the model.
+- `oxmaid::parse(src)` returns the typed diagram (`Diagram::Flowchart`, `Diagram::Sequence`) for tools that need the model.
 - `oxmaid::detect(src)` returns the diagram kind from the header.
 - Errors carry a kind, a line and a column (`Error::kind()`, `line()`, `column()`, `message()`).
 - Set `RenderOptions::id_prefix` when several diagrams share one HTML page.
@@ -34,6 +39,7 @@ Try it from the command line:
 
 ```sh
 cargo run --example render -- examples/diagrams/basic.mmd > basic.svg
+cargo run --example render -- examples/diagrams/sequence.mmd > sequence.svg
 ```
 
 ## Supported flowchart syntax
@@ -59,12 +65,34 @@ quirks (entity handling, ids such as `a-b`, keyword boundaries). See
 Parsed but not drawn yet: subgraph `direction` and the v12 shapes added with
 `@{ shape: ... }` (drawn as rectangles).
 
+## Supported sequence diagram syntax
+
+The whole Mermaid 12.3 grammar and `sequenceDb`:
+
+| Feature | Syntax |
+| --- | --- |
+| Participants | `participant`, `actor`, `as` aliases, `create` / `destroy`, `@{ "type": ..., "alias": ... }` with the `boundary`, `control`, `entity`, `database`, `collections` and `queue` types |
+| Messages | `->`, `-->`, `->>`, `-->>`, `<<->>`, `<<-->>`, `-x`, `--x`, `-)`, `--)`, central connections `()->>()`, `+` / `-` activation shorthands |
+| Notes | `note left of`, `right of`, `over A,B`, `:wrap:` / `:nowrap:` |
+| Blocks | `loop`, `alt` / `else`, `opt`, `par` / `and`, `par_over`, `critical` / `option`, `break`, `rect` |
+| Other | `activate` / `deactivate`, `autonumber` (start, step, `off`), `box`, `links` / `link`, `properties`, `title`, `accTitle` / `accDescr`, `%%{init}%%` directives and front matter config |
+
+The renderer is a port of Mermaid's `sequenceRenderer` and `svgDraw`: the same
+SVG structure, ids, classes, markers, layout arithmetic and text metrics
+(Mermaid measures sequence labels in Times New Roman, which oxmaid
+reproduces glyph by glyph, ink bounds included). Known differences: the
+`themeCSS` option is ignored, and classic-look database labels miss the
+float32 rounding noise of Chromium's bounding boxes (`229.00000381469727`
+instead of `229`). See `tests/sequence_svg.rs` and
+`tools/conformance/sequence/`.
+
 ## Looks and themes
 
 Mermaid 12 renders flowcharts with the `neo` look, the `redux-color` theme and
 the ELK layout by default, and so does oxmaid: same stylesheet, markers, shape
-geometry, Arial text metrics and spacing. The previous look is available with
-`look: classic` in the front matter:
+geometry, Arial text metrics and spacing. Sequence diagrams follow the same
+look. The previous look is available with `look: classic` in the front
+matter, for both:
 
 ```
 ---
@@ -89,9 +117,17 @@ src/
     neo.rs         default renderer (`neo` look, `redux-color` theme)
     neo.css        Mermaid's stylesheet for that look
     render.rs      `classic` look renderer
+  sequence/
+    mod.rs         sequence model (participants, messages, boxes)
+    parser.rs      port of Mermaid's Jison lexer and `sequenceDb`
+    render.rs      port of `sequenceRenderer` and `svgDraw` (both looks)
+    neo.css        Mermaid's stylesheet for sequence diagrams
+  config.rs        front matter and `%%{init}%%` configuration
+  dom.rs           minimal element tree serialized like the browser's
   layout.rs        layered (Sugiyama) layout, a stand-in for ELK and dagre
   text.rs          text measurement
   font_metrics.rs  Arial advance widths and kerning
+  font_metrics_svg.rs  SVG text metrics (Times New Roman, Arial) from Chromium
   svg.rs           escaping and number formatting
 ```
 
@@ -120,8 +156,9 @@ Layout and text measurement are shared.
 
 1. Flowchart parity: a full ELK port, the v12 `@{ shape }` shapes, subgraph
    `direction`, the other themes.
-2. Next diagram types, likely sequence, state and class diagrams.
-3. Performance work: benchmarks against Mermaid, byte-level parsing,
+2. Sequence diagram themes other than `redux-color`, and `themeCSS`.
+3. Next diagram types: class, state, ER, gantt and pie charts.
+4. Performance work: benchmarks against Mermaid, byte-level parsing,
    faster crossing counts for large graphs.
 
 ## Contributing
@@ -138,6 +175,8 @@ cargo fmt --check && cargo clippy --all-targets && cargo test
 ## License
 
 Apache-2.0. Mermaid itself is MIT licensed; oxmaid is an independent
-reimplementation. The neo stylesheet (`src/flowchart/neo.css`) and arrow
-markers (`src/flowchart/neo_markers.svg`) are adapted from Mermaid's output,
+reimplementation. The neo stylesheets (`src/flowchart/neo.css`,
+`src/sequence/neo.css`), arrow markers (`src/flowchart/neo_markers.svg`) and
+the sequence icons (`src/sequence/database_icon.txt`) are adapted from
+Mermaid's output and sources,
 © Knut Sveidqvist and contributors, under the MIT license.

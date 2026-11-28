@@ -133,9 +133,11 @@ impl Prepared {
 
     /// Line and column (both from 1) in the original source of `text[i]`.
     pub fn line_col(&self, i: usize) -> (usize, usize) {
-        let o = self.origin.get(i).copied().unwrap_or_else(|| {
-            self.origin.last().copied().unwrap_or(0)
-        });
+        let o = self
+            .origin
+            .get(i)
+            .copied()
+            .unwrap_or_else(|| self.origin.last().copied().unwrap_or(0));
         let line = self.line_starts.partition_point(|&s| s <= o);
         (line, o - self.line_starts[line - 1] + 1)
     }
@@ -180,20 +182,14 @@ fn requote_attributes(cs: Chars) -> Chars {
 fn is_js_space(c: char) -> bool {
     matches!(
         c,
-        '\t' | '\n'
-            | '\u{b}'
-            | '\u{c}'
-            | '\r'
-            | ' '
-            | '\u{a0}'
-            | '\u{1680}'
-            | '\u{2000}'..='\u{200a}'
-            | '\u{2028}'
-            | '\u{2029}'
-            | '\u{202f}'
-            | '\u{205f}'
-            | '\u{3000}'
-            | '\u{feff}'
+        '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}' | '\u{2000}'
+            ..='\u{200a}'
+                | '\u{2028}'
+                | '\u{2029}'
+                | '\u{202f}'
+                | '\u{205f}'
+                | '\u{3000}'
+                | '\u{feff}'
     )
 }
 
@@ -256,7 +252,10 @@ fn remove_directives(cs: Chars) -> Chars {
     let mut out = Vec::with_capacity(cs.len());
     let mut i = 0;
     while i < cs.len() {
-        if cs[i].0 == '%' && cs.get(i + 1).map(|c| c.0) == Some('%') && cs.get(i + 2).map(|c| c.0) == Some('{') {
+        if cs[i].0 == '%'
+            && cs.get(i + 1).map(|c| c.0) == Some('%')
+            && cs.get(i + 2).map(|c| c.0) == Some('{')
+        {
             let mut j = i + 3;
             while j < cs.len() && is_js_space(cs[j].0) {
                 j += 1;
@@ -296,7 +295,7 @@ fn cleanup_comments(cs: Chars) -> Chars {
             }
             // `\s*` may cross lines: the match starts here and ends after the
             // `%%` line.
-            if j + 2 < cs.len() + 0
+            if j + 2 < cs.len()
                 && cs[j].0 == '%'
                 && cs.get(j + 1).map(|c| c.0) == Some('%')
                 && cs.get(j + 2).is_some_and(|c| c.0 != '{' && c.0 != '\n')
@@ -337,7 +336,11 @@ fn encode_entities(cs: Chars) -> Chars {
             if len > 0 && cs.get(i + 1 + len).is_some_and(|(c, _)| *c == ';') {
                 let name: String = cs[i + 1..i + 1 + len].iter().map(|c| c.0).collect();
                 let numeric = name.chars().all(|c| c.is_ascii_digit());
-                let open = if numeric { ENTITY_NUM_OPEN } else { ENTITY_OPEN };
+                let open = if numeric {
+                    ENTITY_NUM_OPEN
+                } else {
+                    ENTITY_OPEN
+                };
                 out.extend(open.chars().map(|c| (c, cs[i].1)));
                 out.extend_from_slice(&cs[i + 1..i + 1 + len]);
                 out.extend(ENTITY_CLOSE.chars().map(|c| (c, cs[i + 1 + len].1)));

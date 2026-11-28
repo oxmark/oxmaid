@@ -21,11 +21,8 @@ use crate::Result;
 /// Parses a sequence diagram source (front matter and header included).
 pub fn parse(src: &str) -> Result<SequenceDiagram> {
     let split = source::split(src);
-    let config = DiagramConfig::from_source(
-        split.front_matter.as_deref(),
-        &split.directives,
-        "sequence",
-    );
+    let config =
+        DiagramConfig::from_source(split.front_matter.as_deref(), &split.directives, "sequence");
     let prepared = Prepared::new(src);
     let tokens = Lexer::new(&prepared.text).tokenize().map_err(|i| {
         let (l, c) = prepared.line_col(i);
@@ -235,20 +232,14 @@ struct Lexer<'a> {
 fn is_space(c: char) -> bool {
     matches!(
         c,
-        '\t' | '\n'
-            | '\u{b}'
-            | '\u{c}'
-            | '\r'
-            | ' '
-            | '\u{a0}'
-            | '\u{1680}'
-            | '\u{2000}'..='\u{200a}'
-            | '\u{2028}'
-            | '\u{2029}'
-            | '\u{202f}'
-            | '\u{205f}'
-            | '\u{3000}'
-            | '\u{feff}'
+        '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}' | '\u{2000}'
+            ..='\u{200a}'
+                | '\u{2028}'
+                | '\u{2029}'
+                | '\u{202f}'
+                | '\u{205f}'
+                | '\u{3000}'
+                | '\u{feff}'
     )
 }
 
@@ -332,7 +323,11 @@ impl<'a> Lexer<'a> {
         if r.len() < n {
             return None;
         }
-        if !r.iter().zip(word.chars()).all(|(a, b)| a.eq_ignore_ascii_case(&b)) {
+        if !r
+            .iter()
+            .zip(word.chars())
+            .all(|(a, b)| a.eq_ignore_ascii_case(&b))
+        {
             return None;
         }
         let last_word = word.chars().last().is_some_and(is_word);
@@ -344,8 +339,11 @@ impl<'a> Lexer<'a> {
     fn lit(&self, word: &str) -> Option<usize> {
         let r = self.rest();
         let n = word.chars().count();
-        (r.len() >= n && r.iter().zip(word.chars()).all(|(a, b)| a.eq_ignore_ascii_case(&b)))
-            .then_some(n)
+        (r.len() >= n
+            && r.iter()
+                .zip(word.chars())
+                .all(|(a, b)| a.eq_ignore_ascii_case(&b)))
+        .then_some(n)
     }
 
     fn run(&self, from: usize, f: impl Fn(char) -> bool) -> usize {
@@ -390,7 +388,11 @@ impl<'a> Lexer<'a> {
             let start = self.pos;
             let text: String = self.s[start..start + len].iter().collect();
             self.pos += len;
-            let tok = |t: T, text: String| Tok { t, text, pos: start };
+            let tok = |t: T, text: String| Tok {
+                t,
+                text,
+                pos: start,
+            };
             match act {
                 Act::Skip => continue,
                 Act::Tok(t) => return Ok(tok(t, text)),
@@ -648,8 +650,10 @@ impl<'a> Lexer<'a> {
                 let next = self.s.get(p + n + ws).copied();
                 if ws > 0
                     && next.is_some_and(|c| {
-                        !matches!(c, '/' | '\\' | '+' | '(' | ')' | '<' | '>' | ':' | '\n' | ',' | ';' | '-')
-                            && !is_space(c)
+                        !matches!(
+                            c,
+                            '/' | '\\' | '+' | '(' | ')' | '<' | '>' | ':' | '\n' | ',' | ';' | '-'
+                        ) && !is_space(c)
                     })
                 {
                     return Some((n, Act::Tok(t)));
@@ -669,7 +673,9 @@ impl<'a> Lexer<'a> {
                 }
             }
             // 47: `title: text`
-            if self.s.get(p + n) == Some(&':') && self.s.get(p + n + 1).is_some_and(|&c| is_space(c)) {
+            if self.s.get(p + n) == Some(&':')
+                && self.s.get(p + n + 1).is_some_and(|&c| is_space(c))
+            {
                 let m = self.run(p + n + 2, |c| !matches!(c, '#' | '\n' | ';'));
                 if m > 0 {
                     return Some((n + 2 + m, Act::Tok(T::LegacyTitle)));
@@ -738,7 +744,10 @@ impl<'a> Lexer<'a> {
             if r.get(at) != Some(&'.') {
                 return vec![];
             }
-            let d = r[at + 1..].iter().take_while(|c| c.is_ascii_digit()).count();
+            let d = r[at + 1..]
+                .iter()
+                .take_while(|c| c.is_ascii_digit())
+                .count();
             (1..=d.min(2)).rev().map(|k| at + 1 + k).collect()
         };
         if digits > 0 {
@@ -761,7 +770,10 @@ impl<'a> Lexer<'a> {
     fn actor(&self) -> Option<usize> {
         let r = self.rest();
         let a = |c: char| {
-            !matches!(c, '/' | '\\' | '+' | '(' | ')' | '<' | '-' | '>' | ':' | '\n' | ',' | ';')
+            !matches!(
+                c,
+                '/' | '\\' | '+' | '(' | ')' | '<' | '-' | '>' | ':' | '\n' | ',' | ';'
+            )
         };
         let b = |c: char| !matches!(c, '+' | '<' | '-' | '>' | ':' | '\n' | ',' | ';');
         let mut i = r.iter().take_while(|&&c| a(c)).count();
@@ -776,7 +788,11 @@ impl<'a> Lexer<'a> {
             let at = &r[i..];
             let bad = BAD.iter().any(|w| {
                 let n = w.chars().count();
-                at.len() >= n && at.iter().zip(w.chars()).all(|(x, y)| x.eq_ignore_ascii_case(&y))
+                at.len() >= n
+                    && at
+                        .iter()
+                        .zip(w.chars())
+                        .all(|(x, y)| x.eq_ignore_ascii_case(&y))
             });
             if bad {
                 break;
@@ -804,9 +820,13 @@ struct Msg {
 
 fn parse_message(s: &str) -> Msg {
     let t = js_trim(s);
-    let (wrap, rest) = if let Some(r) = t.strip_prefix(":wrap:").or_else(|| t.strip_prefix("wrap:")) {
+    let (wrap, rest) = if let Some(r) = t.strip_prefix(":wrap:").or_else(|| t.strip_prefix("wrap:"))
+    {
         (Some(true), r)
-    } else if let Some(r) = t.strip_prefix(":nowrap:").or_else(|| t.strip_prefix("nowrap:")) {
+    } else if let Some(r) = t
+        .strip_prefix(":nowrap:")
+        .or_else(|| t.strip_prefix("nowrap:"))
+    {
         (Some(false), r)
     } else {
         (None, t.as_str())
@@ -1127,8 +1147,18 @@ impl Parser<'_> {
                 let kw = self.bump().t;
                 let rest = self.expect(T::RestOfLine, "text")?.text;
                 let (start, sep_tok, sep, end) = match kw {
-                    T::Alt => (LineType::AltStart, T::Else, LineType::AltElse, LineType::AltEnd),
-                    T::Par => (LineType::ParStart, T::And, LineType::ParAnd, LineType::ParEnd),
+                    T::Alt => (
+                        LineType::AltStart,
+                        T::Else,
+                        LineType::AltElse,
+                        LineType::AltEnd,
+                    ),
+                    T::Par => (
+                        LineType::ParStart,
+                        T::And,
+                        LineType::ParAnd,
+                        LineType::ParEnd,
+                    ),
                     T::ParOver => (
                         LineType::ParOverStart,
                         T::And,
@@ -1346,11 +1376,7 @@ impl Db {
         }
         let mut description = description;
         if let Some(alias) = doc.as_ref().and_then(|d| d.get("alias")).and_then(scalar) {
-            if !alias.is_empty()
-                && description
-                    .as_ref()
-                    .map_or(true, |d| d.text == id)
-            {
+            if !alias.is_empty() && description.as_ref().map_or(true, |d| d.text == id) {
                 description = Some(Msg {
                     text: alias,
                     wrap: description.and_then(|d| d.wrap),
@@ -1415,13 +1441,13 @@ impl Db {
     }
 
     fn activation_count(&self, part: &str) -> i64 {
-        self.messages.iter().fold(0, |n, m| {
-            match (m.kind, m.from.as_deref()) {
+        self.messages
+            .iter()
+            .fold(0, |n, m| match (m.kind, m.from.as_deref()) {
                 (LineType::ActiveStart, Some(f)) if f == part => n + 1,
                 (LineType::ActiveEnd, Some(f)) if f == part => n - 1,
                 _ => n,
-            }
-        })
+            })
     }
 
     fn push(&mut self, kind: LineType, from: Option<String>, to: Option<String>, msg: Option<Msg>) {
@@ -1623,7 +1649,11 @@ fn parse_box_data(s: &str) -> (Option<String>, String, Option<bool>) {
         let c = js_trim(&s[..end]);
         let t = js_trim(&s[end..]);
         (
-            if c.is_empty() { "transparent".to_string() } else { c },
+            if c.is_empty() {
+                "transparent".to_string()
+            } else {
+                c
+            },
             (!t.is_empty()).then_some(t),
         )
     };
@@ -1671,36 +1701,172 @@ fn is_css_color(c: &str) -> bool {
             *p == "none"
                 || num(p)
                 || p.strip_suffix('%').is_some_and(num)
-                || (hsl && i == 0 && ["deg", "rad", "grad", "turn"].iter().any(|u| p.strip_suffix(u).is_some_and(num)))
+                || (hsl
+                    && i == 0
+                    && ["deg", "rad", "grad", "turn"]
+                        .iter()
+                        .any(|u| p.strip_suffix(u).is_some_and(num)))
         });
     }
     false
 }
 
 const NAMED_COLORS: &[&str] = &[
-    "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black",
-    "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse",
-    "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "currentcolor", "cyan",
-    "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki",
-    "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon",
-    "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise",
-    "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick",
-    "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod",
-    "gray", "green", "greenyellow", "grey", "honeydew", "hotpink", "indianred", "indigo",
-    "inherit", "initial", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen",
-    "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray",
-    "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue",
-    "lightslategray", "lightslategrey", "lightsteelblue", "lightyellow", "lime", "limegreen",
-    "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid",
-    "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise",
-    "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite",
-    "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod",
-    "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink",
-    "plum", "powderblue", "purple", "rebeccapurple", "red", "revert", "revert-layer",
-    "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell",
-    "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen",
-    "steelblue", "tan", "teal", "thistle", "tomato", "transparent", "turquoise", "unset",
-    "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen",
+    "aliceblue",
+    "antiquewhite",
+    "aqua",
+    "aquamarine",
+    "azure",
+    "beige",
+    "bisque",
+    "black",
+    "blanchedalmond",
+    "blue",
+    "blueviolet",
+    "brown",
+    "burlywood",
+    "cadetblue",
+    "chartreuse",
+    "chocolate",
+    "coral",
+    "cornflowerblue",
+    "cornsilk",
+    "crimson",
+    "currentcolor",
+    "cyan",
+    "darkblue",
+    "darkcyan",
+    "darkgoldenrod",
+    "darkgray",
+    "darkgreen",
+    "darkgrey",
+    "darkkhaki",
+    "darkmagenta",
+    "darkolivegreen",
+    "darkorange",
+    "darkorchid",
+    "darkred",
+    "darksalmon",
+    "darkseagreen",
+    "darkslateblue",
+    "darkslategray",
+    "darkslategrey",
+    "darkturquoise",
+    "darkviolet",
+    "deeppink",
+    "deepskyblue",
+    "dimgray",
+    "dimgrey",
+    "dodgerblue",
+    "firebrick",
+    "floralwhite",
+    "forestgreen",
+    "fuchsia",
+    "gainsboro",
+    "ghostwhite",
+    "gold",
+    "goldenrod",
+    "gray",
+    "green",
+    "greenyellow",
+    "grey",
+    "honeydew",
+    "hotpink",
+    "indianred",
+    "indigo",
+    "inherit",
+    "initial",
+    "ivory",
+    "khaki",
+    "lavender",
+    "lavenderblush",
+    "lawngreen",
+    "lemonchiffon",
+    "lightblue",
+    "lightcoral",
+    "lightcyan",
+    "lightgoldenrodyellow",
+    "lightgray",
+    "lightgreen",
+    "lightgrey",
+    "lightpink",
+    "lightsalmon",
+    "lightseagreen",
+    "lightskyblue",
+    "lightslategray",
+    "lightslategrey",
+    "lightsteelblue",
+    "lightyellow",
+    "lime",
+    "limegreen",
+    "linen",
+    "magenta",
+    "maroon",
+    "mediumaquamarine",
+    "mediumblue",
+    "mediumorchid",
+    "mediumpurple",
+    "mediumseagreen",
+    "mediumslateblue",
+    "mediumspringgreen",
+    "mediumturquoise",
+    "mediumvioletred",
+    "midnightblue",
+    "mintcream",
+    "mistyrose",
+    "moccasin",
+    "navajowhite",
+    "navy",
+    "oldlace",
+    "olive",
+    "olivedrab",
+    "orange",
+    "orangered",
+    "orchid",
+    "palegoldenrod",
+    "palegreen",
+    "paleturquoise",
+    "palevioletred",
+    "papayawhip",
+    "peachpuff",
+    "peru",
+    "pink",
+    "plum",
+    "powderblue",
+    "purple",
+    "rebeccapurple",
+    "red",
+    "revert",
+    "revert-layer",
+    "rosybrown",
+    "royalblue",
+    "saddlebrown",
+    "salmon",
+    "sandybrown",
+    "seagreen",
+    "seashell",
+    "sienna",
+    "silver",
+    "skyblue",
+    "slateblue",
+    "slategray",
+    "slategrey",
+    "snow",
+    "springgreen",
+    "steelblue",
+    "tan",
+    "teal",
+    "thistle",
+    "tomato",
+    "transparent",
+    "turquoise",
+    "unset",
+    "violet",
+    "wheat",
+    "white",
+    "whitesmoke",
+    "yellow",
+    "yellowgreen",
 ];
 
 /// Mermaid's `sanitizeText` for plain text: an HTML round trip, so a bare
@@ -1714,9 +1880,12 @@ pub(crate) fn sanitize_text(s: &str) -> String {
     while let Some(i) = rest.find('&') {
         out.push_str(&rest[..i]);
         let after = &rest[i + 1..];
-        let ent = after
-            .find(';')
-            .filter(|&j| j > 0 && after[..j].chars().all(|c| c.is_ascii_alphanumeric() || c == '#'));
+        let ent = after.find(';').filter(|&j| {
+            j > 0
+                && after[..j]
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || c == '#')
+        });
         match ent {
             Some(j) => {
                 out.push_str(&rest[i..i + 2 + j]);

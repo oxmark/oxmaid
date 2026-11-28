@@ -50,4 +50,30 @@ for name, path in FONTS.items():
     out.append(f'pub(crate) const {name}_EXTENT: [(i16, i16); {len(ext)}] = [')
     out.append(rows([f'({a}, {b})' for a, b in ext], 8))
     out.append('];')
+    if name == 'TIMES':
+        hext = []
+        for c in range(32, 0x250):
+            g = cmap.get(c)
+            if g and glyf[g].numberOfContours != 0 and hasattr(glyf[g], 'xMax'):
+                hext.append((glyf[g].xMin, glyf[g].xMax))
+            else:
+                hext.append((0, 0))
+        out.append('')
+        out.append('/// Each glyph\'s (xMin, xMax): `getBBox()` widens a line to its ink.')
+        out.append(f'pub(crate) const {name}_HEXTENT: [(i16, i16); {len(hext)}] = [')
+        out.append(rows([f'({a}, {b})' for a, b in hext], 8))
+        out.append('];')
+        rows_x = []
+        for c, a in serif['extra']:
+            g = cmap.get(c)
+            gl = glyf[g] if g else None
+            if gl is not None and gl.numberOfContours != 0 and hasattr(gl, 'xMax'):
+                rows_x.append(f'({c:#x}, {a}, {gl.xMin}, {gl.xMax}, {gl.yMin}, {gl.yMax})')
+            else:
+                rows_x.append(f'({c:#x}, {a}, 0, 0, 0, 0)')
+        out.append('')
+        out.append('/// Code points past U+024F: (char, advance, xMin, xMax, yMin, yMax).')
+        out.append(f'pub(crate) const {name}_EXTRA: [(u32, u16, i16, i16, i16, i16); {len(rows_x)}] = [')
+        out.append(rows(rows_x, 2))
+        out.append('];')
 open(sys.argv[2], 'w').write('\n'.join(out) + '\n')

@@ -115,32 +115,92 @@ pub fn svg_text_width(line: &str, font_size: f64, font: SvgFont) -> f64 {
         SvgFont::Arial => arial_width(line, font_size, FontStyle::Regular),
         SvgFont::Times => {
             use crate::font_metrics_svg as m;
-            let mut units = 0.0;
+            let px = font_size / 2048.0;
+            let (mut units, mut left, mut right) = (0.0_f64, 0.0_f64, 0.0_f64);
             let mut prev: Option<char> = None;
-            for c in line.chars() {
+            // SVG text drops leading and trailing white space and collapses
+            // the rest.
+            for c in collapse_white_space(line).chars() {
                 let code = c as u32;
-                units += match code
-                    .checked_sub(32)
-                    .and_then(|i| m::TIMES_ADVANCE.get(i as usize))
-                {
-                    Some(&a) => f64::from(a),
-                    None if (0x200B..=0x200D).contains(&code) || code == 0xFEFF => 0.0,
-                    None if code >= 0x2E80 => 2048.0,
-                    None => 1024.0,
-                };
                 if let Some(p) = prev {
                     if let (Ok(a), Ok(b)) = (u8::try_from(p as u32), u8::try_from(code)) {
-                        if let Ok(i) = m::TIMES_KERN.binary_search_by(|k| (k.0, k.1).cmp(&(a, b)))
-                        {
+                        if let Ok(i) = m::TIMES_KERN.binary_search_by(|k| (k.0, k.1).cmp(&(a, b))) {
                             units += f64::from(m::TIMES_KERN[i].2);
                         }
                     }
                 }
+                let (advance, x0, x1) = match times_glyph(c) {
+                    Some(g) => (f64::from(g.0), g.1, g.2),
+                    None if (0x200B..=0x200D).contains(&code) || code == 0xFEFF => (0.0, 0, 0),
+                    None if code >= 0x2E80 => (2048.0, 0, 0),
+                    None => (1024.0, 0, 0),
+                };
+                // The ink of each glyph, rounded out to whole pixels, widens
+                // the box past the advances.
+                if x0 != x1 {
+                    let o = units * px;
+                    left = left.min(o + (f64::from(x0) * px).floor());
+                    right = right.max(o + (f64::from(x1) * px).ceil());
+                }
+                units += advance;
                 prev = Some(c);
             }
-            units / 2048.0 * font_size
+            // Advances add up exactly and land on a 1/64 px grid.
+            let adv = (units * px * 64.0).round() / 64.0;
+            adv.max(right) - left
         }
     }
+}
+
+/// Times New Roman (advance, xMin, xMax, yMin, yMax) of `c`, in 2048 em units.
+fn times_glyph(c: char) -> Option<(u16, i16, i16, i16, i16)> {
+    use crate::font_metrics_svg as m;
+    let code = c as u32;
+    if let Some(i) = code
+        .checked_sub(32)
+        .filter(|&i| (i as usize) < m::TIMES_ADVANCE.len())
+    {
+        let i = i as usize;
+        let (x0, x1) = m::TIMES_HEXTENT[i];
+        let (y0, y1) = m::TIMES_EXTENT[i];
+        return Some((m::TIMES_ADVANCE[i], x0, x1, y0, y1));
+    }
+    m::TIMES_EXTRA
+        .binary_search_by_key(&code, |e| e.0)
+        .ok()
+        .map(|i| {
+            let e = m::TIMES_EXTRA[i];
+            (e.1, e.2, e.3, e.4, e.5)
+        })
+}
+
+/// SVG text without `xml:space`: white space runs become one space, and the
+/// ends are trimmed.
+fn collapse_white_space(line: &str) -> std::borrow::Cow<'_, str> {
+    let ws = |c: char| matches!(c, ' ' | '\t' | '\n' | '\r');
+    let t = line.trim_matches(ws);
+    let mut prev_ws = false;
+    if !t.chars().any(|c| {
+        let double = ws(c) && (prev_ws || c != ' ');
+        prev_ws = ws(c);
+        double
+    }) {
+        return std::borrow::Cow::Borrowed(t);
+    }
+    let mut out = String::with_capacity(t.len());
+    let mut prev_ws = false;
+    for c in t.chars() {
+        if ws(c) {
+            if !prev_ws {
+                out.push(' ');
+            }
+            prev_ws = true;
+        } else {
+            out.push(c);
+            prev_ws = false;
+        }
+    }
+    std::borrow::Cow::Owned(out)
 }
 
 /// Height of an SVG text line's bounding box (`getBBox().height`): the font's
@@ -159,10 +219,14 @@ pub fn svg_text_height(line: &str, font_size: f64, font: SvgFont) -> f64 {
     let mut top = -(asc * s).round();
     let mut bottom = (desc * s).round();
     for c in line.chars() {
-        if let Some(&(y_min, y_max)) = (c as u32)
-            .checked_sub(32)
-            .and_then(|i| ext.get(i as usize))
-        {
+        let extent = match font {
+            SvgFont::Times => times_glyph(c).map(|g| (g.3, g.4)),
+            SvgFont::Arial => (c as u32)
+                .checked_sub(32)
+                .and_then(|i| ext.get(i as usize))
+                .copied(),
+        };
+        if let Some((y_min, y_max)) = extent {
             if y_min != 0 || y_max != 0 {
                 top = top.min((-f64::from(y_max) * s).floor());
                 bottom = bottom.max((-f64::from(y_min) * s).ceil());
@@ -203,7 +267,10 @@ fn break_len(b: &[u8]) -> Option<usize> {
         return None;
     }
     i += 2;
-    while b.get(i).is_some_and(|c| c.is_ascii_whitespace() || *c == 0x0b) {
+    while b
+        .get(i)
+        .is_some_and(|c| c.is_ascii_whitespace() || *c == 0x0b)
+    {
         i += 1;
     }
     if b.get(i) == Some(&b'/') {

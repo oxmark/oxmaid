@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Web
+    participant API@{ "type": "control" }
+    participant DB@{ "type": "database" }
+    User->>Web: Open the dashboard
+    Web->>+API: GET /stats
+    API->>DB: Query the last 30 days
+    DB-->>API: Rows
+    alt cache hit
+        API-->>Web: Cached stats
+    else cache miss
+        API->>API: Aggregate
+        API-->>-Web: Fresh stats
+    end
+    Note over Web,API: Responses are gzip-compressed
+    Web-->>User: Render charts

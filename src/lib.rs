@@ -13,9 +13,9 @@
 #![forbid(unsafe_code)]
 
 pub mod config;
+mod dom;
 mod error;
 pub mod flowchart;
-mod dom;
 mod font_metrics;
 mod font_metrics_svg;
 pub mod layout;
