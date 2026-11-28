@@ -31,7 +31,13 @@ pub(crate) fn split(src: &str) -> Source<'_> {
     };
     let mut seen_content = false;
     let mut front: Option<Vec<&str>> = None;
+    // End (byte offset) of a directive spanning several lines.
+    let mut skip_until = 0;
     for (i, raw) in src.lines().enumerate() {
+        let start = raw.as_ptr() as usize - src.as_ptr() as usize;
+        if start < skip_until {
+            continue;
+        }
         let text = raw.trim();
         if let Some(fm) = front.as_mut() {
             if text == "---" {
@@ -54,6 +60,14 @@ pub(crate) fn split(src: &str) -> Source<'_> {
         if let Some(body) = text.strip_prefix("%%{").and_then(|t| t.strip_suffix("}%%")) {
             out.directives.push(body);
             continue;
+        }
+        if text.starts_with("%%{") {
+            let open = start + raw.find("%%{").unwrap() + 3;
+            if let Some(close) = src[open..].find("}%%") {
+                out.directives.push(&src[open..open + close]);
+                skip_until = open + close + 3;
+                continue;
+            }
         }
         if text.starts_with("%%") {
             continue;

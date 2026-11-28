@@ -6,6 +6,7 @@ mod neo;
 mod parser;
 mod render;
 
+pub(crate) use parser::format_url;
 pub use parser::parse;
 
 /// Renders with the `neo` look (Mermaid 12's default), or the old look when
