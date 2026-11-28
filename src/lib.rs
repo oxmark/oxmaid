@@ -15,6 +15,7 @@
 pub mod class;
 pub mod config;
 mod dom;
+mod elk;
 mod error;
 pub mod flowchart;
 mod font_metrics;
